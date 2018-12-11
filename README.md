@@ -1,5 +1,6 @@
 ## HTTP Header Kit for PHP 7.2+ based on PSR-7
 
+[![Gitter](https://badges.gitter.im/sunrise-php/support.png)](https://gitter.im/sunrise-php/support)
 [![Build Status](https://api.travis-ci.com/sunrise-php/http-header-kit.svg?branch=master)](https://travis-ci.com/sunrise-php/http-header-kit)
 [![CodeFactor](https://www.codefactor.io/repository/github/sunrise-php/http-header-kit/badge)](https://www.codefactor.io/repository/github/sunrise-php/http-header-kit)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
