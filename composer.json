@@ -1,27 +1,32 @@
 {
-	"name": "sunrise/http-header-kit",
-	"description": "Sunrise HTTP Header Kit",
-	"keywords": ["fenric", "sunrise", "http-header-kit", "psr-7"],
-	"homepage": "https://github.com/sunrise-php/http-header-kit",
-	"license": "MIT",
-	"authors": [{
-		"name": "Anatoly Fenric",
-		"email": "anatoly@fenric.ru",
-		"homepage": "https://anatoly.fenric.ru/"
-	}],
-	"require": {
-		"php": "^7.1",
-		"psr/http-message": "^1.0",
-		"sunrise/http-header": "^1.0"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "7.5.1",
-		"sunrise/http-message": "^1.0",
-		"sunrise/uri": "^1.0"
-	},
-	"autoload": {
-		"psr-4": {
-			"Sunrise\\Http\\Header\\": "src/"
-		}
-	}
+    "name": "sunrise/http-header-kit",
+    "description": "Sunrise HTTP Header Kit",
+    "keywords": ["fenric", "sunrise", "http-header-kit", "psr-7"],
+    "homepage": "https://github.com/sunrise-php/http-header-kit",
+    "license": "MIT",
+    "authors": [{
+        "name": "Anatoly Fenric",
+        "email": "anatoly@fenric.ru",
+        "homepage": "https://anatoly.fenric.ru/"
+    }],
+    "require": {
+        "php": "^7.1",
+        "psr/http-message": "^1.0",
+        "sunrise/http-header": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "7.5.1",
+        "sunrise/http-message": "^1.0",
+        "sunrise/uri": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sunrise\\Http\\Header\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "phpunit --colors=always --coverage-text"
+        ]
+    }
 }

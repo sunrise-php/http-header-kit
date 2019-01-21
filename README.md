@@ -4,7 +4,7 @@
 [![Build Status](https://api.travis-ci.com/sunrise-php/http-header-kit.svg?branch=master)](https://travis-ci.com/sunrise-php/http-header-kit)
 [![CodeFactor](https://www.codefactor.io/repository/github/sunrise-php/http-header-kit/badge)](https://www.codefactor.io/repository/github/sunrise-php/http-header-kit)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
-[![Code Intelligence Status](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
+[![Code Coverage](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/sunrise/http-header-kit/v/stable)](https://packagist.org/packages/sunrise/http-header-kit)
 [![Total Downloads](https://poser.pugx.org/sunrise/http-header-kit/downloads)](https://packagist.org/packages/sunrise/http-header-kit)
 [![License](https://poser.pugx.org/sunrise/http-header-kit/license)](https://packagist.org/packages/sunrise/http-header-kit)
@@ -301,9 +301,9 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderContentRange(
-	200, // An integer in the given unit indicating the beginning of the request range.
-	1000, // An integer in the given unit indicating the end of the requested range.
-	67589 // The total size of the document.
+    200, // An integer in the given unit indicating the beginning of the request range.
+    1000, // An integer in the given unit indicating the end of the requested range.
+    67589 // The total size of the document.
 );
 $message = $header->setToMessage($message);
 ```
