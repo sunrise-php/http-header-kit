@@ -543,6 +543,20 @@ $header = new HeaderSetCookie('qwerty', '219ffwef9w0f', new \DateTime('+1 day'),
 $message = $header->addToMessage($message);
 ```
 
+#### Sunset
+
+> Useful link: https://tools.ietf.org/id/draft-wilde-sunset-header-03.html
+
+```php
+use Sunrise\Http\Header\HeaderSunset;
+use Sunrise\Http\Message\ResponseFactory;
+
+$message = (new ResponseFactory)->createResponse();
+
+$header = new HeaderSunset(new \DateTime('2038-01-19 03:14:07'));
+$message = $header->setToMessage($message);
+```
+
 #### Trailer
 
 > Useful link: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Trailer
