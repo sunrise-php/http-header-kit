@@ -1,7 +1,7 @@
 {
     "name": "sunrise/http-header-kit",
-    "description": "Sunrise HTTP Header Kit",
-    "keywords": ["fenric", "sunrise", "http-header-kit", "psr-7"],
+    "description": "Sunrise HTTP Header Kit for PHP 7.1+ based on PSR-7",
+    "keywords": ["fenric", "sunrise", "http-header-kit", "http", "header", "kit", "psr-7"],
     "homepage": "https://github.com/sunrise-php/http-header-kit",
     "license": "MIT",
     "authors": [{
