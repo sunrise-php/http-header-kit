@@ -19,7 +19,7 @@ use Psr\Http\Message\MessageInterface;
 /**
  * AbstractHeader
  */
-abstract class AbstractHeader
+abstract class AbstractHeader implements HeaderInterface
 {
 
 	/**
