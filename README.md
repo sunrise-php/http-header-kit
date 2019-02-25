@@ -16,6 +16,34 @@ composer require sunrise/http-header-kit
 
 ## How to use?
 
+### HTTP Header Collection
+
+> More useful information: https://github.com/sunrise-php/http-header-collection
+
+```bash
+composer require sunrise/http-header-collection
+```
+
+```php
+// Creates the header collection
+$headers = new \Sunrise\Http\Header\HeaderCollection([
+    new \Sunrise\Http\Header\HeaderAllow('OPTIONS', 'HEAD', 'GET'),
+    new \Sunrise\Http\Header\HeaderContentLanguage('de-DE'),
+    new \Sunrise\Http\Header\HeaderContentType('application/json'),
+]);
+
+// Sets headers to the message
+$message = $headers->setToMessage($message);
+
+// ... or adds headers to the message
+$message = $headers->addToMessage($message);
+
+// ...or converts headers to an array
+$headers->toArray();
+```
+
+### HTTP Headers
+
 #### Access-Control-Allow-Credentials
 
 > Usage link: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
