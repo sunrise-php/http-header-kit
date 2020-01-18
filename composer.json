@@ -18,7 +18,7 @@
         "sunrise/http-header-collection": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "7.5.6",
+        "phpunit/phpunit": "7.5.20",
         "sunrise/http-message": "1.0.15",
         "sunrise/uri": "1.0.25"
     },
