@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "7.5.6",
-        "sunrise/http-message": "1.0.15",
+        "sunrise/http-message": "1.3.0",
         "sunrise/uri": "1.0.25"
     },
     "autoload": {
