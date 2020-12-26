@@ -19,11 +19,11 @@ namespace Sunrise\Http\Header;
 class HeaderContentSecurityPolicyReportOnly extends HeaderContentSecurityPolicy
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Content-Security-Policy-Report-Only';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Content-Security-Policy-Report-Only';
+    }
 }

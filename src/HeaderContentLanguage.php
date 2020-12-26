@@ -19,91 +19,91 @@ namespace Sunrise\Http\Header;
 class HeaderContentLanguage extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * Regular Expression for a language-tag validation
-	 *
-	 * @var string
-	 *
-	 * @link https://tools.ietf.org/html/rfc2616#section-3.10
-	 */
-	public const VALID_LANGUAGE_TAG = '/^[a-zA-Z]{1,8}(?:\-[a-zA-Z]{1,8})?$/';
+    /**
+     * Regular Expression for a language-tag validation
+     *
+     * @var string
+     *
+     * @link https://tools.ietf.org/html/rfc2616#section-3.10
+     */
+    public const VALID_LANGUAGE_TAG = '/^[a-zA-Z]{1,8}(?:\-[a-zA-Z]{1,8})?$/';
 
-	/**
-	 * The header value
-	 *
-	 * @var array
-	 */
-	protected $value = [];
+    /**
+     * The header value
+     *
+     * @var array
+     */
+    protected $value = [];
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param string ...$value
-	 */
-	public function __construct(string ...$value)
-	{
-		$this->setValue(...$value);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param string ...$value
+     */
+    public function __construct(string ...$value)
+    {
+        $this->setValue(...$value);
+    }
 
-	/**
-	 * Sets the header value
-	 *
-	 * @param string ...$value
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setValue(string ...$value) : self
-	{
-		foreach ($value as $oneOf)
-		{
-			if (! \preg_match(self::VALID_LANGUAGE_TAG, $oneOf))
-			{
-				throw new \InvalidArgumentException(\sprintf('The value "%s" for the header "%s" is not valid', $oneOf, $this->getFieldName()));
-			}
+    /**
+     * Sets the header value
+     *
+     * @param string ...$value
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setValue(string ...$value) : self
+    {
+        foreach ($value as $oneOf) {
+            if (! \preg_match(self::VALID_LANGUAGE_TAG, $oneOf)) {
+                throw new \InvalidArgumentException(
+                    \sprintf('The value "%s" for the header "%s" is not valid', $oneOf, $this->getFieldName())
+                );
+            }
 
-			$this->value[$oneOf] = true;
-		}
+            $this->value[$oneOf] = true;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets the header value
-	 *
-	 * @return array
-	 */
-	public function getValue() : array
-	{
-		return \array_keys($this->value);
-	}
+    /**
+     * Gets the header value
+     *
+     * @return array
+     */
+    public function getValue() : array
+    {
+        return \array_keys($this->value);
+    }
 
-	/**
-	 * Resets the header value
-	 *
-	 * @return self
-	 */
-	public function resetValue() : self
-	{
-		$this->value = [];
+    /**
+     * Resets the header value
+     *
+     * @return self
+     */
+    public function resetValue() : self
+    {
+        $this->value = [];
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Content-Language';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Content-Language';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		return \implode(', ', $this->getValue());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        return \implode(', ', $this->getValue());
+    }
 }

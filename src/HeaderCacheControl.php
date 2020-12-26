@@ -19,121 +19,119 @@ namespace Sunrise\Http\Header;
 class HeaderCacheControl extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * The header parameters
-	 *
-	 * @var array
-	 */
-	protected $parameters = [];
+    /**
+     * The header parameters
+     *
+     * @var array
+     */
+    protected $parameters = [];
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param array $parameters
-	 */
-	public function __construct(array $parameters = [])
-	{
-		$this->setParameters($parameters);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param array $parameters
+     */
+    public function __construct(array $parameters = [])
+    {
+        $this->setParameters($parameters);
+    }
 
-	/**
-	 * Sets the header parameter
-	 *
-	 * @param string $name
-	 * @param string $value
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setParameter(string $name, string $value) : self
-	{
-		if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name))
-		{
-			throw new \InvalidArgumentException(\sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName()));
-		}
-		else if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value))
-		{
-			throw new \InvalidArgumentException(\sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName()));
-		}
+    /**
+     * Sets the header parameter
+     *
+     * @param string $name
+     * @param string $value
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setParameter(string $name, string $value) : self
+    {
+        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName())
+            );
+        }
 
-		$this->parameters[$name] = $value;
+        if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName())
+            );
+        }
 
-		return $this;
-	}
+        $this->parameters[$name] = $value;
 
-	/**
-	 * Sets the header parameters
-	 *
-	 * @param array $parameters
-	 *
-	 * @return self
-	 */
-	public function setParameters(array $parameters) : self
-	{
-		foreach ($parameters as $name => $value)
-		{
-			$this->setParameter($name, $value);
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * Sets the header parameters
+     *
+     * @param array $parameters
+     *
+     * @return self
+     */
+    public function setParameters(array $parameters) : self
+    {
+        foreach ($parameters as $name => $value) {
+            $this->setParameter($name, $value);
+        }
 
-	/**
-	 * Gets the header parameters
-	 *
-	 * @return array
-	 */
-	public function getParameters() : array
-	{
-		return $this->parameters;
-	}
+        return $this;
+    }
 
-	/**
-	 * Clears the header parameters
-	 *
-	 * @return self
-	 */
-	public function clearParameters() : self
-	{
-		$this->parameters = [];
+    /**
+     * Gets the header parameters
+     *
+     * @return array
+     */
+    public function getParameters() : array
+    {
+        return $this->parameters;
+    }
 
-		return $this;
-	}
+    /**
+     * Clears the header parameters
+     *
+     * @return self
+     */
+    public function clearParameters() : self
+    {
+        $this->parameters = [];
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Cache-Control';
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		$parameters = [];
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Cache-Control';
+    }
 
-		foreach ($this->getParameters() as $name => $value)
-		{
-			$parameter = $name;
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        $parameters = [];
+        foreach ($this->getParameters() as $name => $value) {
+            $parameter = $name;
 
-			if (! (\strlen($value) === 0))
-			{
-				// Example: max-age=31536000
-				if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $value))
-				{
-					$value = '"' . $value . '"';
-				}
+            if (! (\strlen($value) === 0)) {
+                // Example: max-age=31536000
+                if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $value)) {
+                    $value = '"' . $value . '"';
+                }
 
-				$parameter .= '=' . $value;
-			}
+                $parameter .= '=' . $value;
+            }
 
-			$parameters[] = $parameter;
-		}
+            $parameters[] = $parameter;
+        }
 
-		return \implode(', ', $parameters);
-	}
+        return \implode(', ', $parameters);
+    }
 }

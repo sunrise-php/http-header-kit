@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Sunrise\Http\Header\Tests;
 
@@ -8,87 +8,87 @@ use Sunrise\Http\Header\HeaderInterface;
 
 class HeaderTrailerTest extends TestCase
 {
-	public function testConstructor()
-	{
-		$header = new HeaderTrailer('value');
+    public function testConstructor()
+    {
+        $header = new HeaderTrailer('value');
 
-		$this->assertInstanceOf(HeaderInterface::class, $header);
-	}
+        $this->assertInstanceOf(HeaderInterface::class, $header);
+    }
 
-	public function testConstructorWithInvalidValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testConstructorWithInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		new HeaderTrailer('invalid value');
-	}
+        new HeaderTrailer('invalid value');
+    }
 
-	public function testSetValue()
-	{
-		$header = new HeaderTrailer('value');
+    public function testSetValue()
+    {
+        $header = new HeaderTrailer('value');
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->setValue('new-value'));
+        $this->assertInstanceOf(HeaderInterface::class, $header->setValue('new-value'));
 
-		$this->assertEquals('new-value', $header->getValue());
-	}
+        $this->assertEquals('new-value', $header->getValue());
+    }
 
-	public function testSetInvalidValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderTrailer('value');
+        $header = new HeaderTrailer('value');
 
-		$header->setValue('invalid value');
-	}
+        $header->setValue('invalid value');
+    }
 
-	public function testGetValue()
-	{
-		$header = new HeaderTrailer('value');
+    public function testGetValue()
+    {
+        $header = new HeaderTrailer('value');
 
-		$this->assertEquals('value', $header->getValue());
-	}
+        $this->assertEquals('value', $header->getValue());
+    }
 
-	public function testGetFieldName()
-	{
-		$header = new HeaderTrailer('value');
+    public function testGetFieldName()
+    {
+        $header = new HeaderTrailer('value');
 
-		$this->assertEquals('Trailer', $header->getFieldName());
-	}
+        $this->assertEquals('Trailer', $header->getFieldName());
+    }
 
-	public function testGetFieldValue()
-	{
-		$header = new HeaderTrailer('value');
+    public function testGetFieldValue()
+    {
+        $header = new HeaderTrailer('value');
 
-		$this->assertEquals('value', $header->getFieldValue());
-	}
+        $this->assertEquals('value', $header->getFieldValue());
+    }
 
-	public function testToString()
-	{
-		$header = new HeaderTrailer('value');
+    public function testToString()
+    {
+        $header = new HeaderTrailer('value');
 
-		$this->assertEquals('Trailer: value', (string) $header);
-	}
+        $this->assertEquals('Trailer: value', (string) $header);
+    }
 
-	public function testSetToMessage()
-	{
-		$header = new HeaderTrailer('value');
+    public function testSetToMessage()
+    {
+        $header = new HeaderTrailer('value');
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$message = $header->setToMessage($message);
+        $message = $header->setToMessage($message);
 
-		$this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 
-	public function testAddToMessage()
-	{
-		$header = new HeaderTrailer('value');
+    public function testAddToMessage()
+    {
+        $header = new HeaderTrailer('value');
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$message = $header->addToMessage($message);
+        $message = $header->addToMessage($message);
 
-		$this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 }

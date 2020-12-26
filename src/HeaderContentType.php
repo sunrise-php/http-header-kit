@@ -19,157 +19,158 @@ namespace Sunrise\Http\Header;
 class HeaderContentType extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * Regular Expression for a media-type validation
-	 *
-	 * @var string
-	 *
-	 * @link https://tools.ietf.org/html/rfc6838#section-4.2
-	 */
-	public const VALID_MEDIA_TYPE = '/^[\dA-Za-z][\d\w\!#\$&\+\-\.\^]*(?:\/[\dA-Za-z][\d\w\!#\$&\+\-\.\^]*)?$/';
+    /**
+     * Regular Expression for a media-type validation
+     *
+     * @var string
+     *
+     * @link https://tools.ietf.org/html/rfc6838#section-4.2
+     */
+    public const VALID_MEDIA_TYPE = '/^[\dA-Za-z][\d\w\!#\$&\+\-\.\^]*(?:\/[\dA-Za-z][\d\w\!#\$&\+\-\.\^]*)?$/';
 
-	/**
-	 * The content media-type
-	 *
-	 * @var string
-	 */
-	protected $type;
+    /**
+     * The content media-type
+     *
+     * @var string
+     */
+    protected $type;
 
-	/**
-	 * The content media-type parameters
-	 *
-	 * @var array
-	 */
-	protected $parameters = [];
+    /**
+     * The content media-type parameters
+     *
+     * @var array
+     */
+    protected $parameters = [];
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param string $type
-	 * @param array $parameters
-	 */
-	public function __construct(string $type, array $parameters = [])
-	{
-		$this->setType($type);
-		$this->setParameters($parameters);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param string $type
+     * @param array $parameters
+     */
+    public function __construct(string $type, array $parameters = [])
+    {
+        $this->setType($type);
+        $this->setParameters($parameters);
+    }
 
-	/**
-	 * Sets the content media-type
-	 *
-	 * @param string $type
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setType(string $type) : self
-	{
-		if (! \preg_match(self::VALID_MEDIA_TYPE, $type))
-		{
-			throw new \InvalidArgumentException(\sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $type));
-		}
+    /**
+     * Sets the content media-type
+     *
+     * @param string $type
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setType(string $type) : self
+    {
+        if (! \preg_match(self::VALID_MEDIA_TYPE, $type)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $type)
+            );
+        }
 
-		$this->type = $type;
+        $this->type = $type;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Sets the content media-type parameter
-	 *
-	 * @param string $name
-	 * @param string $value
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setParameter(string $name, string $value) : self
-	{
-		if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name))
-		{
-			throw new \InvalidArgumentException(\sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName()));
-		}
-		else if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value))
-		{
-			throw new \InvalidArgumentException(\sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName()));
-		}
+    /**
+     * Sets the content media-type parameter
+     *
+     * @param string $name
+     * @param string $value
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setParameter(string $name, string $value) : self
+    {
+        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName())
+            );
+        }
 
-		$this->parameters[$name] = $value;
+        if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName())
+            );
+        }
 
-		return $this;
-	}
+        $this->parameters[$name] = $value;
 
-	/**
-	 * Sets the content media-type parameters
-	 *
-	 * @param array $parameters
-	 *
-	 * @return self
-	 */
-	public function setParameters(array $parameters) : self
-	{
-		foreach ($parameters as $name => $value)
-		{
-			$this->setParameter($name, $value);
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * Sets the content media-type parameters
+     *
+     * @param array $parameters
+     *
+     * @return self
+     */
+    public function setParameters(array $parameters) : self
+    {
+        foreach ($parameters as $name => $value) {
+            $this->setParameter($name, $value);
+        }
 
-	/**
-	 * Gets the content media-type
-	 *
-	 * @return string
-	 */
-	public function getType() : string
-	{
-		return $this->type;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets the content media-type parameters
-	 *
-	 * @return array
-	 */
-	public function getParameters() : array
-	{
-		return $this->parameters;
-	}
+    /**
+     * Gets the content media-type
+     *
+     * @return string
+     */
+    public function getType() : string
+    {
+        return $this->type;
+    }
 
-	/**
-	 * Clears the content media-type parameters
-	 *
-	 * @return self
-	 */
-	public function clearParameters() : self
-	{
-		$this->parameters = [];
+    /**
+     * Gets the content media-type parameters
+     *
+     * @return array
+     */
+    public function getParameters() : array
+    {
+        return $this->parameters;
+    }
 
-		return $this;
-	}
+    /**
+     * Clears the content media-type parameters
+     *
+     * @return self
+     */
+    public function clearParameters() : self
+    {
+        $this->parameters = [];
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Content-Type';
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		$r = $this->getType();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Content-Type';
+    }
 
-		foreach ($this->getParameters() as $name => $value)
-		{
-			$r .= \sprintf('; %s="%s"', $name, $value);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        $r = $this->getType();
+        foreach ($this->getParameters() as $name => $value) {
+            $r .= \sprintf('; %s="%s"', $name, $value);
+        }
 
-		return $r;
-	}
+        return $r;
+    }
 }

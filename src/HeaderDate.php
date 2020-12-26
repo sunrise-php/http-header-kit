@@ -20,62 +20,62 @@ namespace Sunrise\Http\Header;
 class HeaderDate extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * Timestamp for the header field-value
-	 *
-	 * @var \DateTimeInterface
-	 */
-	protected $timestamp;
+    /**
+     * Timestamp for the header field-value
+     *
+     * @var \DateTimeInterface
+     */
+    protected $timestamp;
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param \DateTimeInterface $timestamp
-	 */
-	public function __construct(\DateTimeInterface $timestamp)
-	{
-		$this->setTimestamp($timestamp);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param \DateTimeInterface $timestamp
+     */
+    public function __construct(\DateTimeInterface $timestamp)
+    {
+        $this->setTimestamp($timestamp);
+    }
 
-	/**
-	 * Sets timestamp for the header field-value
-	 *
-	 * @param \DateTimeInterface $timestamp
-	 *
-	 * @return self
-	 */
-	public function setTimestamp(\DateTimeInterface $timestamp) : self
-	{
-		$this->timestamp = $timestamp;
+    /**
+     * Sets timestamp for the header field-value
+     *
+     * @param \DateTimeInterface $timestamp
+     *
+     * @return self
+     */
+    public function setTimestamp(\DateTimeInterface $timestamp) : self
+    {
+        $this->timestamp = $timestamp;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets timestamp for the header field-value
-	 *
-	 * @return \DateTimeInterface
-	 */
-	public function getTimestamp() : \DateTimeInterface
-	{
-		return $this->timestamp;
-	}
+    /**
+     * Gets timestamp for the header field-value
+     *
+     * @return \DateTimeInterface
+     */
+    public function getTimestamp() : \DateTimeInterface
+    {
+        return $this->timestamp;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Date';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Date';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		$this->getTimestamp()->setTimezone(new \DateTimeZone('GMT'));
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        $this->getTimestamp()->setTimezone(new \DateTimeZone('GMT'));
 
-		return $this->getTimestamp()->format(\DateTime::RFC822);
-	}
+        return $this->getTimestamp()->format(\DateTime::RFC822);
+    }
 }

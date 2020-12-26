@@ -19,148 +19,149 @@ namespace Sunrise\Http\Header;
 class HeaderContentDisposition extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * The content disposition-type
-	 *
-	 * @var string
-	 */
-	protected $type;
+    /**
+     * The content disposition-type
+     *
+     * @var string
+     */
+    protected $type;
 
-	/**
-	 * The content disposition-type parameters
-	 *
-	 * @var array
-	 */
-	protected $parameters = [];
+    /**
+     * The content disposition-type parameters
+     *
+     * @var array
+     */
+    protected $parameters = [];
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param string $type
-	 * @param array $parameters
-	 */
-	public function __construct(string $type, array $parameters = [])
-	{
-		$this->setType($type);
-		$this->setParameters($parameters);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param string $type
+     * @param array $parameters
+     */
+    public function __construct(string $type, array $parameters = [])
+    {
+        $this->setType($type);
+        $this->setParameters($parameters);
+    }
 
-	/**
-	 * Sets the content disposition-type
-	 *
-	 * @param string $type
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setType(string $type) : self
-	{
-		if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $type))
-		{
-			throw new \InvalidArgumentException(\sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $type));
-		}
+    /**
+     * Sets the content disposition-type
+     *
+     * @param string $type
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setType(string $type) : self
+    {
+        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $type)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $type)
+            );
+        }
 
-		$this->type = $type;
+        $this->type = $type;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Sets the content disposition-type parameter
-	 *
-	 * @param string $name
-	 * @param string $value
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setParameter(string $name, string $value) : self
-	{
-		if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name))
-		{
-			throw new \InvalidArgumentException(\sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName()));
-		}
-		else if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value))
-		{
-			throw new \InvalidArgumentException(\sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName()));
-		}
+    /**
+     * Sets the content disposition-type parameter
+     *
+     * @param string $name
+     * @param string $value
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setParameter(string $name, string $value) : self
+    {
+        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName())
+            );
+        }
 
-		$this->parameters[$name] = $value;
+        if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName())
+            );
+        }
 
-		return $this;
-	}
+        $this->parameters[$name] = $value;
 
-	/**
-	 * Sets the content disposition-type parameters
-	 *
-	 * @param array $parameters
-	 *
-	 * @return self
-	 */
-	public function setParameters(array $parameters) : self
-	{
-		foreach ($parameters as $name => $value)
-		{
-			$this->setParameter($name, $value);
-		}
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * Sets the content disposition-type parameters
+     *
+     * @param array $parameters
+     *
+     * @return self
+     */
+    public function setParameters(array $parameters) : self
+    {
+        foreach ($parameters as $name => $value) {
+            $this->setParameter($name, $value);
+        }
 
-	/**
-	 * Gets the content disposition-type
-	 *
-	 * @return string
-	 */
-	public function getType() : string
-	{
-		return $this->type;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets the content disposition-type parameters
-	 *
-	 * @return array
-	 */
-	public function getParameters() : array
-	{
-		return $this->parameters;
-	}
+    /**
+     * Gets the content disposition-type
+     *
+     * @return string
+     */
+    public function getType() : string
+    {
+        return $this->type;
+    }
 
-	/**
-	 * Clears the content disposition-type parameters
-	 *
-	 * @return self
-	 */
-	public function clearParameters() : self
-	{
-		$this->parameters = [];
+    /**
+     * Gets the content disposition-type parameters
+     *
+     * @return array
+     */
+    public function getParameters() : array
+    {
+        return $this->parameters;
+    }
 
-		return $this;
-	}
+    /**
+     * Clears the content disposition-type parameters
+     *
+     * @return self
+     */
+    public function clearParameters() : self
+    {
+        $this->parameters = [];
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Content-Disposition';
-	}
+        return $this;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		$r = $this->getType();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Content-Disposition';
+    }
 
-		foreach ($this->getParameters() as $name => $value)
-		{
-			$r .= \sprintf('; %s="%s"', $name, $value);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        $r = $this->getType();
+        foreach ($this->getParameters() as $name => $value) {
+            $r .= \sprintf('; %s="%s"', $name, $value);
+        }
 
-		return $r;
-	}
+        return $r;
+    }
 }

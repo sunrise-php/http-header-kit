@@ -24,100 +24,101 @@ use Psr\Http\Message\UriInterface;
 class HeaderRefresh extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * Delay for the redirection
-	 *
-	 * @var int
-	 */
-	protected $delay;
+    /**
+     * Delay for the redirection
+     *
+     * @var int
+     */
+    protected $delay;
 
-	/**
-	 * URI for the redirection
-	 *
-	 * @var UriInterface
-	 */
-	protected $uri;
+    /**
+     * URI for the redirection
+     *
+     * @var UriInterface
+     */
+    protected $uri;
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param int $delay
-	 * @param UriInterface $uri
-	 */
-	public function __construct(int $delay, UriInterface $uri)
-	{
-		$this->setDelay($delay);
-		$this->setUri($uri);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param int $delay
+     * @param UriInterface $uri
+     */
+    public function __construct(int $delay, UriInterface $uri)
+    {
+        $this->setDelay($delay);
+        $this->setUri($uri);
+    }
 
-	/**
-	 * Sets the redirection delay
-	 *
-	 * @param int $delay
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setDelay(int $delay) : self
-	{
-		if (! ($delay >= 0))
-		{
-			throw new \InvalidArgumentException(\sprintf('The given delay "%d" for the "Refresh" header is not valid', $delay));
-		}
+    /**
+     * Sets the redirection delay
+     *
+     * @param int $delay
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setDelay(int $delay) : self
+    {
+        if (! ($delay >= 0)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The given delay "%d" for the "Refresh" header is not valid', $delay)
+            );
+        }
 
-		$this->delay = $delay;
+        $this->delay = $delay;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Sets the redirection URI
-	 *
-	 * @param UriInterface $uri
-	 *
-	 * @return self
-	 */
-	public function setUri(UriInterface $uri) : self
-	{
-		$this->uri = $uri;
+    /**
+     * Sets the redirection URI
+     *
+     * @param UriInterface $uri
+     *
+     * @return self
+     */
+    public function setUri(UriInterface $uri) : self
+    {
+        $this->uri = $uri;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets the redirection delay
-	 *
-	 * @return int
-	 */
-	public function getDelay() : int
-	{
-		return $this->delay;
-	}
+    /**
+     * Gets the redirection delay
+     *
+     * @return int
+     */
+    public function getDelay() : int
+    {
+        return $this->delay;
+    }
 
-	/**
-	 * Gets the redirection URI
-	 *
-	 * @return UriInterface
-	 */
-	public function getUri() : UriInterface
-	{
-		return $this->uri;
-	}
+    /**
+     * Gets the redirection URI
+     *
+     * @return UriInterface
+     */
+    public function getUri() : UriInterface
+    {
+        return $this->uri;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Refresh';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Refresh';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		return \sprintf('%d; url=%s', $this->getDelay(), (string) $this->getUri());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        return \sprintf('%d; url=%s', $this->getDelay(), (string) $this->getUri());
+    }
 }

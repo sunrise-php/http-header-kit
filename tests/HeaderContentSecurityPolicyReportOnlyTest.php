@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Sunrise\Http\Header\Tests;
 
@@ -8,189 +8,191 @@ use Sunrise\Http\Header\HeaderInterface;
 
 class HeaderContentSecurityPolicyReportOnlyTest extends TestCase
 {
-	public function testConstructor()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly([]);
+    public function testConstructor()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header);
-	}
+        $this->assertInstanceOf(HeaderInterface::class, $header);
+    }
 
-	public function testConstructorWithInvalidParameterName()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testConstructorWithInvalidParameterName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		new HeaderContentSecurityPolicyReportOnly(['name=' => 'value']);
-	}
+        new HeaderContentSecurityPolicyReportOnly(['name=' => 'value']);
+    }
 
-	public function testConstructorWithInvalidParameterValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testConstructorWithInvalidParameterValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		new HeaderContentSecurityPolicyReportOnly(['name' => ';value']);
-	}
+        new HeaderContentSecurityPolicyReportOnly(['name' => ';value']);
+    }
 
-	public function testSetParameter()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
+    public function testSetParameter()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->setParameter('name', 'overwritten-value'));
+        $this->assertInstanceOf(HeaderInterface::class, $header->setParameter('name', 'overwritten-value'));
 
-		$this->assertEquals(['name' => 'overwritten-value'], $header->getParameters());
-	}
+        $this->assertEquals(['name' => 'overwritten-value'], $header->getParameters());
+    }
 
-	public function testSetSeveralParameters()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly([]);
+    public function testSetSeveralParameters()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-		$header->setParameter('name-1', 'value-1');
-		$header->setParameter('name-2', 'value-2');
+        $header->setParameter('name-1', 'value-1');
+        $header->setParameter('name-2', 'value-2');
 
-		$this->assertEquals([
-			'name-1' => 'value-1',
-			'name-2' => 'value-2',
-		], $header->getParameters());
-	}
+        $this->assertEquals([
+            'name-1' => 'value-1',
+            'name-2' => 'value-2',
+        ], $header->getParameters());
+    }
 
-	public function testSetParameterWithInvalidName()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParameterWithInvalidName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderContentSecurityPolicyReportOnly([]);
+        $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-		$header->setParameter('name=', 'value');
-	}
+        $header->setParameter('name=', 'value');
+    }
 
-	public function testSetParameterWithInvalidValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParameterWithInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderContentSecurityPolicyReportOnly([]);
+        $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-		$header->setParameter('name', ';value');
-	}
+        $header->setParameter('name', ';value');
+    }
 
-	public function testSetParameters()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly([
-			'name-1' => 'value-1',
-			'name-2' => 'value-2',
-		]);
+    public function testSetParameters()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly([
+            'name-1' => 'value-1',
+            'name-2' => 'value-2',
+        ]);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
-			'name-1' => 'overwritten-value-1',
-			'name-2' => 'overwritten-value-2',
-		]));
+        $this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
+            'name-1' => 'overwritten-value-1',
+            'name-2' => 'overwritten-value-2',
+        ]));
 
-		$this->assertEquals([
-			'name-1' => 'overwritten-value-1',
-			'name-2' => 'overwritten-value-2',
-		], $header->getParameters());
-	}
+        $this->assertEquals([
+            'name-1' => 'overwritten-value-1',
+            'name-2' => 'overwritten-value-2',
+        ], $header->getParameters());
+    }
 
-	public function testSetParametersWithParameterThatContainsInvalidName()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParametersWithParameterThatContainsInvalidName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderContentSecurityPolicyReportOnly([]);
+        $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-		$header->setParameters(['name=' => 'value']);
-	}
+        $header->setParameters(['name=' => 'value']);
+    }
 
-	public function testSetParametersWithParameterThatContainsInvalidValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParametersWithParameterThatContainsInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderContentSecurityPolicyReportOnly([]);
+        $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-		$header->setParameters(['name' => ';value']);
-	}
+        $header->setParameters(['name' => ';value']);
+    }
 
-	public function testGetParameters()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
+    public function testGetParameters()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
 
-		$this->assertEquals(['name' => 'value'], $header->getParameters());
-	}
+        $this->assertEquals(['name' => 'value'], $header->getParameters());
+    }
 
-	public function testClearParameters()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly(['name-1' => 'value-1']);
+    public function testClearParameters()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly(['name-1' => 'value-1']);
 
-		$header->setParameter('name-2', 'value-2');
-		$header->setParameter('name-3', 'value-3');
+        $header->setParameter('name-2', 'value-2');
+        $header->setParameter('name-3', 'value-3');
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
+        $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
 
-		$this->assertEquals([], $header->getParameters());
-	}
+        $this->assertEquals([], $header->getParameters());
+    }
 
-	public function testGetFieldName()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly([]);
+    public function testGetFieldName()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-		$this->assertEquals('Content-Security-Policy-Report-Only', $header->getFieldName());
-	}
+        $this->assertEquals('Content-Security-Policy-Report-Only', $header->getFieldName());
+    }
 
-	public function testGetFieldValueWithoutParameterValue()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly(['name' => '']);
+    public function testGetFieldValueWithoutParameterValue()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly(['name' => '']);
 
-		$this->assertEquals('name', $header->getFieldValue());
-	}
+        $this->assertEquals('name', $header->getFieldValue());
+    }
 
-	public function testGetFieldValueWithParameterValue()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
+    public function testGetFieldValueWithParameterValue()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
 
-		$this->assertEquals('name value', $header->getFieldValue());
-	}
+        $this->assertEquals('name value', $header->getFieldValue());
+    }
 
-	public function testToStringWithoutParameterValue()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly(['name' => '']);
+    public function testToStringWithoutParameterValue()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly(['name' => '']);
 
-		$this->assertEquals('Content-Security-Policy-Report-Only: name', (string) $header);
-	}
+        $this->assertEquals('Content-Security-Policy-Report-Only: name', (string) $header);
+    }
 
-	public function testToStringWithParameterValue()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
+    public function testToStringWithParameterValue()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
 
-		$this->assertEquals('Content-Security-Policy-Report-Only: name value', (string) $header);
-	}
+        $this->assertEquals('Content-Security-Policy-Report-Only: name value', (string) $header);
+    }
 
-	public function testToStringWithSeveralParameters()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly([
-			'name-1' => '',
-			'name-2' => 'value-2',
-			'name-3' => 'value-3',
-		]);
+    public function testToStringWithSeveralParameters()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly([
+            'name-1' => '',
+            'name-2' => 'value-2',
+            'name-3' => 'value-3',
+        ]);
 
-		$this->assertEquals('Content-Security-Policy-Report-Only: name-1; name-2 value-2; name-3 value-3', (string) $header);
-	}
+        $expected = 'Content-Security-Policy-Report-Only: name-1; name-2 value-2; name-3 value-3';
 
-	public function testSetToMessage()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly([]);
+        $this->assertEquals($expected, (string) $header);
+    }
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+    public function testSetToMessage()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-		$message = $header->setToMessage($message);
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $message = $header->setToMessage($message);
 
-	public function testAddToMessage()
-	{
-		$header = new HeaderContentSecurityPolicyReportOnly([]);
+        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+    public function testAddToMessage()
+    {
+        $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-		$message = $header->addToMessage($message);
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $message = $header->addToMessage($message);
+
+        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 }

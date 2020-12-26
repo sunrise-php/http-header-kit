@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Sunrise\Http\Header\Tests;
 
@@ -8,110 +8,110 @@ use Sunrise\Http\Header\HeaderInterface;
 
 class HeaderContentRangeTest extends TestCase
 {
-	public function testConstructor()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testConstructor()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header);
-	}
+        $this->assertInstanceOf(HeaderInterface::class, $header);
+    }
 
-	public function testConstructorWithInvalidFirstBytePosition()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testConstructorWithInvalidFirstBytePosition()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderContentRange(2, 1, 2);
-	}
+        $header = new HeaderContentRange(2, 1, 2);
+    }
 
-	public function testConstructorWithInvalidLastBytePosition()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testConstructorWithInvalidLastBytePosition()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderContentRange(0, 2, 2);
-	}
+        $header = new HeaderContentRange(0, 2, 2);
+    }
 
-	public function testConstructorWithInvalidInstanceLength()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testConstructorWithInvalidInstanceLength()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderContentRange(0, 1, 1);
-	}
+        $header = new HeaderContentRange(0, 1, 1);
+    }
 
-	public function testSetRange()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testSetRange()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->setRange(3, 4, 5));
+        $this->assertInstanceOf(HeaderInterface::class, $header->setRange(3, 4, 5));
 
-		$this->assertEquals(3, $header->getFirstBytePosition());
+        $this->assertEquals(3, $header->getFirstBytePosition());
 
-		$this->assertEquals(4, $header->getLastBytePosition());
+        $this->assertEquals(4, $header->getLastBytePosition());
 
-		$this->assertEquals(5, $header->getInstanceLength());
-	}
+        $this->assertEquals(5, $header->getInstanceLength());
+    }
 
-	public function testGetFirstBytePosition()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testGetFirstBytePosition()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$this->assertEquals(0, $header->getFirstBytePosition());
-	}
+        $this->assertEquals(0, $header->getFirstBytePosition());
+    }
 
-	public function testGetLastBytePosition()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testGetLastBytePosition()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$this->assertEquals(1, $header->getLastBytePosition());
-	}
+        $this->assertEquals(1, $header->getLastBytePosition());
+    }
 
-	public function testGetInstanceLength()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testGetInstanceLength()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$this->assertEquals(2, $header->getInstanceLength());
-	}
+        $this->assertEquals(2, $header->getInstanceLength());
+    }
 
-	public function testGetFieldName()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testGetFieldName()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$this->assertEquals('Content-Range', $header->getFieldName());
-	}
+        $this->assertEquals('Content-Range', $header->getFieldName());
+    }
 
-	public function testGetFieldValue()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testGetFieldValue()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$this->assertEquals('bytes 0-1/2', $header->getFieldValue());
-	}
+        $this->assertEquals('bytes 0-1/2', $header->getFieldValue());
+    }
 
-	public function testToString()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testToString()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$this->assertEquals('Content-Range: bytes 0-1/2', (string) $header);
-	}
+        $this->assertEquals('Content-Range: bytes 0-1/2', (string) $header);
+    }
 
-	public function testSetToMessage()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testSetToMessage()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$message = $header->setToMessage($message);
+        $message = $header->setToMessage($message);
 
-		$this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 
-	public function testAddToMessage()
-	{
-		$header = new HeaderContentRange(0, 1, 2);
+    public function testAddToMessage()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$message = $header->addToMessage($message);
+        $message = $header->addToMessage($message);
 
-		$this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 }

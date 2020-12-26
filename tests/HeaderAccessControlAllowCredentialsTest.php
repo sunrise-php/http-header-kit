@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Sunrise\Http\Header\Tests;
 
@@ -8,55 +8,55 @@ use Sunrise\Http\Header\HeaderInterface;
 
 class HeaderAccessControlAllowCredentialsTest extends TestCase
 {
-	public function testConstructor()
-	{
-		$header = new HeaderAccessControlAllowCredentials();
+    public function testConstructor()
+    {
+        $header = new HeaderAccessControlAllowCredentials();
 
-		$this->assertInstanceOf(HeaderInterface::class, $header);
-	}
+        $this->assertInstanceOf(HeaderInterface::class, $header);
+    }
 
-	public function testGetFieldName()
-	{
-		$header = new HeaderAccessControlAllowCredentials();
+    public function testGetFieldName()
+    {
+        $header = new HeaderAccessControlAllowCredentials();
 
-		$this->assertEquals('Access-Control-Allow-Credentials', $header->getFieldName());
-	}
+        $this->assertEquals('Access-Control-Allow-Credentials', $header->getFieldName());
+    }
 
-	public function testGetFieldValue()
-	{
-		$header = new HeaderAccessControlAllowCredentials();
+    public function testGetFieldValue()
+    {
+        $header = new HeaderAccessControlAllowCredentials();
 
-		$this->assertEquals('true', $header->getFieldValue());
-	}
+        $this->assertEquals('true', $header->getFieldValue());
+    }
 
-	public function testToString()
-	{
-		$header = new HeaderAccessControlAllowCredentials();
+    public function testToString()
+    {
+        $header = new HeaderAccessControlAllowCredentials();
 
-		$this->assertEquals('Access-Control-Allow-Credentials: true', (string) $header);
-	}
+        $this->assertEquals('Access-Control-Allow-Credentials: true', (string) $header);
+    }
 
-	public function testSetToMessage()
-	{
-		$header = new HeaderAccessControlAllowCredentials();
+    public function testSetToMessage()
+    {
+        $header = new HeaderAccessControlAllowCredentials();
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$message = $header->setToMessage($message);
+        $message = $header->setToMessage($message);
 
-		$this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 
-	public function testAddToMessage()
-	{
-		$header = new HeaderAccessControlAllowCredentials();
+    public function testAddToMessage()
+    {
+        $header = new HeaderAccessControlAllowCredentials();
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$message = $header->addToMessage($message);
+        $message = $header->addToMessage($message);
 
-		$this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 }

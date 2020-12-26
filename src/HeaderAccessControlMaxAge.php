@@ -19,67 +19,68 @@ namespace Sunrise\Http\Header;
 class HeaderAccessControlMaxAge extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * The header value
-	 *
-	 * @var int
-	 */
-	protected $value;
+    /**
+     * The header value
+     *
+     * @var int
+     */
+    protected $value;
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param int $value
-	 */
-	public function __construct(int $value)
-	{
-		$this->setValue($value);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param int $value
+     */
+    public function __construct(int $value)
+    {
+        $this->setValue($value);
+    }
 
-	/**
-	 * Sets the given value as the header value
-	 *
-	 * @param int $value
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setValue(int $value) : self
-	{
-		if (! ($value >= 1 || $value === -1))
-		{
-			throw new \InvalidArgumentException(\sprintf('The header field "%s: %d" is not valid', $this->getFieldName(), $value));
-		}
+    /**
+     * Sets the given value as the header value
+     *
+     * @param int $value
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setValue(int $value) : self
+    {
+        if (! ($value >= 1 || $value === -1)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The header field "%s: %d" is not valid', $this->getFieldName(), $value)
+            );
+        }
 
-		$this->value = $value;
+        $this->value = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets the header value
-	 *
-	 * @return int
-	 */
-	public function getValue() : int
-	{
-		return $this->value;
-	}
+    /**
+     * Gets the header value
+     *
+     * @return int
+     */
+    public function getValue() : int
+    {
+        return $this->value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Access-Control-Max-Age';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Access-Control-Max-Age';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		return \sprintf('%d', $this->getValue());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        return \sprintf('%d', $this->getValue());
+    }
 }

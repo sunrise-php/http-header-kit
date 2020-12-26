@@ -19,67 +19,68 @@ namespace Sunrise\Http\Header;
 class HeaderTrailer extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * The header value
-	 *
-	 * @var string
-	 */
-	protected $value;
+    /**
+     * The header value
+     *
+     * @var string
+     */
+    protected $value;
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param string $value
-	 */
-	public function __construct(string $value)
-	{
-		$this->setValue($value);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param string $value
+     */
+    public function __construct(string $value)
+    {
+        $this->setValue($value);
+    }
 
-	/**
-	 * Sets the given value as the header value
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setValue(string $value) : self
-	{
-		if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $value))
-		{
-			throw new \InvalidArgumentException(\sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $value));
-		}
+    /**
+     * Sets the given value as the header value
+     *
+     * @param string $value
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setValue(string $value) : self
+    {
+        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $value)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $value)
+            );
+        }
 
-		$this->value = $value;
+        $this->value = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets the header value
-	 *
-	 * @return string
-	 */
-	public function getValue() : string
-	{
-		return $this->value;
-	}
+    /**
+     * Gets the header value
+     *
+     * @return string
+     */
+    public function getValue() : string
+    {
+        return $this->value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Trailer';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Trailer';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		return $this->getValue();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        return $this->getValue();
+    }
 }
