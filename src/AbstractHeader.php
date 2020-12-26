@@ -22,36 +22,36 @@ use Psr\Http\Message\MessageInterface;
 abstract class AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setToMessage(MessageInterface $message) : MessageInterface
-	{
-		return $message->withHeader(
-			$this->getFieldName(),
-			$this->getFieldValue()
-		);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function setToMessage(MessageInterface $message) : MessageInterface
+    {
+        return $message->withHeader(
+            $this->getFieldName(),
+            $this->getFieldValue()
+        );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function addToMessage(MessageInterface $message) : MessageInterface
-	{
-		return $message->withAddedHeader(
-			$this->getFieldName(),
-			$this->getFieldValue()
-		);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function addToMessage(MessageInterface $message) : MessageInterface
+    {
+        return $message->withAddedHeader(
+            $this->getFieldName(),
+            $this->getFieldValue()
+        );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function __toString()
-	{
-		return \sprintf('%s: %s',
-			$this->getFieldName(),
-			$this->getFieldValue()
-		);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+        return \sprintf('%s: %s',
+            $this->getFieldName(),
+            $this->getFieldValue()
+        );
+    }
 }

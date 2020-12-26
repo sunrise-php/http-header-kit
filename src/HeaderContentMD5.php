@@ -19,76 +19,77 @@ namespace Sunrise\Http\Header;
 class HeaderContentMD5 extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * Regular Expression for a md5-digest validation
-	 *
-	 * @var string
-	 *
-	 * @link https://tools.ietf.org/html/rfc2045#section-6.8
-	 */
-	public const VALID_NON_STRICT_MD5_DIGEST = '/^[A-Za-z0-9\+\/]+=*$/';
+    /**
+     * Regular Expression for a md5-digest validation
+     *
+     * @var string
+     *
+     * @link https://tools.ietf.org/html/rfc2045#section-6.8
+     */
+    public const VALID_NON_STRICT_MD5_DIGEST = '/^[A-Za-z0-9\+\/]+=*$/';
 
-	/**
-	 * The header value
-	 *
-	 * @var string
-	 */
-	protected $value;
+    /**
+     * The header value
+     *
+     * @var string
+     */
+    protected $value;
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param string $value
-	 */
-	public function __construct(string $value)
-	{
-		$this->setValue($value);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param string $value
+     */
+    public function __construct(string $value)
+    {
+        $this->setValue($value);
+    }
 
-	/**
-	 * Sets the given value as the header value
-	 *
-	 * @param string $value
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setValue(string $value) : self
-	{
-		if (! \preg_match(self::VALID_NON_STRICT_MD5_DIGEST, $value))
-		{
-			throw new \InvalidArgumentException(\sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $value));
-		}
+    /**
+     * Sets the given value as the header value
+     *
+     * @param string $value
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setValue(string $value) : self
+    {
+        if (! \preg_match(self::VALID_NON_STRICT_MD5_DIGEST, $value)) {
+            throw new \InvalidArgumentException(
+                \sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $value)
+            );
+        }
 
-		$this->value = $value;
+        $this->value = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets the header value
-	 *
-	 * @return string
-	 */
-	public function getValue() : string
-	{
-		return $this->value;
-	}
+    /**
+     * Gets the header value
+     *
+     * @return string
+     */
+    public function getValue() : string
+    {
+        return $this->value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Content-MD5';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Content-MD5';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		return $this->getValue();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        return $this->getValue();
+    }
 }

@@ -19,60 +19,60 @@ namespace Sunrise\Http\Header;
 class HeaderCookie extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * The header value
-	 *
-	 * @var array
-	 */
-	protected $value;
+    /**
+     * The header value
+     *
+     * @var array
+     */
+    protected $value;
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param array $value
-	 */
-	public function __construct(array $value = [])
-	{
-		$this->setValue($value);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param array $value
+     */
+    public function __construct(array $value = [])
+    {
+        $this->setValue($value);
+    }
 
-	/**
-	 * Sets the given value as the header value
-	 *
-	 * @param array $value
-	 *
-	 * @return self
-	 */
-	public function setValue(array $value) : self
-	{
-		$this->value = $value;
+    /**
+     * Sets the given value as the header value
+     *
+     * @param array $value
+     *
+     * @return self
+     */
+    public function setValue(array $value) : self
+    {
+        $this->value = $value;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets the header value
-	 *
-	 * @return array
-	 */
-	public function getValue() : array
-	{
-		return $this->value;
-	}
+    /**
+     * Gets the header value
+     *
+     * @return array
+     */
+    public function getValue() : array
+    {
+        return $this->value;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Cookie';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Cookie';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		return \http_build_query($this->getValue(), '', '; ', \PHP_QUERY_RFC3986);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        return \http_build_query($this->getValue(), '', '; ', \PHP_QUERY_RFC3986);
+    }
 }

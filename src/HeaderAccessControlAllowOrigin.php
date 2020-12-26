@@ -24,83 +24,80 @@ use Psr\Http\Message\UriInterface;
 class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * URI for the header field-value
-	 *
-	 * @var null|UriInterface
-	 */
-	protected $uri;
+    /**
+     * URI for the header field-value
+     *
+     * @var null|UriInterface
+     */
+    protected $uri;
 
-	/**
-	 * Constructor of the class
-	 *
-	 * @param null|UriInterface $uri
-	 */
-	public function __construct(?UriInterface $uri)
-	{
-		$this->setUri($uri);
-	}
+    /**
+     * Constructor of the class
+     *
+     * @param null|UriInterface $uri
+     */
+    public function __construct(?UriInterface $uri)
+    {
+        $this->setUri($uri);
+    }
 
-	/**
-	 * Sets URI for the header field-value
-	 *
-	 * @param null|UriInterface $uri
-	 *
-	 * @return self
-	 *
-	 * @throws \InvalidArgumentException
-	 */
-	public function setUri(?UriInterface $uri) : self
-	{
-		if (! (\is_null($uri) || (\strlen($uri->getScheme()) && \strlen($uri->getHost()))))
-		{
-			throw new \InvalidArgumentException(\sprintf('The header field "%s: %d" is not valid', $this->getFieldName(), (string) $uri));
-		}
+    /**
+     * Sets URI for the header field-value
+     *
+     * @param null|UriInterface $uri
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setUri(?UriInterface $uri) : self
+    {
+        if (! (\is_null($uri) || (\strlen($uri->getScheme()) && \strlen($uri->getHost())))) {
+            throw new \InvalidArgumentException(
+                \sprintf('The header field "%s: %d" is not valid', $this->getFieldName(), (string) $uri)
+            );
+        }
 
-		$this->uri = $uri;
+        $this->uri = $uri;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Gets URI for the header field-value
-	 *
-	 * @return null|UriInterface
-	 */
-	public function getUri() : ?UriInterface
-	{
-		return $this->uri;
-	}
+    /**
+     * Gets URI for the header field-value
+     *
+     * @return null|UriInterface
+     */
+    public function getUri() : ?UriInterface
+    {
+        return $this->uri;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Access-Control-Allow-Origin';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Access-Control-Allow-Origin';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		$uri = $this->getUri();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        $uri = $this->getUri();
+        if ($uri instanceof UriInterface) {
+            $value = $uri->getScheme() . ':';
+            $value .= '//' . $uri->getHost();
 
-		if ($uri instanceof UriInterface)
-		{
-			$value = $uri->getScheme() . ':';
+            if (! (null === $uri->getPort())) {
+                $value .= ':' . $uri->getPort();
+            }
 
-			$value .= '//' . $uri->getHost();
+            return $value;
+        }
 
-			if (! (null === $uri->getPort()))
-			{
-				$value .= ':' . $uri->getPort();
-			}
-
-			return $value;
-		}
-
-		return '*';
-	}
+        return '*';
+    }
 }

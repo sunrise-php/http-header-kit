@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Sunrise\Http\Header\Tests;
 
@@ -8,203 +8,203 @@ use Sunrise\Http\Header\HeaderInterface;
 
 class HeaderKeepAliveTest extends TestCase
 {
-	public function testConstructor()
-	{
-		$header = new HeaderKeepAlive([]);
+    public function testConstructor()
+    {
+        $header = new HeaderKeepAlive([]);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header);
-	}
+        $this->assertInstanceOf(HeaderInterface::class, $header);
+    }
 
-	public function testConstructorWithInvalidParameterName()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testConstructorWithInvalidParameterName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		new HeaderKeepAlive(['invalid name' => 'value']);
-	}
+        new HeaderKeepAlive(['invalid name' => 'value']);
+    }
 
-	public function testConstructorWithInvalidParameterValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testConstructorWithInvalidParameterValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		new HeaderKeepAlive(['name' => '"invalid value"']);
-	}
+        new HeaderKeepAlive(['name' => '"invalid value"']);
+    }
 
-	public function testSetParameter()
-	{
-		$header = new HeaderKeepAlive(['name' => 'value']);
+    public function testSetParameter()
+    {
+        $header = new HeaderKeepAlive(['name' => 'value']);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->setParameter('name', 'overwritten-value'));
+        $this->assertInstanceOf(HeaderInterface::class, $header->setParameter('name', 'overwritten-value'));
 
-		$this->assertEquals(['name' => 'overwritten-value'], $header->getParameters());
-	}
+        $this->assertEquals(['name' => 'overwritten-value'], $header->getParameters());
+    }
 
-	public function testSetSeveralParameters()
-	{
-		$header = new HeaderKeepAlive([]);
+    public function testSetSeveralParameters()
+    {
+        $header = new HeaderKeepAlive([]);
 
-		$header->setParameter('name-1', 'value-1');
-		$header->setParameter('name-2', 'value-2');
+        $header->setParameter('name-1', 'value-1');
+        $header->setParameter('name-2', 'value-2');
 
-		$this->assertEquals([
-			'name-1' => 'value-1',
-			'name-2' => 'value-2',
-		], $header->getParameters());
-	}
+        $this->assertEquals([
+            'name-1' => 'value-1',
+            'name-2' => 'value-2',
+        ], $header->getParameters());
+    }
 
-	public function testSetParameterWithInvalidName()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParameterWithInvalidName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderKeepAlive([]);
+        $header = new HeaderKeepAlive([]);
 
-		$header->setParameter('invalid name', 'value');
-	}
+        $header->setParameter('invalid name', 'value');
+    }
 
-	public function testSetParameterWithInvalidValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParameterWithInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderKeepAlive([]);
+        $header = new HeaderKeepAlive([]);
 
-		$header->setParameter('name', '"invalid value"');
-	}
+        $header->setParameter('name', '"invalid value"');
+    }
 
-	public function testSetParameters()
-	{
-		$header = new HeaderKeepAlive([
-			'name-1' => 'value-1',
-			'name-2' => 'value-2',
-		]);
+    public function testSetParameters()
+    {
+        $header = new HeaderKeepAlive([
+            'name-1' => 'value-1',
+            'name-2' => 'value-2',
+        ]);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
-			'name-1' => 'overwritten-value-1',
-			'name-2' => 'overwritten-value-2',
-		]));
+        $this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
+            'name-1' => 'overwritten-value-1',
+            'name-2' => 'overwritten-value-2',
+        ]));
 
-		$this->assertEquals([
-			'name-1' => 'overwritten-value-1',
-			'name-2' => 'overwritten-value-2',
-		], $header->getParameters());
-	}
+        $this->assertEquals([
+            'name-1' => 'overwritten-value-1',
+            'name-2' => 'overwritten-value-2',
+        ], $header->getParameters());
+    }
 
-	public function testSetParametersWithParameterThatContainsInvalidName()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParametersWithParameterThatContainsInvalidName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderKeepAlive([]);
+        $header = new HeaderKeepAlive([]);
 
-		$header->setParameters(['invalid name' => 'value']);
-	}
+        $header->setParameters(['invalid name' => 'value']);
+    }
 
-	public function testSetParametersWithParameterThatContainsInvalidValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParametersWithParameterThatContainsInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderKeepAlive([]);
+        $header = new HeaderKeepAlive([]);
 
-		$header->setParameters(['name' => '"invalid value"']);
-	}
+        $header->setParameters(['name' => '"invalid value"']);
+    }
 
-	public function testGetParameters()
-	{
-		$header = new HeaderKeepAlive(['name' => 'value']);
+    public function testGetParameters()
+    {
+        $header = new HeaderKeepAlive(['name' => 'value']);
 
-		$this->assertEquals(['name' => 'value'], $header->getParameters());
-	}
+        $this->assertEquals(['name' => 'value'], $header->getParameters());
+    }
 
-	public function testClearParameters()
-	{
-		$header = new HeaderKeepAlive(['name-1' => 'value-1']);
+    public function testClearParameters()
+    {
+        $header = new HeaderKeepAlive(['name-1' => 'value-1']);
 
-		$header->setParameter('name-2', 'value-2');
-		$header->setParameter('name-3', 'value-3');
+        $header->setParameter('name-2', 'value-2');
+        $header->setParameter('name-3', 'value-3');
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
+        $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
 
-		$this->assertEquals([], $header->getParameters());
-	}
+        $this->assertEquals([], $header->getParameters());
+    }
 
-	public function testGetFieldName()
-	{
-		$header = new HeaderKeepAlive([]);
+    public function testGetFieldName()
+    {
+        $header = new HeaderKeepAlive([]);
 
-		$this->assertEquals('Keep-Alive', $header->getFieldName());
-	}
+        $this->assertEquals('Keep-Alive', $header->getFieldName());
+    }
 
-	public function testGetFieldValueWithoutParameterValue()
-	{
-		$header = new HeaderKeepAlive(['name' => '']);
+    public function testGetFieldValueWithoutParameterValue()
+    {
+        $header = new HeaderKeepAlive(['name' => '']);
 
-		$this->assertEquals('name', $header->getFieldValue());
-	}
+        $this->assertEquals('name', $header->getFieldValue());
+    }
 
-	public function testGetFieldValueWithParameterValueAsToken()
-	{
-		$header = new HeaderKeepAlive(['name' => 'token']);
+    public function testGetFieldValueWithParameterValueAsToken()
+    {
+        $header = new HeaderKeepAlive(['name' => 'token']);
 
-		$this->assertEquals('name=token', $header->getFieldValue());
-	}
+        $this->assertEquals('name=token', $header->getFieldValue());
+    }
 
-	public function testGetFieldValueWithParameterValueAsQuotedString()
-	{
-		$header = new HeaderKeepAlive(['name' => 'quoted string']);
+    public function testGetFieldValueWithParameterValueAsQuotedString()
+    {
+        $header = new HeaderKeepAlive(['name' => 'quoted string']);
 
-		$this->assertEquals('name="quoted string"', $header->getFieldValue());
-	}
+        $this->assertEquals('name="quoted string"', $header->getFieldValue());
+    }
 
-	public function testToStringWithoutParameterValue()
-	{
-		$header = new HeaderKeepAlive(['name' => '']);
+    public function testToStringWithoutParameterValue()
+    {
+        $header = new HeaderKeepAlive(['name' => '']);
 
-		$this->assertEquals('Keep-Alive: name', (string) $header);
-	}
+        $this->assertEquals('Keep-Alive: name', (string) $header);
+    }
 
-	public function testToStringWithParameterValueAsToken()
-	{
-		$header = new HeaderKeepAlive(['name' => 'token']);
+    public function testToStringWithParameterValueAsToken()
+    {
+        $header = new HeaderKeepAlive(['name' => 'token']);
 
-		$this->assertEquals('Keep-Alive: name=token', (string) $header);
-	}
+        $this->assertEquals('Keep-Alive: name=token', (string) $header);
+    }
 
-	public function testToStringWithParameterValueAsQuotedString()
-	{
-		$header = new HeaderKeepAlive(['name' => 'quoted string']);
+    public function testToStringWithParameterValueAsQuotedString()
+    {
+        $header = new HeaderKeepAlive(['name' => 'quoted string']);
 
-		$this->assertEquals('Keep-Alive: name="quoted string"', (string) $header);
-	}
+        $this->assertEquals('Keep-Alive: name="quoted string"', (string) $header);
+    }
 
-	public function testToStringWithSeveralParameters()
-	{
-		$header = new HeaderKeepAlive([
-			'name-1' => '',
-			'name-2' => 'token',
-			'name-3' => 'quoted string',
-		]);
+    public function testToStringWithSeveralParameters()
+    {
+        $header = new HeaderKeepAlive([
+            'name-1' => '',
+            'name-2' => 'token',
+            'name-3' => 'quoted string',
+        ]);
 
-		$this->assertEquals('Keep-Alive: name-1, name-2=token, name-3="quoted string"', (string) $header);
-	}
+        $this->assertEquals('Keep-Alive: name-1, name-2=token, name-3="quoted string"', (string) $header);
+    }
 
-	public function testSetToMessage()
-	{
-		$header = new HeaderKeepAlive([]);
+    public function testSetToMessage()
+    {
+        $header = new HeaderKeepAlive([]);
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$message = $header->setToMessage($message);
+        $message = $header->setToMessage($message);
 
-		$this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 
-	public function testAddToMessage()
-	{
-		$header = new HeaderKeepAlive([]);
+    public function testAddToMessage()
+    {
+        $header = new HeaderKeepAlive([]);
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$message = $header->addToMessage($message);
+        $message = $header->addToMessage($message);
 
-		$this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 }

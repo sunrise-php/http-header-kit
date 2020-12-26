@@ -19,19 +19,19 @@ namespace Sunrise\Http\Header;
 class HeaderAccessControlAllowCredentials extends AbstractHeader implements HeaderInterface
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldName() : string
-	{
-		return 'Access-Control-Allow-Credentials';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldName() : string
+    {
+        return 'Access-Control-Allow-Credentials';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFieldValue() : string
-	{
-		return 'true';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFieldValue() : string
+    {
+        return 'true';
+    }
 }

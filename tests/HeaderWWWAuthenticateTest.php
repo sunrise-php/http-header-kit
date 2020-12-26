@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Sunrise\Http\Header\Tests;
 
@@ -8,243 +8,249 @@ use Sunrise\Http\Header\HeaderInterface;
 
 class HeaderWWWAuthenticateTest extends TestCase
 {
-	public function testConstants()
-	{
-		$this->assertEquals('Basic', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_BASIC);
-		$this->assertEquals('Bearer', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_BEARER);
-		$this->assertEquals('Digest', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_DIGEST);
-		$this->assertEquals('HOBA', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_HOBA);
-		$this->assertEquals('Mutual', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_MUTUAL);
-		$this->assertEquals('Negotiate', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_NEGOTIATE);
-		$this->assertEquals('OAuth', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_OAUTH);
-		$this->assertEquals('SCRAM-SHA-1', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_SCRAM_SHA_1);
-		$this->assertEquals('SCRAM-SHA-256', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_SCRAM_SHA_256);
-		$this->assertEquals('vapid', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_VAPID);
-	}
-
-	public function testConstructor()
-	{
-		$header = new HeaderWWWAuthenticate('scheme');
-
-		$this->assertInstanceOf(HeaderInterface::class, $header);
-	}
-
-	public function testConstructorWithInvalidScheme()
-	{
-		$this->expectException(\InvalidArgumentException::class);
-
-		new HeaderWWWAuthenticate('invalid scheme');
-	}
+    public function testConstants()
+    {
+        $this->assertEquals('Basic', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_BASIC);
+        $this->assertEquals('Bearer', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_BEARER);
+        $this->assertEquals('Digest', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_DIGEST);
+        $this->assertEquals('HOBA', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_HOBA);
+        $this->assertEquals('Mutual', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_MUTUAL);
+        $this->assertEquals('Negotiate', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_NEGOTIATE);
+        $this->assertEquals('OAuth', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_OAUTH);
+        $this->assertEquals('SCRAM-SHA-1', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_SCRAM_SHA_1);
+        $this->assertEquals('SCRAM-SHA-256', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_SCRAM_SHA_256);
+        $this->assertEquals('vapid', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_VAPID);
+    }
+
+    public function testConstructor()
+    {
+        $header = new HeaderWWWAuthenticate('scheme');
+
+        $this->assertInstanceOf(HeaderInterface::class, $header);
+    }
+
+    public function testConstructorWithInvalidScheme()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new HeaderWWWAuthenticate('invalid scheme');
+    }
+
+    public function testConstructorWithInvalidParameterName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new HeaderWWWAuthenticate('scheme', ['parameter-name=' => 'parameter-value']);
+    }
+
+    public function testConstructorWithInvalidParameterValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new HeaderWWWAuthenticate('scheme', ['parameter-name' => '"parameter-value"']);
+    }
+
+    public function testSetScheme()
+    {
+        $header = new HeaderWWWAuthenticate('scheme');
+
+        $this->assertInstanceOf(HeaderInterface::class, $header->setScheme('overwritten-scheme'));
 
-	public function testConstructorWithInvalidParameterName()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+        $this->assertEquals('overwritten-scheme', $header->getScheme());
+    }
 
-		new HeaderWWWAuthenticate('scheme', ['parameter-name=' => 'parameter-value']);
-	}
+    public function testSetInvalidScheme()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-	public function testConstructorWithInvalidParameterValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+        $header = new HeaderWWWAuthenticate('scheme');
 
-		new HeaderWWWAuthenticate('scheme', ['parameter-name' => '"parameter-value"']);
-	}
+        $header->setScheme('invalid scheme');
+    }
 
-	public function testSetScheme()
-	{
-		$header = new HeaderWWWAuthenticate('scheme');
+    public function testSetParameter()
+    {
+        $header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->setScheme('overwritten-scheme'));
+        $this->assertInstanceOf(
+            HeaderInterface::class,
+            $header->setParameter('parameter-name', 'overwritten-parameter-value')
+        );
 
-		$this->assertEquals('overwritten-scheme', $header->getScheme());
-	}
+        $this->assertEquals(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
+    }
 
-	public function testSetInvalidScheme()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetSeveralParameters()
+    {
+        $header = new HeaderWWWAuthenticate('scheme', [
+            'parameter-name-1' => 'parameter-value-1',
+            'parameter-name-2' => 'parameter-value-2',
+        ]);
 
-		$header = new HeaderWWWAuthenticate('scheme');
+        $header->setParameter('parameter-name-1', 'overwritten-parameter-value-1');
+        $header->setParameter('parameter-name-2', 'overwritten-parameter-value-2');
 
-		$header->setScheme('invalid scheme');
-	}
+        $this->assertEquals([
+            'parameter-name-1' => 'overwritten-parameter-value-1',
+            'parameter-name-2' => 'overwritten-parameter-value-2',
+        ], $header->getParameters());
+    }
 
-	public function testSetParameter()
-	{
-		$header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
+    public function testSetParameterWithInvalidName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->setParameter('parameter-name', 'overwritten-parameter-value'));
+        $header = new HeaderWWWAuthenticate('scheme');
 
-		$this->assertEquals(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
-	}
+        $header->setParameter('parameter-name=', 'parameter-value');
+    }
 
-	public function testSetSeveralParameters()
-	{
-		$header = new HeaderWWWAuthenticate('scheme', [
-			'parameter-name-1' => 'parameter-value-1',
-			'parameter-name-2' => 'parameter-value-2',
-		]);
+    public function testSetParameterWithInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header->setParameter('parameter-name-1', 'overwritten-parameter-value-1');
-		$header->setParameter('parameter-name-2', 'overwritten-parameter-value-2');
+        $header = new HeaderWWWAuthenticate('scheme');
 
-		$this->assertEquals([
-			'parameter-name-1' => 'overwritten-parameter-value-1',
-			'parameter-name-2' => 'overwritten-parameter-value-2',
-		], $header->getParameters());
-	}
+        $header->setParameter('parameter-name', '"parameter-value"');
+    }
 
-	public function testSetParameterWithInvalidName()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParameters()
+    {
+        $header = new HeaderWWWAuthenticate('scheme', [
+            'parameter-name-1' => 'parameter-value-1',
+            'parameter-name-2' => 'parameter-value-2',
+        ]);
 
-		$header = new HeaderWWWAuthenticate('scheme');
+        $this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
+            'parameter-name-1' => 'overwritten-parameter-value-1',
+            'parameter-name-2' => 'overwritten-parameter-value-2',
+        ]));
 
-		$header->setParameter('parameter-name=', 'parameter-value');
-	}
+        $this->assertEquals([
+            'parameter-name-1' => 'overwritten-parameter-value-1',
+            'parameter-name-2' => 'overwritten-parameter-value-2',
+        ], $header->getParameters());
+    }
 
-	public function testSetParameterWithInvalidValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testSetParametersWithParameterThatContainsInvalidName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$header = new HeaderWWWAuthenticate('scheme');
+        $header = new HeaderWWWAuthenticate('scheme');
 
-		$header->setParameter('parameter-name', '"parameter-value"');
-	}
+        $header->setParameters(['invalid name' => 'value']);
+    }
 
-	public function testSetParameters()
-	{
-		$header = new HeaderWWWAuthenticate('scheme', [
-			'parameter-name-1' => 'parameter-value-1',
-			'parameter-name-2' => 'parameter-value-2',
-		]);
+    public function testSetParametersWithParameterThatContainsInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
-			'parameter-name-1' => 'overwritten-parameter-value-1',
-			'parameter-name-2' => 'overwritten-parameter-value-2',
-		]));
+        $header = new HeaderWWWAuthenticate('scheme');
 
-		$this->assertEquals([
-			'parameter-name-1' => 'overwritten-parameter-value-1',
-			'parameter-name-2' => 'overwritten-parameter-value-2',
-		], $header->getParameters());
-	}
+        $header->setParameters(['name' => '"invalid value"']);
+    }
 
-	public function testSetParametersWithParameterThatContainsInvalidName()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+    public function testGetScheme()
+    {
+        $header = new HeaderWWWAuthenticate('scheme');
 
-		$header = new HeaderWWWAuthenticate('scheme');
+        $this->assertEquals('scheme', $header->getScheme());
+    }
 
-		$header->setParameters(['invalid name' => 'value']);
-	}
+    public function testGetParameters()
+    {
+        $header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
 
-	public function testSetParametersWithParameterThatContainsInvalidValue()
-	{
-		$this->expectException(\InvalidArgumentException::class);
+        $this->assertEquals(['parameter-name' => 'parameter-value'], $header->getParameters());
+    }
 
-		$header = new HeaderWWWAuthenticate('scheme');
+    public function testClearParameters()
+    {
+        $header = new HeaderWWWAuthenticate('scheme', [
+            'parameter-name-1' => 'parameter-value-1',
+        ]);
 
-		$header->setParameters(['name' => '"invalid value"']);
-	}
+        $header->setParameters([
+            'parameter-name-2' => 'parameter-value-2',
+        ]);
 
-	public function testGetScheme()
-	{
-		$header = new HeaderWWWAuthenticate('scheme');
+        $header->setParameter('parameter-name-3', 'parameter-value-3');
 
-		$this->assertEquals('scheme', $header->getScheme());
-	}
+        $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
 
-	public function testGetParameters()
-	{
-		$header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
+        $this->assertEquals([], $header->getParameters());
+    }
 
-		$this->assertEquals(['parameter-name' => 'parameter-value'], $header->getParameters());
-	}
+    public function testGetFieldName()
+    {
+        $header = new HeaderWWWAuthenticate('scheme');
 
-	public function testClearParameters()
-	{
-		$header = new HeaderWWWAuthenticate('scheme', [
-			'parameter-name-1' => 'parameter-value-1',
-		]);
+        $this->assertEquals('WWW-Authenticate', $header->getFieldName());
+    }
 
-		$header->setParameters([
-			'parameter-name-2' => 'parameter-value-2',
-		]);
+    public function testGetFieldValue()
+    {
+        $header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
 
-		$header->setParameter('parameter-name-3', 'parameter-value-3');
+        $this->assertEquals('scheme parameter-name="parameter-value"', $header->getFieldValue());
+    }
 
-		$this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
+    public function testToStringWithoutParameters()
+    {
+        $header = new HeaderWWWAuthenticate('scheme');
 
-		$this->assertEquals([], $header->getParameters());
-	}
+        $this->assertEquals('WWW-Authenticate: scheme', (string) $header);
+    }
 
-	public function testGetFieldName()
-	{
-		$header = new HeaderWWWAuthenticate('scheme');
+    public function testToStringWithParameterWithoutValue()
+    {
+        $header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => '']);
 
-		$this->assertEquals('WWW-Authenticate', $header->getFieldName());
-	}
+        $this->assertEquals('WWW-Authenticate: scheme parameter-name=""', (string) $header);
+    }
 
-	public function testGetFieldValue()
-	{
-		$header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
+    public function testToStringWithOneParameter()
+    {
+        $header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
 
-		$this->assertEquals('scheme parameter-name="parameter-value"', $header->getFieldValue());
-	}
+        $this->assertEquals('WWW-Authenticate: scheme parameter-name="parameter-value"', (string) $header);
+    }
 
-	public function testToStringWithoutParameters()
-	{
-		$header = new HeaderWWWAuthenticate('scheme');
+    public function testToStringWithSeveralParameters()
+    {
+        $header = new HeaderWWWAuthenticate('scheme', [
+            'parameter-name-1' => 'parameter-value-1',
+            'parameter-name-2' => 'parameter-value-2',
+            'parameter-name-3' => 'parameter-value-3',
+        ]);
 
-		$this->assertEquals('WWW-Authenticate: scheme', (string) $header);
-	}
+        $expected = 'WWW-Authenticate: scheme parameter-name-1="parameter-value-1", ' .
+                    'parameter-name-2="parameter-value-2", parameter-name-3="parameter-value-3"';
 
-	public function testToStringWithParameterWithoutValue()
-	{
-		$header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => '']);
+        $this->assertEquals($expected, (string) $header);
+    }
 
-		$this->assertEquals('WWW-Authenticate: scheme parameter-name=""', (string) $header);
-	}
+    public function testSetToMessage()
+    {
+        $header = new HeaderWWWAuthenticate('scheme');
 
-	public function testToStringWithOneParameter()
-	{
-		$header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$this->assertEquals('WWW-Authenticate: scheme parameter-name="parameter-value"', (string) $header);
-	}
+        $message = $header->setToMessage($message);
 
-	public function testToStringWithSeveralParameters()
-	{
-		$header = new HeaderWWWAuthenticate('scheme', [
-			'parameter-name-1' => 'parameter-value-1',
-			'parameter-name-2' => 'parameter-value-2',
-			'parameter-name-3' => 'parameter-value-3',
-		]);
+        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 
-		$this->assertEquals('WWW-Authenticate: scheme parameter-name-1="parameter-value-1", parameter-name-2="parameter-value-2", parameter-name-3="parameter-value-3"', (string) $header);
-	}
+    public function testAddToMessage()
+    {
+        $header = new HeaderWWWAuthenticate('scheme');
 
-	public function testSetToMessage()
-	{
-		$header = new HeaderWWWAuthenticate('scheme');
+        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
+        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
 
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $message = $header->addToMessage($message);
 
-		$message = $header->setToMessage($message);
-
-		$this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
-
-	public function testAddToMessage()
-	{
-		$header = new HeaderWWWAuthenticate('scheme');
-
-		$message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-		$message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-		$message = $header->addToMessage($message);
-
-		$this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-	}
+        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
+    }
 }
