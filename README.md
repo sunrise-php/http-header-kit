@@ -1,7 +1,7 @@
-## HTTP Header Kit for PHP 7.1+ based on PSR-7
+## HTTP header kit for PHP 7.1+ (incl. PHP 8) based on PSR-7
 
 [![Gitter](https://badges.gitter.im/sunrise-php/support.png)](https://gitter.im/sunrise-php/support)
-[![Build Status](https://api.travis-ci.com/sunrise-php/http-header-kit.svg?branch=master)](https://travis-ci.com/sunrise-php/http-header-kit)
+[![Build Status](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/build.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/sunrise/http-header-kit/v/stable)](https://packagist.org/packages/sunrise/http-header-kit)
@@ -10,7 +10,7 @@
 
 ## Installation
 
-```
+```bash
 composer require sunrise/http-header-kit
 ```
 
@@ -662,10 +662,6 @@ $message = $header->setToMessage($message);
 php vendor/bin/phpunit
 ```
 
-## Api documentation
-
-https://phpdoc.fenric.ru/
-
 ## Useful links
 
-https://www.php-fig.org/psr/psr-7/
+* https://www.php-fig.org/psr/psr-7/
