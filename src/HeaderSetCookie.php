@@ -14,6 +14,7 @@ namespace Sunrise\Http\Header;
 /**
  * Import classes
  */
+use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
@@ -375,7 +376,7 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
         if ($this->getExpires() instanceof DateTimeInterface) {
             $this->getExpires()->setTimezone(new DateTimeZone('GMT'));
 
-            $result .= '; Expires=' . $this->getExpires()->format(DateTimeInterface::RFC822);
+            $result .= '; Expires=' . $this->getExpires()->format(DateTime::RFC822);
             $result .= '; Max-Age=' . ($this->getExpires()->getTimestamp() - time());
         }
 

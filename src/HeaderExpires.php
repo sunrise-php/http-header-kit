@@ -14,6 +14,7 @@ namespace Sunrise\Http\Header;
 /**
  * Import classes
  */
+use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
 
@@ -82,6 +83,6 @@ class HeaderExpires extends AbstractHeader implements HeaderInterface
     {
         $this->getTimestamp()->setTimezone(new DateTimeZone('GMT'));
 
-        return $this->getTimestamp()->format(DateTimeInterface::RFC822);
+        return $this->getTimestamp()->format(DateTime::RFC822);
     }
 }
