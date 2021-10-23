@@ -1,50 +1,43 @@
-## HTTP header kit for PHP 7.1+ (incl. PHP 8) based on PSR-7
+## HTTP header kit for PHP 7.1+ compatible with PSR-7
 
-[![Gitter](https://badges.gitter.im/sunrise-php/support.png)](https://gitter.im/sunrise-php/support)
-[![Build Status](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/build.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
+[![Build Status](https://circleci.com/gh/sunrise-php/http-header-kit.svg?style=shield)](https://circleci.com/gh/sunrise-php/http-header-kit)
 [![Code Coverage](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/sunrise/http-header-kit/v/stable)](https://packagist.org/packages/sunrise/http-header-kit)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
 [![Total Downloads](https://poser.pugx.org/sunrise/http-header-kit/downloads)](https://packagist.org/packages/sunrise/http-header-kit)
+[![Latest Stable Version](https://poser.pugx.org/sunrise/http-header-kit/v/stable)](https://packagist.org/packages/sunrise/http-header-kit)
 [![License](https://poser.pugx.org/sunrise/http-header-kit/license)](https://packagist.org/packages/sunrise/http-header-kit)
+
+---
 
 ## Installation
 
 ```bash
-composer require sunrise/http-header-kit
+composer require 'sunrise/http-header-kit:^2.0'
 ```
 
 ## How to use?
 
-### HTTP Header Collection
-
-> More useful information:
-> 
-> https://github.com/sunrise-php/http-header-collection
-
-```bash
-composer require sunrise/http-header-collection
-```
+#### PSR-7
 
 ```php
-// Creates the header collection
-$headers = new \Sunrise\Http\Header\HeaderCollection([
-    new \Sunrise\Http\Header\HeaderAllow('OPTIONS', 'HEAD', 'GET'),
-    new \Sunrise\Http\Header\HeaderContentLanguage('de-DE'),
-    new \Sunrise\Http\Header\HeaderContentType('application/json'),
-]);
+$message->withHeader(...$header);
+```
 
-// Sets headers to the message
-$message = $headers->setToMessage($message);
+#### Symfony
 
-// ... or adds headers to the message
-$message = $headers->addToMessage($message);
+```php
+$response->headers->set(...$header);
+```
 
-// ...or converts headers to an array
-$headers->toArray();
+#### Laravel
+
+```php
+$response->header(...$header);
 ```
 
 ### HTTP Headers
+
+Note that in the examples below will use PSR-7.
 
 #### Access-Control-Allow-Credentials
 
@@ -57,7 +50,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderAccessControlAllowCredentials();
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Access-Control-Allow-Headers
@@ -71,7 +64,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderAccessControlAllowHeaders('X-Custom-Header', 'Upgrade-Insecure-Requests');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Access-Control-Allow-Methods
@@ -85,7 +78,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderAccessControlAllowMethods('OPTIONS', 'HEAD', 'GET');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Access-Control-Allow-Origin
@@ -102,13 +95,13 @@ $message = (new ResponseFactory)->createResponse();
 // A response that tells the browser to allow code from any origin to access
 // a resource will include the following:
 $header = new HeaderAccessControlAllowOrigin(null);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 
 // A response that tells the browser to allow requesting code from the origin
 // https://developer.mozilla.org to access a resource will include the following:
 $uri = (new UriFactory)->createUri('https://developer.mozilla.org');
 $header = new HeaderAccessControlAllowOrigin($uri);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Access-Control-Expose-Headers
@@ -122,7 +115,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderAccessControlExposeHeaders('Content-Length', 'X-Kuma-Revision');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Access-Control-Max-Age
@@ -136,7 +129,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderAccessControlMaxAge(600);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Age
@@ -150,7 +143,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderAge(24);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Allow
@@ -164,7 +157,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderAllow('OPTIONS', 'HEAD', 'GET');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Cache-Control
@@ -179,11 +172,11 @@ $message = (new ResponseFactory)->createResponse();
 
 // Preventing caching
 $header = new HeaderCacheControl(['no-cache' => '', 'no-store' => '', 'must-revalidate' => '']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 
 // Caching static assets
 $header = new HeaderCacheControl(['public' => '', 'max-age' => '31536000']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Clear-Site-Data
@@ -198,15 +191,15 @@ $message = (new ResponseFactory)->createResponse();
 
 // Single directive
 $header = new HeaderClearSiteData(['cache']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 
 // Multiple directives (comma separated)
 $header = new HeaderClearSiteData(['cache', 'cookies']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 
 // Wild card
 $header = new HeaderClearSiteData(['*']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Connection
@@ -221,11 +214,11 @@ $message = (new ResponseFactory)->createResponse();
 
 // close
 $header = new HeaderConnection(HeaderConnection::CONNECTION_CLOSE);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 
 // keep-alive
 $header = new HeaderConnection(HeaderConnection::CONNECTION_KEEP_ALIVE);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Content-Disposition
@@ -240,11 +233,11 @@ $message = (new ResponseFactory)->createResponse();
 
 // As a response header for the main body
 $header = new HeaderContentDisposition('attachment', ['filename' => 'filename.jpg']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 
 // As a header for a multipart body
 $header = new HeaderContentDisposition('form-data', ['name' => 'fieldName', 'filename' => 'filename.jpg']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Content-Encoding
@@ -258,7 +251,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderContentEncoding('gzip');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Content-Language
@@ -272,7 +265,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderContentLanguage('de-DE', 'en-CA');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Content-Length
@@ -286,7 +279,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderContentLength(4096);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Content-Location
@@ -302,7 +295,7 @@ $message = (new ResponseFactory)->createResponse();
 
 $uri = (new UriFactory)->createUri('https://example.com/documents/foo');
 $header = new HeaderContentLocation($uri);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Content-MD5
@@ -316,7 +309,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderContentMD5('MzAyMWU2OGRmOWE3MjAwMTM1NzI1YzYzMzEzNjlhMjI=');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Content-Range
@@ -334,7 +327,7 @@ $header = new HeaderContentRange(
     1000, // An integer in the given unit indicating the end of the requested range.
     67589 // The total size of the document.
 );
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Content-Security-Policy
@@ -350,12 +343,12 @@ $message = (new ResponseFactory)->createResponse();
 // Pre-existing site that uses too much inline code to fix but wants
 // to ensure resources are loaded only over https and disable plugins:
 $header = new HeaderContentSecurityPolicy(['default-src' => "https: 'unsafe-eval' 'unsafe-inline'", 'object-src' => "'none'"]);
-$message = $header->addToMessage($message);
+$message = $message->withAddedHeader(...$header);
 
 // Don't implement the above policy yet; instead just report
 // violations that would have occurred:
 $header = new HeaderContentSecurityPolicy(['default-src' => 'https:', 'report-uri' => '/csp-violation-report-endpoint/']);
-$message = $header->addToMessage($message);
+$message = $message->withAddedHeader(...$header);
 ```
 
 #### Content-Security-Policy-Report-Only
@@ -373,12 +366,12 @@ $message = (new ResponseFactory)->createResponse();
 // You observe how your site behaves, watching for violation reports,
 // then choose the desired policy enforced by the Content-Security-Policy header.
 $header = new HeaderContentSecurityPolicy(['default-src' => 'https:', 'report-uri' => '/csp-violation-report-endpoint/']);
-$message = $header->addToMessage($message);
+$message = $message->withAddedHeader(...$header);
 
 // If you still want to receive reporting, but also want
 // to enforce a policy, use the Content-Security-Policy header with the report-uri directive.
 $header = new HeaderContentSecurityPolicy(['default-src' => 'https:', 'report-uri' => '/csp-violation-report-endpoint/']);
-$message = $header->addToMessage($message);
+$message = $message->withAddedHeader(...$header);
 ```
 
 #### Content-Type
@@ -392,7 +385,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderContentType('application/json', ['charset' => 'utf-8']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Cookie
@@ -406,7 +399,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderCookie(['name' => 'value', 'name2' => 'value2', 'name3' => 'value3']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Date
@@ -420,7 +413,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderDate(new \DateTime('now'));
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Etag
@@ -434,7 +427,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderEtag('33a64df551425fcc55e4d42a148795d9f25f89d4');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Expires
@@ -448,7 +441,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderExpires(new \DateTime('1 day ago'));
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Keep-Alive
@@ -462,7 +455,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderKeepAlive(['timeout' => '5', 'max' => '1000']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Last-Modified
@@ -476,7 +469,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderLastModified(new \DateTime('1 year ago'));
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Link
@@ -492,7 +485,7 @@ $message = (new ResponseFactory)->createResponse();
 
 $uri = (new UriFactory)->createUri('meta.rdf');
 $header = new HeaderLink($uri, ['rel' => 'meta']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Location
@@ -508,7 +501,7 @@ $message = (new ResponseFactory)->createResponse();
 
 $uri = (new UriFactory)->createUri('/');
 $header = new HeaderLocation($uri);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Refresh
@@ -524,7 +517,7 @@ $message = (new ResponseFactory)->createResponse();
 
 $uri = (new UriFactory)->createUri('/login');
 $header = new HeaderRefresh(3, $uri);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Retry-After
@@ -538,7 +531,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderRetryAfter(new \DateTime('+30 second'));
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Set-Cookie
@@ -556,20 +549,20 @@ $message = (new ResponseFactory)->createResponse();
 // They don't specify the Expires or Max-Age directives.
 // Note that web browser have often enabled session restoring.
 $header = new HeaderSetCookie('sessionid', '38afes7a8', null, ['path' => '/', 'httponly' => true]);
-$message = $header->addToMessage($message);
+$message = $message->withAddedHeader(...$header);
 
 // Permanent cookie
 // Instead of expiring when the client is closed, permanent cookies expire
 // at a specific date (Expires) or after a specific length of time (Max-Age).
 $header = new HeaderSetCookie('id', 'a3fWa', new \DateTime('+1 day'), ['secure' => true, 'httponly' => true]);
-$message = $header->addToMessage($message);
+$message = $message->withAddedHeader(...$header);
 
 // Invalid domains
 // A cookie belonging to a domain that does not include the origin server
 // should be rejected by the user agent. The following cookie will be rejected
 // if it was set by a server hosted on originalcompany.com.
 $header = new HeaderSetCookie('qwerty', '219ffwef9w0f', new \DateTime('+1 day'), ['domain' => 'somecompany.co.uk', 'path' => '/']);
-$message = $header->addToMessage($message);
+$message = $message->withAddedHeader(...$header);
 ```
 
 #### Sunset
@@ -583,7 +576,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderSunset(new \DateTime('2038-01-19 03:14:07'));
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Trailer
@@ -597,7 +590,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderTrailer('Expires', 'X-Streaming-Error');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Transfer-Encoding
@@ -611,7 +604,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderTransferEncoding('gzip', 'chunked');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Vary
@@ -625,7 +618,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderVary('User-Agent', 'Content-Language');
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### WWW-Authenticate
@@ -639,7 +632,7 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderWWWAuthenticate(HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_BASIC, ['realm' => 'Access to the staging site', 'charset' => 'UTF-8']);
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
 
 #### Warning
@@ -653,13 +646,31 @@ use Sunrise\Http\Message\ResponseFactory;
 $message = (new ResponseFactory)->createResponse();
 
 $header = new HeaderWarning(HeaderWarning::HTTP_WARNING_CODE_RESPONSE_IS_STALE, 'anderson/1.3.37', 'Response is stale', new \DateTime('now'));
-$message = $header->setToMessage($message);
+$message = $message->withHeader(...$header);
 ```
+
+### HTTP header collection
+
+```php
+// Create the header collection:
+$headers = new \Sunrise\Http\Header\HeaderCollection([
+    new \Sunrise\Http\Header\HeaderAllow('HEAD', 'GET'),
+    new \Sunrise\Http\Header\HeaderContentLanguage('de-DE'),
+    new \Sunrise\Http\Header\HeaderContentType('application/json', [
+        'charset' => 'UTF-8',
+    ]),
+]);
+
+// ...and convert the collection to an array:
+$headers->all();
+```
+
+---
 
 ## Test run
 
 ```bash
-php vendor/bin/phpunit
+composer test
 ```
 
 ## Useful links
