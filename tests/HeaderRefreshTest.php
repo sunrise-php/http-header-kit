@@ -106,30 +106,4 @@ class HeaderRefreshTest extends TestCase
 
         $this->assertEquals('Refresh: 0; url=/', (string) $header);
     }
-
-    public function testSetToMessage()
-    {
-        $home = new Uri('/');
-        $header = new HeaderRefresh(0, $home);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->setToMessage($message);
-
-        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
-
-    public function testAddToMessage()
-    {
-        $home = new Uri('/');
-        $header = new HeaderRefresh(0, $home);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->addToMessage($message);
-
-        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
 }

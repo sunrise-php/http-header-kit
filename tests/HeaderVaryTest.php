@@ -116,28 +116,4 @@ class HeaderVaryTest extends TestCase
 
         $this->assertEquals('Vary: value-first, value-second, value-third', (string) $header);
     }
-
-    public function testSetToMessage()
-    {
-        $header = new HeaderVary('value');
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->setToMessage($message);
-
-        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
-
-    public function testAddToMessage()
-    {
-        $header = new HeaderVary('value');
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->addToMessage($message);
-
-        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
 }

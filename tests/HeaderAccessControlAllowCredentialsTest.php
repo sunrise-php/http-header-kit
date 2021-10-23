@@ -36,27 +36,15 @@ class HeaderAccessControlAllowCredentialsTest extends TestCase
         $this->assertEquals('Access-Control-Allow-Credentials: true', (string) $header);
     }
 
-    public function testSetToMessage()
+    public function testIteration()
     {
         $header = new HeaderAccessControlAllowCredentials();
 
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
+        $parameters = \iterator_to_array($header);
 
-        $message = $header->setToMessage($message);
-
-        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
-
-    public function testAddToMessage()
-    {
-        $header = new HeaderAccessControlAllowCredentials();
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->addToMessage($message);
-
-        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
+        $this->assertSame([
+            $header->getFieldName(),
+            $header->getFieldValue(),
+        ], $parameters);
     }
 }

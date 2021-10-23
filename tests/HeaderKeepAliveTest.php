@@ -183,28 +183,4 @@ class HeaderKeepAliveTest extends TestCase
 
         $this->assertEquals('Keep-Alive: name-1, name-2=token, name-3="quoted string"', (string) $header);
     }
-
-    public function testSetToMessage()
-    {
-        $header = new HeaderKeepAlive([]);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->setToMessage($message);
-
-        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
-
-    public function testAddToMessage()
-    {
-        $header = new HeaderKeepAlive([]);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->addToMessage($message);
-
-        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
 }

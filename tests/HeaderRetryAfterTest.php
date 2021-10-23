@@ -67,30 +67,4 @@ class HeaderRetryAfterTest extends TestCase
 
         $this->assertEquals(\sprintf('Retry-After: %s', $now->format(\DateTime::RFC822)), (string) $header);
     }
-
-    public function testSetToMessage()
-    {
-        $now = new \DateTime('now');
-        $header = new HeaderRetryAfter($now);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->setToMessage($message);
-
-        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
-
-    public function testAddToMessage()
-    {
-        $now = new \DateTime('now');
-        $header = new HeaderRetryAfter($now);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->addToMessage($message);
-
-        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
 }
