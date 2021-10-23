@@ -66,7 +66,7 @@ class HeaderContentLocation extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -74,7 +74,7 @@ class HeaderContentLocation extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {

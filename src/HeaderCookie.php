@@ -12,6 +12,16 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import functions
+ */
+use function http_build_query;
+
+/**
+ * Import constants
+ */
+use const PHP_QUERY_RFC3986;
+
+/**
  * HeaderCookie
  *
  * @link https://tools.ietf.org/html/rfc6265.html#section-5.4
@@ -61,7 +71,7 @@ class HeaderCookie extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -69,10 +79,10 @@ class HeaderCookie extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        return \http_build_query($this->getValue(), '', '; ', \PHP_QUERY_RFC3986);
+        return http_build_query($this->getValue(), '', '; ', PHP_QUERY_RFC3986);
     }
 }

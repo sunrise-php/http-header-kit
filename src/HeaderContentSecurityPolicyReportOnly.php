@@ -20,7 +20,7 @@ class HeaderContentSecurityPolicyReportOnly extends HeaderContentSecurityPolicy
 {
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {

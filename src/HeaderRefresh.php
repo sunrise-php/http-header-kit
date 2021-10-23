@@ -14,7 +14,13 @@ namespace Sunrise\Http\Header;
 /**
  * Import classes
  */
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
+
+/**
+ * Import functions
+ */
+use function sprintf;
 
 /**
  * HeaderRefresh
@@ -57,14 +63,15 @@ class HeaderRefresh extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setDelay(int $delay) : self
     {
         if (! ($delay >= 0)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The given delay "%d" for the "Refresh" header is not valid', $delay)
-            );
+            throw new InvalidArgumentException(sprintf(
+                'The given delay "%d" for the "Refresh" header is not valid',
+                $delay
+            ));
         }
 
         $this->delay = $delay;
@@ -107,7 +114,7 @@ class HeaderRefresh extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -115,10 +122,10 @@ class HeaderRefresh extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        return \sprintf('%d; url=%s', $this->getDelay(), (string) $this->getUri());
+        return sprintf('%d; url=%s', $this->getDelay(), (string) $this->getUri());
     }
 }

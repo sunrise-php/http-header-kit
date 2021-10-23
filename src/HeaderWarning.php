@@ -12,6 +12,19 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use DateTimeInterface;
+use DateTimeZone;
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function preg_match;
+use function sprintf;
+
+/**
  * HeaderWarning
  *
  * @link https://tools.ietf.org/html/rfc2616#section-14.46
@@ -56,7 +69,7 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
     /**
      * The warning date
      *
-     * @var null|\DateTimeInterface
+     * @var DateTimeInterface|null
      */
     protected $date;
 
@@ -66,9 +79,9 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
      * @param int $code
      * @param string $agent
      * @param string $text
-     * @param null|\DateTimeInterface $date
+     * @param DateTimeInterface|null $date
      */
-    public function __construct(int $code, string $agent, string $text, \DateTimeInterface $date = null)
+    public function __construct(int $code, string $agent, string $text, DateTimeInterface $date = null)
     {
         $this->setCode($code);
         $this->setAgent($agent);
@@ -83,12 +96,12 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setCode(int $code) : self
     {
         if (! ($code >= 100 && $code <= 999)) {
-            throw new \InvalidArgumentException('The warning code is not valid');
+            throw new InvalidArgumentException('The warning code is not valid');
         }
 
         $this->code = $code;
@@ -103,12 +116,12 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setAgent(string $agent) : self
     {
-        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $agent)) {
-            throw new \InvalidArgumentException('The warning agent is not valid');
+        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $agent)) {
+            throw new InvalidArgumentException('The warning agent is not valid');
         }
 
         $this->agent = $agent;
@@ -123,12 +136,12 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setText(string $text) : self
     {
-        if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $text)) {
-            throw new \InvalidArgumentException('The warning text is not valid');
+        if (!preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $text)) {
+            throw new InvalidArgumentException('The warning text is not valid');
         }
 
         $this->text = $text;
@@ -139,11 +152,11 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
     /**
      * Sets the warning date
      *
-     * @param null|\DateTimeInterface $date
+     * @param DateTimeInterface|null $date
      *
      * @return self
      */
-    public function setDate(?\DateTimeInterface $date) : self
+    public function setDate(?DateTimeInterface $date) : self
     {
         $this->date = $date;
 
@@ -183,15 +196,15 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
     /**
      * Gets the warning date
      *
-     * @return null|\DateTimeInterface
+     * @return DateTimeInterface|null
      */
-    public function getDate() : ?\DateTimeInterface
+    public function getDate() : ?DateTimeInterface
     {
         return $this->date;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -199,20 +212,21 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        $result = \sprintf('%s %s "%s"',
+        $result = sprintf(
+            '%s %s "%s"',
             $this->getCode(),
             $this->getAgent(),
             $this->getText()
         );
 
-        if ($this->getDate() instanceof \DateTimeInterface) {
-            $this->getDate()->setTimezone(new \DateTimeZone('GMT'));
+        if ($this->getDate() instanceof DateTimeInterface) {
+            $this->getDate()->setTimezone(new DateTimeZone('GMT'));
 
-            $result .= ' "' . $this->getDate()->format(\DateTime::RFC822) . '"';
+            $result .= ' "' . $this->getDate()->format(DateTimeInterface::RFC822) . '"';
         }
 
         return $result;

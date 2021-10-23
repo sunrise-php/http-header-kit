@@ -12,6 +12,17 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function preg_match;
+use function sprintf;
+
+/**
  * HeaderContentType
  *
  * @link https://tools.ietf.org/html/rfc2616#section-14.17
@@ -38,7 +49,7 @@ class HeaderContentType extends AbstractHeader implements HeaderInterface
     /**
      * The content media-type parameters
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $parameters = [];
 
@@ -46,7 +57,7 @@ class HeaderContentType extends AbstractHeader implements HeaderInterface
      * Constructor of the class
      *
      * @param string $type
-     * @param array $parameters
+     * @param array<string, string> $parameters
      */
     public function __construct(string $type, array $parameters = [])
     {
@@ -61,14 +72,16 @@ class HeaderContentType extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setType(string $type) : self
     {
-        if (! \preg_match(self::VALID_MEDIA_TYPE, $type)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $type)
-            );
+        if (!preg_match(self::VALID_MEDIA_TYPE, $type)) {
+            throw new InvalidArgumentException(sprintf(
+                'The header field "%s: %s" is not valid',
+                $this->getFieldName(),
+                $type
+            ));
         }
 
         $this->type = $type;
@@ -84,20 +97,24 @@ class HeaderContentType extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setParameter(string $name, string $value) : self
     {
-        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName())
-            );
+        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-name "%s" for the header "%s" is not valid',
+                $name,
+                $this->getFieldName()
+            ));
         }
 
-        if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName())
-            );
+        if (!preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-value "%s" for the header "%s" is not valid',
+                $value,
+                $this->getFieldName()
+            ));
         }
 
         $this->parameters[$name] = $value;
@@ -108,7 +125,7 @@ class HeaderContentType extends AbstractHeader implements HeaderInterface
     /**
      * Sets the content media-type parameters
      *
-     * @param array $parameters
+     * @param array<string, string> $parameters
      *
      * @return self
      */
@@ -134,7 +151,7 @@ class HeaderContentType extends AbstractHeader implements HeaderInterface
     /**
      * Gets the content media-type parameters
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getParameters() : array
     {
@@ -154,7 +171,7 @@ class HeaderContentType extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -162,13 +179,13 @@ class HeaderContentType extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
         $r = $this->getType();
         foreach ($this->getParameters() as $name => $value) {
-            $r .= \sprintf('; %s="%s"', $name, $value);
+            $r .= sprintf('; %s="%s"', $name, $value);
         }
 
         return $r;

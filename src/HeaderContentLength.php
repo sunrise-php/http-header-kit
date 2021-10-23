@@ -12,6 +12,16 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function sprintf;
+
+/**
  * HeaderContentLength
  *
  * @link https://tools.ietf.org/html/rfc2616#section-14.13
@@ -43,14 +53,16 @@ class HeaderContentLength extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setValue(int $value) : self
     {
         if (! ($value >= 0)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The header field "%s: %d" is not valid', $this->getFieldName(), $value)
-            );
+            throw new InvalidArgumentException(sprintf(
+                'The header field "%s: %d" is not valid',
+                $this->getFieldName(),
+                $value
+            ));
         }
 
         $this->value = $value;
@@ -69,7 +81,7 @@ class HeaderContentLength extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -77,10 +89,10 @@ class HeaderContentLength extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        return \sprintf('%d', $this->getValue());
+        return sprintf('%d', $this->getValue());
     }
 }

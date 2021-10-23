@@ -12,6 +12,16 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function sprintf;
+
+/**
  * HeaderContentRange
  *
  * @link https://tools.ietf.org/html/rfc2616#section-14.16
@@ -61,19 +71,19 @@ class HeaderContentRange extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setRange(int $firstBytePosition, int $lastBytePosition, int $instanceLength) : self
     {
         if (! ($firstBytePosition <= $lastBytePosition)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'The "first-byte-pos" value of the content range ' .
                 'must be less than or equal to the "last-byte-pos" value'
             );
         }
 
         if (! ($lastBytePosition < $instanceLength)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'The "last-byte-pos" value of the content range ' .
                 'must be less than the "instance-length" value'
             );
@@ -117,7 +127,7 @@ class HeaderContentRange extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -125,11 +135,12 @@ class HeaderContentRange extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        return \sprintf('bytes %d-%d/%d',
+        return sprintf(
+            'bytes %d-%d/%d',
             $this->getFirstBytePosition(),
             $this->getLastBytePosition(),
             $this->getInstanceLength()

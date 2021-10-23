@@ -14,44 +14,41 @@ namespace Sunrise\Http\Header;
 /**
  * Import classes
  */
-use Psr\Http\Message\MessageInterface;
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
+
+/**
+ * Import functions
+ */
+use function sprintf;
 
 /**
  * AbstractHeader
  */
-abstract class AbstractHeader implements HeaderInterface
+abstract class AbstractHeader implements HeaderInterface, IteratorAggregate
 {
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function setToMessage(MessageInterface $message) : MessageInterface
+    public function __toString() : string
     {
-        return $message->withHeader(
+        return sprintf(
+            '%s: %s',
             $this->getFieldName(),
             $this->getFieldValue()
         );
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function addToMessage(MessageInterface $message) : MessageInterface
+    public function getIterator() : Traversable
     {
-        return $message->withAddedHeader(
+        return new ArrayIterator([
             $this->getFieldName(),
-            $this->getFieldValue()
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function __toString()
-    {
-        return \sprintf('%s: %s',
-            $this->getFieldName(),
-            $this->getFieldValue()
-        );
+            $this->getFieldValue(),
+        ]);
     }
 }
