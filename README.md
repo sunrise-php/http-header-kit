@@ -1,4 +1,4 @@
-## HTTP header kit for PHP 7.1+ compatible with PSR-7
+## HTTP header kit for PHP 7.1+ compatible with PSR-7, Symfony and Laravel
 
 [![Build Status](https://circleci.com/gh/sunrise-php/http-header-kit.svg?style=shield)](https://circleci.com/gh/sunrise-php/http-header-kit)
 [![Code Coverage](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
@@ -37,7 +37,7 @@ $response->header(...$header);
 
 ### HTTP Headers
 
-Note that in the examples below will use PSR-7.
+> ⚠️ Note that in the examples below will use PSR-7.
 
 #### Access-Control-Allow-Credentials
 
