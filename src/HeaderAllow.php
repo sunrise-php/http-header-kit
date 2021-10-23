@@ -12,6 +12,20 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function array_keys;
+use function implode;
+use function preg_match;
+use function sprintf;
+use function strtoupper;
+
+/**
  * HeaderAllow
  *
  * @link https://tools.ietf.org/html/rfc2616#section-14.7
@@ -22,7 +36,7 @@ class HeaderAllow extends AbstractHeader implements HeaderInterface
     /**
      * The header value
      *
-     * @var array
+     * @var array<string, bool>
      */
     protected $value = [];
 
@@ -43,18 +57,20 @@ class HeaderAllow extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setValue(string ...$value) : self
     {
         foreach ($value as $oneOf) {
-            if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $oneOf)) {
-                throw new \InvalidArgumentException(
-                    \sprintf('The value "%s" for the header "%s" is not valid', $oneOf, $this->getFieldName())
-                );
+            if (!preg_match(HeaderInterface::RFC7230_TOKEN, $oneOf)) {
+                throw new InvalidArgumentException(sprintf(
+                    'The value "%s" for the header "%s" is not valid',
+                    $oneOf,
+                    $this->getFieldName()
+                ));
             }
 
-            $oneOf = \strtoupper($oneOf);
+            $oneOf = strtoupper($oneOf);
 
             $this->value[$oneOf] = true;
         }
@@ -65,11 +81,11 @@ class HeaderAllow extends AbstractHeader implements HeaderInterface
     /**
      * Gets the header value
      *
-     * @return array
+     * @return array<int, string>
      */
     public function getValue() : array
     {
-        return \array_keys($this->value);
+        return array_keys($this->value);
     }
 
     /**
@@ -85,7 +101,7 @@ class HeaderAllow extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -93,10 +109,10 @@ class HeaderAllow extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        return \implode(', ', $this->getValue());
+        return implode(', ', $this->getValue());
     }
 }

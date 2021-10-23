@@ -12,6 +12,18 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function implode;
+use function preg_match;
+use function sprintf;
+
+/**
  * HeaderContentSecurityPolicy
  *
  * @link https://www.w3.org/TR/CSP3/#csp-header
@@ -30,14 +42,14 @@ class HeaderContentSecurityPolicy extends AbstractHeader implements HeaderInterf
     /**
      * The header parameters
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $parameters = [];
 
     /**
      * Constructor of the class
      *
-     * @param array $parameters
+     * @param array<string, string> $parameters
      */
     public function __construct(array $parameters = [])
     {
@@ -52,20 +64,24 @@ class HeaderContentSecurityPolicy extends AbstractHeader implements HeaderInterf
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setParameter(string $name, string $value) : self
     {
-        if (! \preg_match(self::VALID_CONTENT_SECURITY_POLICY_DIRECTIVE_NAME, $name)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName())
-            );
+        if (!preg_match(self::VALID_CONTENT_SECURITY_POLICY_DIRECTIVE_NAME, $name)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-name "%s" for the header "%s" is not valid',
+                $name,
+                $this->getFieldName()
+            ));
         }
 
-        if (! \preg_match(self::VALID_CONTENT_SECURITY_POLICY_DIRECTIVE_VALUE, $value)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName())
-            );
+        if (!preg_match(self::VALID_CONTENT_SECURITY_POLICY_DIRECTIVE_VALUE, $value)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-value "%s" for the header "%s" is not valid',
+                $value,
+                $this->getFieldName()
+            ));
         }
 
         $this->parameters[$name] = $value;
@@ -76,7 +92,7 @@ class HeaderContentSecurityPolicy extends AbstractHeader implements HeaderInterf
     /**
      * Sets the header parameters
      *
-     * @param array $parameters
+     * @param array<string, string> $parameters
      *
      * @return self
      */
@@ -92,7 +108,7 @@ class HeaderContentSecurityPolicy extends AbstractHeader implements HeaderInterf
     /**
      * Gets the header parameters
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getParameters() : array
     {
@@ -112,7 +128,7 @@ class HeaderContentSecurityPolicy extends AbstractHeader implements HeaderInterf
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -120,20 +136,20 @@ class HeaderContentSecurityPolicy extends AbstractHeader implements HeaderInterf
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
         $parameters = [];
         foreach ($this->getParameters() as $name => $value) {
-            $parameter = $name;
-            if (! (\strlen($value) === 0)) {
-                $parameter .= ' ' . $value;
+            if ('' === $value) {
+                $parameters[] = $name;
+                continue;
             }
 
-            $parameters[] = $parameter;
+            $parameters[] = $name . ' ' . $value;
         }
 
-        return \implode('; ', $parameters);
+        return implode('; ', $parameters);
     }
 }

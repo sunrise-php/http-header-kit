@@ -70,28 +70,4 @@ class HeaderContentMD5Test extends TestCase
 
         $this->assertEquals('Content-MD5: ' . self::TEST_MD5_DIGEST_1, (string) $header);
     }
-
-    public function testSetToMessage()
-    {
-        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->setToMessage($message);
-
-        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
-
-    public function testAddToMessage()
-    {
-        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->addToMessage($message);
-
-        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
 }

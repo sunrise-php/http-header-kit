@@ -12,6 +12,18 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function implode;
+use function preg_match;
+use function sprintf;
+
+/**
  * HeaderCacheControl
  *
  * @link https://tools.ietf.org/html/rfc2616#section-14.9
@@ -22,7 +34,7 @@ class HeaderCacheControl extends AbstractHeader implements HeaderInterface
     /**
      * The header parameters
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $parameters = [];
 
@@ -44,20 +56,24 @@ class HeaderCacheControl extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setParameter(string $name, string $value) : self
     {
-        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName())
-            );
+        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-name "%s" for the header "%s" is not valid',
+                $name,
+                $this->getFieldName()
+            ));
         }
 
-        if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName())
-            );
+        if (!preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-value "%s" for the header "%s" is not valid',
+                $value,
+                $this->getFieldName()
+            ));
         }
 
         $this->parameters[$name] = $value;
@@ -68,7 +84,7 @@ class HeaderCacheControl extends AbstractHeader implements HeaderInterface
     /**
      * Sets the header parameters
      *
-     * @param array $parameters
+     * @param array<string, string> $parameters
      *
      * @return self
      */
@@ -84,7 +100,7 @@ class HeaderCacheControl extends AbstractHeader implements HeaderInterface
     /**
      * Gets the header parameters
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getParameters() : array
     {
@@ -104,7 +120,7 @@ class HeaderCacheControl extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -112,26 +128,26 @@ class HeaderCacheControl extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
         $parameters = [];
         foreach ($this->getParameters() as $name => $value) {
-            $parameter = $name;
-
-            if (! (\strlen($value) === 0)) {
-                // Example: max-age=31536000
-                if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $value)) {
-                    $value = '"' . $value . '"';
-                }
-
-                $parameter .= '=' . $value;
+            if ('' === $value) {
+                $parameters[] = $name;
+                continue;
             }
 
-            $parameters[] = $parameter;
+            // e.g.: max-age=31536000
+            if (preg_match(HeaderInterface::RFC7230_TOKEN, $value)) {
+                $parameters[] = $name . '=' . $value;
+                continue;
+            }
+
+            $parameters[] = $name . '="' . $value . '"';
         }
 
-        return \implode(', ', $parameters);
+        return implode(', ', $parameters);
     }
 }

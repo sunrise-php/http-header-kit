@@ -12,6 +12,17 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function preg_match;
+use function sprintf;
+
+/**
  * HeaderContentMD5
  *
  * @link https://tools.ietf.org/html/rfc2616#section-14.15
@@ -52,14 +63,16 @@ class HeaderContentMD5 extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setValue(string $value) : self
     {
-        if (! \preg_match(self::VALID_NON_STRICT_MD5_DIGEST, $value)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $value)
-            );
+        if (!preg_match(self::VALID_NON_STRICT_MD5_DIGEST, $value)) {
+            throw new InvalidArgumentException(sprintf(
+                'The header field "%s: %s" is not valid',
+                $this->getFieldName(),
+                $value
+            ));
         }
 
         $this->value = $value;
@@ -78,7 +91,7 @@ class HeaderContentMD5 extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -86,7 +99,7 @@ class HeaderContentMD5 extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {

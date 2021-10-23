@@ -12,6 +12,16 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function sprintf;
+
+/**
  * HeaderAccessControlMaxAge
  *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age
@@ -43,14 +53,16 @@ class HeaderAccessControlMaxAge extends AbstractHeader implements HeaderInterfac
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setValue(int $value) : self
     {
         if (! ($value >= 1 || $value === -1)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The header field "%s: %d" is not valid', $this->getFieldName(), $value)
-            );
+            throw new InvalidArgumentException(sprintf(
+                'The header field "%s: %d" is not valid',
+                $this->getFieldName(),
+                $value
+            ));
         }
 
         $this->value = $value;
@@ -69,7 +81,7 @@ class HeaderAccessControlMaxAge extends AbstractHeader implements HeaderInterfac
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -77,10 +89,10 @@ class HeaderAccessControlMaxAge extends AbstractHeader implements HeaderInterfac
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        return \sprintf('%d', $this->getValue());
+        return sprintf('%d', $this->getValue());
     }
 }

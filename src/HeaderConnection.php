@@ -12,6 +12,17 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function preg_match;
+use function sprintf;
+
+/**
  * HeaderConnection
  *
  * @link https://tools.ietf.org/html/rfc2616#section-14.10
@@ -49,14 +60,16 @@ class HeaderConnection extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setValue(string $value) : self
     {
-        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $value)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $value)
-            );
+        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $value)) {
+            throw new InvalidArgumentException(sprintf(
+                'The header field "%s: %s" is not valid',
+                $this->getFieldName(),
+                $value
+            ));
         }
 
         $this->value = $value;
@@ -75,7 +88,7 @@ class HeaderConnection extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -83,7 +96,7 @@ class HeaderConnection extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {

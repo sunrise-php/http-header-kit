@@ -14,7 +14,13 @@ namespace Sunrise\Http\Header;
 /**
  * Import classes
  */
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
+
+/**
+ * Import functions
+ */
+use function sprintf;
 
 /**
  * HeaderAccessControlAllowOrigin
@@ -27,14 +33,14 @@ class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInt
     /**
      * URI for the header field-value
      *
-     * @var null|UriInterface
+     * @var UriInterface|null
      */
     protected $uri;
 
     /**
      * Constructor of the class
      *
-     * @param null|UriInterface $uri
+     * @param UriInterface|null $uri
      */
     public function __construct(?UriInterface $uri)
     {
@@ -44,18 +50,20 @@ class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInt
     /**
      * Sets URI for the header field-value
      *
-     * @param null|UriInterface $uri
+     * @param UriInterface|null $uri
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setUri(?UriInterface $uri) : self
     {
-        if (! (\is_null($uri) || (\strlen($uri->getScheme()) && \strlen($uri->getHost())))) {
-            throw new \InvalidArgumentException(
-                \sprintf('The header field "%s: %d" is not valid', $this->getFieldName(), (string) $uri)
-            );
+        if (isset($uri) && ('' === $uri->getScheme() || '' === $uri->getHost())) {
+            throw new InvalidArgumentException(sprintf(
+                'The header field "%s: %d" is not valid',
+                $this->getFieldName(),
+                (string) $uri
+            ));
         }
 
         $this->uri = $uri;
@@ -66,7 +74,7 @@ class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInt
     /**
      * Gets URI for the header field-value
      *
-     * @return null|UriInterface
+     * @return UriInterface|null
      */
     public function getUri() : ?UriInterface
     {
@@ -74,7 +82,7 @@ class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInt
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -82,22 +90,20 @@ class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInt
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
         $uri = $this->getUri();
-        if ($uri instanceof UriInterface) {
-            $value = $uri->getScheme() . ':';
-            $value .= '//' . $uri->getHost();
-
-            if (! (null === $uri->getPort())) {
-                $value .= ':' . $uri->getPort();
-            }
-
-            return $value;
+        if (null === $uri) {
+            return '*';
         }
 
-        return '*';
+        $value = $uri->getScheme() . '://' . $uri->getHost();
+        if (null !== $uri->getPort()) {
+            $value .= ':' . $uri->getPort();
+        }
+
+        return $value;
     }
 }

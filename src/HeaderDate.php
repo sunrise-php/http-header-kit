@@ -12,6 +12,13 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use DateTime;
+use DateTimeInterface;
+use DateTimeZone;
+
+/**
  * HeaderDate
  *
  * @link https://tools.ietf.org/html/rfc2616#section-14.18
@@ -23,16 +30,16 @@ class HeaderDate extends AbstractHeader implements HeaderInterface
     /**
      * Timestamp for the header field-value
      *
-     * @var \DateTimeInterface
+     * @var DateTimeInterface
      */
     protected $timestamp;
 
     /**
      * Constructor of the class
      *
-     * @param \DateTimeInterface $timestamp
+     * @param DateTimeInterface $timestamp
      */
-    public function __construct(\DateTimeInterface $timestamp)
+    public function __construct(DateTimeInterface $timestamp)
     {
         $this->setTimestamp($timestamp);
     }
@@ -40,11 +47,11 @@ class HeaderDate extends AbstractHeader implements HeaderInterface
     /**
      * Sets timestamp for the header field-value
      *
-     * @param \DateTimeInterface $timestamp
+     * @param DateTimeInterface $timestamp
      *
      * @return self
      */
-    public function setTimestamp(\DateTimeInterface $timestamp) : self
+    public function setTimestamp(DateTimeInterface $timestamp) : self
     {
         $this->timestamp = $timestamp;
 
@@ -54,15 +61,15 @@ class HeaderDate extends AbstractHeader implements HeaderInterface
     /**
      * Gets timestamp for the header field-value
      *
-     * @return \DateTimeInterface
+     * @return DateTimeInterface
      */
-    public function getTimestamp() : \DateTimeInterface
+    public function getTimestamp() : DateTimeInterface
     {
         return $this->timestamp;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -70,12 +77,12 @@ class HeaderDate extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        $this->getTimestamp()->setTimezone(new \DateTimeZone('GMT'));
+        $this->getTimestamp()->setTimezone(new DateTimeZone('GMT'));
 
-        return $this->getTimestamp()->format(\DateTime::RFC822);
+        return $this->getTimestamp()->format(DateTime::RFC822);
     }
 }

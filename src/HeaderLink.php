@@ -14,7 +14,14 @@ namespace Sunrise\Http\Header;
 /**
  * Import classes
  */
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
+
+/**
+ * Import functions
+ */
+use function preg_match;
+use function sprintf;
 
 /**
  * HeaderLink
@@ -34,7 +41,7 @@ class HeaderLink extends AbstractHeader implements HeaderInterface
     /**
      * The link parameters
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $parameters = [];
 
@@ -42,7 +49,7 @@ class HeaderLink extends AbstractHeader implements HeaderInterface
      * Constructor of the class
      *
      * @param UriInterface $uri
-     * @param array $parameters
+     * @param array<string, string> $parameters
      */
     public function __construct(UriInterface $uri, array $parameters = [])
     {
@@ -72,20 +79,24 @@ class HeaderLink extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setParameter(string $name, string $value) : self
     {
-        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName())
-            );
+        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-name "%s" for the header "%s" is not valid',
+                $name,
+                $this->getFieldName()
+            ));
         }
 
-        if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName())
-            );
+        if (!preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-value "%s" for the header "%s" is not valid',
+                $value,
+                $this->getFieldName()
+            ));
         }
 
         $this->parameters[$name] = $value;
@@ -96,7 +107,7 @@ class HeaderLink extends AbstractHeader implements HeaderInterface
     /**
      * Sets the link parameters
      *
-     * @param array $parameters
+     * @param array<string, string> $parameters
      *
      * @return self
      */
@@ -122,7 +133,7 @@ class HeaderLink extends AbstractHeader implements HeaderInterface
     /**
      * Gets the link parameters
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getParameters() : array
     {
@@ -142,7 +153,7 @@ class HeaderLink extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -150,13 +161,13 @@ class HeaderLink extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        $r = \sprintf('<%s>', (string) $this->getUri());
+        $r = sprintf('<%s>', (string) $this->getUri());
         foreach ($this->getParameters() as $name => $value) {
-            $r .= \sprintf('; %s="%s"', $name, $value);
+            $r .= sprintf('; %s="%s"', $name, $value);
         }
 
         return $r;

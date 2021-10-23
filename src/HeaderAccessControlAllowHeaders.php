@@ -12,6 +12,19 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function array_keys;
+use function implode;
+use function preg_match;
+use function sprintf;
+
+/**
  * HeaderAccessControlAllowHeaders
  *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
@@ -22,7 +35,7 @@ class HeaderAccessControlAllowHeaders extends AbstractHeader implements HeaderIn
     /**
      * The header value
      *
-     * @var array
+     * @var array<string, bool>
      */
     protected $value = [];
 
@@ -43,15 +56,17 @@ class HeaderAccessControlAllowHeaders extends AbstractHeader implements HeaderIn
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setValue(string ...$value) : self
     {
         foreach ($value as $oneOf) {
-            if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $oneOf)) {
-                throw new \InvalidArgumentException(
-                    \sprintf('The value "%s" for the header "%s" is not valid', $oneOf, $this->getFieldName())
-                );
+            if (!preg_match(HeaderInterface::RFC7230_TOKEN, $oneOf)) {
+                throw new InvalidArgumentException(sprintf(
+                    'The value "%s" for the header "%s" is not valid',
+                    $oneOf,
+                    $this->getFieldName()
+                ));
             }
 
             $this->value[$oneOf] = true;
@@ -63,11 +78,11 @@ class HeaderAccessControlAllowHeaders extends AbstractHeader implements HeaderIn
     /**
      * Gets the header value
      *
-     * @return array
+     * @return array<int, string>
      */
     public function getValue() : array
     {
-        return \array_keys($this->value);
+        return array_keys($this->value);
     }
 
     /**
@@ -83,7 +98,7 @@ class HeaderAccessControlAllowHeaders extends AbstractHeader implements HeaderIn
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -91,10 +106,10 @@ class HeaderAccessControlAllowHeaders extends AbstractHeader implements HeaderIn
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        return \implode(', ', $this->getValue());
+        return implode(', ', $this->getValue());
     }
 }

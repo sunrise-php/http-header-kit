@@ -20,7 +20,7 @@ class HeaderAccessControlAllowCredentials extends AbstractHeader implements Head
 {
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -28,7 +28,7 @@ class HeaderAccessControlAllowCredentials extends AbstractHeader implements Head
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {

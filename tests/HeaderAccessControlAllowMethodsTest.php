@@ -116,28 +116,4 @@ class HeaderAccessControlAllowMethodsTest extends TestCase
 
         $this->assertEquals('Access-Control-Allow-Methods: HEAD, GET, POST', (string) $header);
     }
-
-    public function testSetToMessage()
-    {
-        $header = new HeaderAccessControlAllowMethods('head');
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->setToMessage($message);
-
-        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
-
-    public function testAddToMessage()
-    {
-        $header = new HeaderAccessControlAllowMethods('head');
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->addToMessage($message);
-
-        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
 }

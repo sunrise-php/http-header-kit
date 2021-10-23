@@ -12,6 +12,23 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use DateTime;
+use DateTimeInterface;
+use DateTimeZone;
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function array_key_exists;
+use function rawurlencode;
+use function sprintf;
+use function strpbrk;
+use function time;
+
+/**
  * HeaderSetCookie
  *
  * @link https://tools.ietf.org/html/rfc6265#section-4.1
@@ -37,42 +54,42 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * The cookie attribute "Expires"
      *
-     * @var null|\DateTimeInterface
+     * @var DateTimeInterface|null
      */
     protected $expires;
 
     /**
      * The cookie attribute "Domain"
      *
-     * @var null|string
+     * @var string|null
      */
     protected $domain;
 
     /**
      * The cookie attribute "Path"
      *
-     * @var null|string
+     * @var string|null
      */
     protected $path;
 
     /**
      * The cookie attribute "Secure"
      *
-     * @var null|bool
+     * @var bool|null
      */
     protected $secure;
 
     /**
      * The cookie attribute "HttpOnly"
      *
-     * @var null|bool
+     * @var bool|null
      */
     protected $httponly;
 
     /**
      * The cookie attribute "SameSite"
      *
-     * @var null|string
+     * @var string|null
      */
     protected $samesite;
 
@@ -81,32 +98,32 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
      *
      * @param string $name
      * @param string $value
-     * @param null|\DateTimeInterface $expires
+     * @param DateTimeInterface|null $expires
      * @param array $options
      */
-    public function __construct(string $name, string $value, \DateTimeInterface $expires = null, array $options = [])
+    public function __construct(string $name, string $value, DateTimeInterface $expires = null, array $options = [])
     {
         $this->setName($name);
         $this->setValue($value);
         $this->setExpires($expires);
 
-        if (\array_key_exists('domain', $options)) {
+        if (array_key_exists('domain', $options)) {
             $this->setDomain($options['domain']);
         }
 
-        if (\array_key_exists('path', $options)) {
+        if (array_key_exists('path', $options)) {
             $this->setPath($options['path']);
         }
 
-        if (\array_key_exists('secure', $options)) {
+        if (array_key_exists('secure', $options)) {
             $this->setSecure($options['secure']);
         }
 
-        if (\array_key_exists('httponly', $options)) {
+        if (array_key_exists('httponly', $options)) {
             $this->setHttpOnly($options['httponly']);
         }
 
-        if (\array_key_exists('samesite', $options)) {
+        if (array_key_exists('samesite', $options)) {
             $this->setSameSite($options['samesite']);
         }
     }
@@ -118,18 +135,16 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setName(string $name) : self
     {
-        if (! (\strlen($name) > 0)) {
-            throw new \InvalidArgumentException(
-                'Cookie names must not be empty'
-            );
+        if ('' === $name) {
+            throw new InvalidArgumentException('Cookie names must not be empty');
         }
 
-        if (! (\strpbrk($name, "=,; \t\r\n\013\014") === false)) {
-            throw new \InvalidArgumentException(
+        if (strpbrk($name, "=,; \t\r\n\013\014") !== false) {
+            throw new InvalidArgumentException(
                 'Cookie names cannot contain any of the following "=,; \\t\\r\\n\\013\\014"'
             );
         }
@@ -156,11 +171,11 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Sets the cookie attribute "Expires"
      *
-     * @param null|\DateTimeInterface $expires
+     * @param DateTimeInterface|null $expires
      *
      * @return self
      */
-    public function setExpires(?\DateTimeInterface $expires) : self
+    public function setExpires(?DateTimeInterface $expires) : self
     {
         $this->expires = $expires;
 
@@ -170,16 +185,16 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Sets the cookie attribute "Domain"
      *
-     * @param null|string $domain
+     * @param string|null $domain
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setDomain(?string $domain) : self
     {
-        if (! (\is_null($domain) || \strpbrk($domain, ",; \t\r\n\013\014") === false)) {
-            throw new \InvalidArgumentException(
+        if (isset($domain) && strpbrk($domain, ",; \t\r\n\013\014") !== false) {
+            throw new InvalidArgumentException(
                 'Cookie domains cannot contain any of the following ",; \\t\\r\\n\\013\\014"'
             );
         }
@@ -192,16 +207,16 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Sets the cookie attribute "Path"
      *
-     * @param null|string $path
+     * @param string|null $path
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setPath(?string $path) : self
     {
-        if (! (\is_null($path) || \strpbrk($path, ",; \t\r\n\013\014") === false)) {
-            throw new \InvalidArgumentException(
+        if (isset($path) && strpbrk($path, ",; \t\r\n\013\014") !== false) {
+            throw new InvalidArgumentException(
                 'Cookie paths cannot contain any of the following ",; \\t\\r\\n\\013\\014"'
             );
         }
@@ -214,7 +229,7 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Sets the cookie attribute "Secure"
      *
-     * @param null|bool $secure
+     * @param bool|null $secure
      *
      * @return self
      */
@@ -228,7 +243,7 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Sets the cookie attribute "HttpOnly"
      *
-     * @param null|bool $httponly
+     * @param bool|null $httponly
      *
      * @return self
      */
@@ -242,16 +257,16 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Sets the cookie attribute "SameSite"
      *
-     * @param null|string $samesite
+     * @param string|null $samesite
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setSameSite(?string $samesite) : self
     {
-        if (! (\is_null($samesite) || \strpbrk($samesite, ",; \t\r\n\013\014") === false)) {
-            throw new \InvalidArgumentException(
+        if (isset($samesite) && strpbrk($samesite, ",; \t\r\n\013\014") !== false) {
+            throw new InvalidArgumentException(
                 'Cookie samesites cannot contain any of the following ",; \\t\\r\\n\\013\\014"'
             );
         }
@@ -284,9 +299,9 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Gets the cookie attribute "Expires"
      *
-     * @return null|\DateTimeInterface
+     * @return DateTimeInterface|null
      */
-    public function getExpires() : ?\DateTimeInterface
+    public function getExpires() : ?DateTimeInterface
     {
         return $this->expires;
     }
@@ -294,7 +309,7 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Gets the cookie attribute "Domain"
      *
-     * @return null|string
+     * @return string|null
      */
     public function getDomain() : ?string
     {
@@ -304,7 +319,7 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Gets the cookie attribute "Path"
      *
-     * @return null|string
+     * @return string|null
      */
     public function getPath() : ?string
     {
@@ -314,7 +329,7 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Gets the cookie attribute "Secure"
      *
-     * @return null|bool
+     * @return bool|null
      */
     public function getSecure() : ?bool
     {
@@ -324,7 +339,7 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Gets the cookie attribute "HttpOnly"
      *
-     * @return null|bool
+     * @return bool|null
      */
     public function getHttpOnly() : ?bool
     {
@@ -334,7 +349,7 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     /**
      * Gets the cookie attribute "SameSite"
      *
-     * @return null|string
+     * @return string|null
      */
     public function getSameSite() : ?string
     {
@@ -342,7 +357,7 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -350,19 +365,19 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
-        $name = \rawurlencode($this->getName());
-        $value = \rawurlencode($this->getValue());
-        $result = \sprintf('%s=%s', $name, $value);
+        $name = rawurlencode($this->getName());
+        $value = rawurlencode($this->getValue());
+        $result = sprintf('%s=%s', $name, $value);
 
-        if ($this->getExpires() instanceof \DateTimeInterface) {
-            $this->getExpires()->setTimezone(new \DateTimeZone('GMT'));
+        if ($this->getExpires() instanceof DateTimeInterface) {
+            $this->getExpires()->setTimezone(new DateTimeZone('GMT'));
 
-            $result .= '; Expires=' . $this->getExpires()->format(\DateTime::RFC822);
-            $result .= '; Max-Age=' . ($this->getExpires()->getTimestamp() - \time());
+            $result .= '; Expires=' . $this->getExpires()->format(DateTime::RFC822);
+            $result .= '; Max-Age=' . ($this->getExpires()->getTimestamp() - time());
         }
 
         if ($this->getDomain()) {

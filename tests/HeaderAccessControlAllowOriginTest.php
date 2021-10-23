@@ -171,30 +171,4 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $this->assertEquals('Access-Control-Allow-Origin: http://localhost:3000', (string) $header);
     }
-
-    public function testSetToMessage()
-    {
-        $uri = new Uri('http://localhost');
-        $header = new HeaderAccessControlAllowOrigin($uri);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->setToMessage($message);
-
-        $this->assertEquals([$header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
-
-    public function testAddToMessage()
-    {
-        $uri = new Uri('http://localhost');
-        $header = new HeaderAccessControlAllowOrigin($uri);
-
-        $message = (new \Sunrise\Http\Message\ResponseFactory)->createResponse();
-        $message = $message->withHeader($header->getFieldName(), 'foo bar baz');
-
-        $message = $header->addToMessage($message);
-
-        $this->assertEquals(['foo bar baz', $header->getFieldValue()], $message->getHeader($header->getFieldName()));
-    }
 }

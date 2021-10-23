@@ -12,6 +12,18 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import classes
+ */
+use InvalidArgumentException;
+
+/**
+ * Import functions
+ */
+use function implode;
+use function preg_match;
+use function sprintf;
+
+/**
  * HeaderWWWAuthenticate
  *
  * @link https://tools.ietf.org/html/rfc7235#section-4.1
@@ -45,7 +57,7 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
     /**
      * The authentication parameters
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $parameters = [];
 
@@ -53,7 +65,7 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
      * Constructor of the class
      *
      * @param string $scheme
-     * @param array $parameters
+     * @param array<string, string> $parameters
      */
     public function __construct(string $scheme, array $parameters = [])
     {
@@ -68,14 +80,16 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setScheme(string $scheme) : self
     {
-        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $scheme)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The header field "%s: %s" is not valid', $this->getFieldName(), $scheme)
-            );
+        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $scheme)) {
+            throw new InvalidArgumentException(sprintf(
+                'The header field "%s: %s" is not valid',
+                $this->getFieldName(),
+                $scheme
+            ));
         }
 
         $this->scheme = $scheme;
@@ -91,20 +105,24 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
      *
      * @return self
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setParameter(string $name, string $value) : self
     {
-        if (! \preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-name "%s" for the header "%s" is not valid', $name, $this->getFieldName())
-            );
+        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-name "%s" for the header "%s" is not valid',
+                $name,
+                $this->getFieldName()
+            ));
         }
 
-        if (! \preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
-            throw new \InvalidArgumentException(
-                \sprintf('The parameter-value "%s" for the header "%s" is not valid', $value, $this->getFieldName())
-            );
+        if (!preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
+            throw new InvalidArgumentException(sprintf(
+                'The parameter-value "%s" for the header "%s" is not valid',
+                $value,
+                $this->getFieldName()
+            ));
         }
 
         $this->parameters[$name] = $value;
@@ -115,7 +133,7 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
     /**
      * Sets the authentication parameters
      *
-     * @param array $parameters
+     * @param array<string, string> $parameters
      *
      * @return self
      */
@@ -141,7 +159,7 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
     /**
      * Gets the authentication parameters
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getParameters() : array
     {
@@ -161,7 +179,7 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldName() : string
     {
@@ -169,7 +187,7 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFieldValue() : string
     {
@@ -177,11 +195,11 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
 
         $challenge = [];
         foreach ($this->getParameters() as $name => $value) {
-            $challenge[] = \sprintf(' %s="%s"', $name, $value);
+            $challenge[] = sprintf(' %s="%s"', $name, $value);
         }
 
-        if (! empty($challenge)) {
-            $r .= \implode(',', $challenge);
+        if (!empty($challenge)) {
+            $r .= implode(',', $challenge);
         }
 
         return $r;
