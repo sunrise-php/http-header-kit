@@ -28,7 +28,7 @@ class HeaderEtagTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('new-value'));
 
-        $this->assertEquals('new-value', $header->getValue());
+        $this->assertSame('new-value', $header->getValue());
     }
 
     public function testSetInvalidValue()
@@ -44,27 +44,27 @@ class HeaderEtagTest extends TestCase
     {
         $header = new HeaderEtag('value');
 
-        $this->assertEquals('value', $header->getValue());
+        $this->assertSame('value', $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderEtag('value');
 
-        $this->assertEquals('ETag', $header->getFieldName());
+        $this->assertSame('ETag', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderEtag('value');
 
-        $this->assertEquals('"value"', $header->getFieldValue());
+        $this->assertSame('"value"', $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderEtag('value');
 
-        $this->assertEquals('ETag: "value"', (string) $header);
+        $this->assertSame('ETag: "value"', (string) $header);
     }
 }

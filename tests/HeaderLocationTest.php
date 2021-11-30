@@ -28,7 +28,7 @@ class HeaderLocationTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setUri($news));
 
-        $this->assertEquals($news, $header->getUri());
+        $this->assertSame($news, $header->getUri());
     }
 
     public function testGetUri()
@@ -37,7 +37,7 @@ class HeaderLocationTest extends TestCase
 
         $header = new HeaderLocation($home);
 
-        $this->assertEquals($home, $header->getUri());
+        $this->assertSame($home, $header->getUri());
     }
 
     public function testGetFieldName()
@@ -46,7 +46,7 @@ class HeaderLocationTest extends TestCase
 
         $header = new HeaderLocation($home);
 
-        $this->assertEquals('Location', $header->getFieldName());
+        $this->assertSame('Location', $header->getFieldName());
     }
 
     public function testGetFieldValue()
@@ -55,7 +55,7 @@ class HeaderLocationTest extends TestCase
 
         $header = new HeaderLocation($home);
 
-        $this->assertEquals('/', $header->getFieldValue());
+        $this->assertSame('/', $header->getFieldValue());
     }
 
     public function testToString()
@@ -64,6 +64,6 @@ class HeaderLocationTest extends TestCase
 
         $header = new HeaderLocation($home);
 
-        $this->assertEquals('Location: /', (string) $header);
+        $this->assertSame('Location: /', (string) $header);
     }
 }

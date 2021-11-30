@@ -28,7 +28,7 @@ class HeaderContentLengthTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue(1));
 
-        $this->assertEquals(1, $header->getValue());
+        $this->assertSame(1, $header->getValue());
     }
 
     public function testSetInvalidLength()
@@ -44,27 +44,27 @@ class HeaderContentLengthTest extends TestCase
     {
         $header = new HeaderContentLength(0);
 
-        $this->assertEquals(0, $header->getValue());
+        $this->assertSame(0, $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderContentLength(0);
 
-        $this->assertEquals('Content-Length', $header->getFieldName());
+        $this->assertSame('Content-Length', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderContentLength(0);
 
-        $this->assertEquals('0', $header->getFieldValue());
+        $this->assertSame('0', $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderContentLength(0);
 
-        $this->assertEquals('Content-Length: 0', (string) $header);
+        $this->assertSame('Content-Length: 0', (string) $header);
     }
 }

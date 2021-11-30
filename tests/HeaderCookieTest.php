@@ -35,7 +35,7 @@ class HeaderCookieTest extends TestCase
     {
         $header = new HeaderCookie();
 
-        $this->assertEquals('Cookie', $header->getFieldName());
+        $this->assertSame('Cookie', $header->getFieldName());
     }
 
     public function testGetFieldValue()
@@ -46,7 +46,7 @@ class HeaderCookieTest extends TestCase
             'baz' => ['qux'],
         ]);
 
-        $this->assertEquals('foo=bar; bar=baz; baz%5B0%5D=qux', $header->getFieldValue());
+        $this->assertSame('foo=bar; bar=baz; baz%5B0%5D=qux', $header->getFieldValue());
     }
 
     public function testToString()
@@ -57,6 +57,6 @@ class HeaderCookieTest extends TestCase
             'baz' => ['qux'],
         ]);
 
-        $this->assertEquals('Cookie: foo=bar; bar=baz; baz%5B0%5D=qux', (string) $header);
+        $this->assertSame('Cookie: foo=bar; bar=baz; baz%5B0%5D=qux', (string) $header);
     }
 }

@@ -35,7 +35,7 @@ class HeaderRefreshTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setDelay(1));
 
-        $this->assertEquals(1, $header->getDelay());
+        $this->assertSame(1, $header->getDelay());
     }
 
     public function testSetInvalidDelay()
@@ -59,7 +59,7 @@ class HeaderRefreshTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setUri($login));
 
-        $this->assertEquals($login, $header->getUri());
+        $this->assertSame($login, $header->getUri());
     }
 
     public function testGetDelay()
@@ -68,7 +68,7 @@ class HeaderRefreshTest extends TestCase
 
         $header = new HeaderRefresh(0, $home);
 
-        $this->assertEquals(0, $header->getDelay());
+        $this->assertSame(0, $header->getDelay());
     }
 
     public function testGetUri()
@@ -77,7 +77,7 @@ class HeaderRefreshTest extends TestCase
 
         $header = new HeaderRefresh(0, $home);
 
-        $this->assertEquals($home, $header->getUri());
+        $this->assertSame($home, $header->getUri());
     }
 
     public function testGetFieldName()
@@ -86,7 +86,7 @@ class HeaderRefreshTest extends TestCase
 
         $header = new HeaderRefresh(0, $home);
 
-        $this->assertEquals('Refresh', $header->getFieldName());
+        $this->assertSame('Refresh', $header->getFieldName());
     }
 
     public function testGetFieldValue()
@@ -95,7 +95,7 @@ class HeaderRefreshTest extends TestCase
 
         $header = new HeaderRefresh(0, $home);
 
-        $this->assertEquals('0; url=/', $header->getFieldValue());
+        $this->assertSame('0; url=/', $header->getFieldValue());
     }
 
     public function testToString()
@@ -104,6 +104,6 @@ class HeaderRefreshTest extends TestCase
 
         $header = new HeaderRefresh(0, $home);
 
-        $this->assertEquals('Refresh: 0; url=/', (string) $header);
+        $this->assertSame('Refresh: 0; url=/', (string) $header);
     }
 }

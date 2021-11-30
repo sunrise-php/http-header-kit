@@ -35,7 +35,7 @@ class HeaderAllowTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('get'));
 
-        $this->assertEquals([
+        $this->assertSame([
             'HEAD',
             'GET',
         ], $header->getValue());
@@ -47,7 +47,7 @@ class HeaderAllowTest extends TestCase
 
         $header->setValue('post', 'patch');
 
-        $this->assertEquals([
+        $this->assertSame([
             'HEAD',
             'GET',
             'POST',
@@ -77,7 +77,7 @@ class HeaderAllowTest extends TestCase
     {
         $header = new HeaderAllow('head');
 
-        $this->assertEquals(['HEAD'], $header->getValue());
+        $this->assertSame(['HEAD'], $header->getValue());
     }
 
     public function testResetValue()
@@ -86,34 +86,34 @@ class HeaderAllowTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
 
-        $this->assertEquals([], $header->getValue());
+        $this->assertSame([], $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderAllow('head');
 
-        $this->assertEquals('Allow', $header->getFieldName());
+        $this->assertSame('Allow', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderAllow('head');
 
-        $this->assertEquals('HEAD', $header->getFieldValue());
+        $this->assertSame('HEAD', $header->getFieldValue());
     }
 
     public function testToStringWithOneValue()
     {
         $header = new HeaderAllow('head');
 
-        $this->assertEquals('Allow: HEAD', (string) $header);
+        $this->assertSame('Allow: HEAD', (string) $header);
     }
 
     public function testToStringWithSeveralValues()
     {
         $header = new HeaderAllow('head', 'get', 'post');
 
-        $this->assertEquals('Allow: HEAD, GET, POST', (string) $header);
+        $this->assertSame('Allow: HEAD, GET, POST', (string) $header);
     }
 }

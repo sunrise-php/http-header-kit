@@ -10,8 +10,8 @@ class HeaderConnectionTest extends TestCase
 {
     public function testConstants()
     {
-        $this->assertEquals('close', HeaderConnection::CONNECTION_CLOSE);
-        $this->assertEquals('keep-alive', HeaderConnection::CONNECTION_KEEP_ALIVE);
+        $this->assertSame('close', HeaderConnection::CONNECTION_CLOSE);
+        $this->assertSame('keep-alive', HeaderConnection::CONNECTION_KEEP_ALIVE);
     }
 
     public function testConstructor()
@@ -34,7 +34,7 @@ class HeaderConnectionTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('new-value'));
 
-        $this->assertEquals('new-value', $header->getValue());
+        $this->assertSame('new-value', $header->getValue());
     }
 
     public function testSetInvalidValue()
@@ -50,27 +50,27 @@ class HeaderConnectionTest extends TestCase
     {
         $header = new HeaderConnection('value');
 
-        $this->assertEquals('value', $header->getValue());
+        $this->assertSame('value', $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderConnection('value');
 
-        $this->assertEquals('Connection', $header->getFieldName());
+        $this->assertSame('Connection', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderConnection('value');
 
-        $this->assertEquals('value', $header->getFieldValue());
+        $this->assertSame('value', $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderConnection('value');
 
-        $this->assertEquals('Connection: value', (string) $header);
+        $this->assertSame('Connection: value', (string) $header);
     }
 }

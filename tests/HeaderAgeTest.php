@@ -28,7 +28,7 @@ class HeaderAgeTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue(1));
 
-        $this->assertEquals(1, $header->getValue());
+        $this->assertSame(1, $header->getValue());
     }
 
     public function testSetInvalidValue()
@@ -44,27 +44,27 @@ class HeaderAgeTest extends TestCase
     {
         $header = new HeaderAge(0);
 
-        $this->assertEquals(0, $header->getValue());
+        $this->assertSame(0, $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderAge(0);
 
-        $this->assertEquals('Age', $header->getFieldName());
+        $this->assertSame('Age', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderAge(0);
 
-        $this->assertEquals('0', $header->getFieldValue());
+        $this->assertSame('0', $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderAge(0);
 
-        $this->assertEquals('Age: 0', (string) $header);
+        $this->assertSame('Age: 0', (string) $header);
     }
 }

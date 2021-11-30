@@ -27,7 +27,7 @@ class HeaderRetryAfterTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setTimestamp($tomorrow));
 
-        $this->assertEquals($tomorrow, $header->getTimestamp());
+        $this->assertSame($tomorrow, $header->getTimestamp());
     }
 
     public function testGetTimestamp()
@@ -36,7 +36,7 @@ class HeaderRetryAfterTest extends TestCase
 
         $header = new HeaderRetryAfter($now);
 
-        $this->assertEquals($now, $header->getTimestamp());
+        $this->assertSame($now, $header->getTimestamp());
     }
 
     public function testGetFieldName()
@@ -45,7 +45,7 @@ class HeaderRetryAfterTest extends TestCase
 
         $header = new HeaderRetryAfter($now);
 
-        $this->assertEquals('Retry-After', $header->getFieldName());
+        $this->assertSame('Retry-After', $header->getFieldName());
     }
 
     public function testGetFieldValue()
@@ -56,7 +56,7 @@ class HeaderRetryAfterTest extends TestCase
 
         $expected = new \DateTime('now', new \DateTimeZone('UTC'));
 
-        $this->assertEquals($expected->format(\DateTime::RFC822), $header->getFieldValue());
+        $this->assertSame($expected->format(\DateTime::RFC822), $header->getFieldValue());
     }
 
     public function testToString()
@@ -65,6 +65,6 @@ class HeaderRetryAfterTest extends TestCase
 
         $header = new HeaderRetryAfter($now);
 
-        $this->assertEquals(\sprintf('Retry-After: %s', $now->format(\DateTime::RFC822)), (string) $header);
+        $this->assertSame(\sprintf('Retry-After: %s', $now->format(\DateTime::RFC822)), (string) $header);
     }
 }

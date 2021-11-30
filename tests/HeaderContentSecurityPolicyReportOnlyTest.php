@@ -35,7 +35,7 @@ class HeaderContentSecurityPolicyReportOnlyTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setParameter('name', 'overwritten-value'));
 
-        $this->assertEquals(['name' => 'overwritten-value'], $header->getParameters());
+        $this->assertSame(['name' => 'overwritten-value'], $header->getParameters());
     }
 
     public function testSetSeveralParameters()
@@ -45,7 +45,7 @@ class HeaderContentSecurityPolicyReportOnlyTest extends TestCase
         $header->setParameter('name-1', 'value-1');
         $header->setParameter('name-2', 'value-2');
 
-        $this->assertEquals([
+        $this->assertSame([
             'name-1' => 'value-1',
             'name-2' => 'value-2',
         ], $header->getParameters());
@@ -81,7 +81,7 @@ class HeaderContentSecurityPolicyReportOnlyTest extends TestCase
             'name-2' => 'overwritten-value-2',
         ]));
 
-        $this->assertEquals([
+        $this->assertSame([
             'name-1' => 'overwritten-value-1',
             'name-2' => 'overwritten-value-2',
         ], $header->getParameters());
@@ -109,7 +109,7 @@ class HeaderContentSecurityPolicyReportOnlyTest extends TestCase
     {
         $header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
 
-        $this->assertEquals(['name' => 'value'], $header->getParameters());
+        $this->assertSame(['name' => 'value'], $header->getParameters());
     }
 
     public function testClearParameters()
@@ -121,42 +121,42 @@ class HeaderContentSecurityPolicyReportOnlyTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
 
-        $this->assertEquals([], $header->getParameters());
+        $this->assertSame([], $header->getParameters());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderContentSecurityPolicyReportOnly([]);
 
-        $this->assertEquals('Content-Security-Policy-Report-Only', $header->getFieldName());
+        $this->assertSame('Content-Security-Policy-Report-Only', $header->getFieldName());
     }
 
     public function testGetFieldValueWithoutParameterValue()
     {
         $header = new HeaderContentSecurityPolicyReportOnly(['name' => '']);
 
-        $this->assertEquals('name', $header->getFieldValue());
+        $this->assertSame('name', $header->getFieldValue());
     }
 
     public function testGetFieldValueWithParameterValue()
     {
         $header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
 
-        $this->assertEquals('name value', $header->getFieldValue());
+        $this->assertSame('name value', $header->getFieldValue());
     }
 
     public function testToStringWithoutParameterValue()
     {
         $header = new HeaderContentSecurityPolicyReportOnly(['name' => '']);
 
-        $this->assertEquals('Content-Security-Policy-Report-Only: name', (string) $header);
+        $this->assertSame('Content-Security-Policy-Report-Only: name', (string) $header);
     }
 
     public function testToStringWithParameterValue()
     {
         $header = new HeaderContentSecurityPolicyReportOnly(['name' => 'value']);
 
-        $this->assertEquals('Content-Security-Policy-Report-Only: name value', (string) $header);
+        $this->assertSame('Content-Security-Policy-Report-Only: name value', (string) $header);
     }
 
     public function testToStringWithSeveralParameters()
@@ -169,6 +169,6 @@ class HeaderContentSecurityPolicyReportOnlyTest extends TestCase
 
         $expected = 'Content-Security-Policy-Report-Only: name-1; name-2 value-2; name-3 value-3';
 
-        $this->assertEquals($expected, (string) $header);
+        $this->assertSame($expected, (string) $header);
     }
 }

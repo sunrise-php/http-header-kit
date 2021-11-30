@@ -31,7 +31,7 @@ class HeaderContentMD5Test extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue(self::TEST_MD5_DIGEST_2));
 
-        $this->assertEquals(self::TEST_MD5_DIGEST_2, $header->getValue());
+        $this->assertSame(self::TEST_MD5_DIGEST_2, $header->getValue());
     }
 
     public function testSetInvalidValue()
@@ -47,27 +47,27 @@ class HeaderContentMD5Test extends TestCase
     {
         $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
 
-        $this->assertEquals(self::TEST_MD5_DIGEST_1, $header->getValue());
+        $this->assertSame(self::TEST_MD5_DIGEST_1, $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
 
-        $this->assertEquals('Content-MD5', $header->getFieldName());
+        $this->assertSame('Content-MD5', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
 
-        $this->assertEquals(self::TEST_MD5_DIGEST_1, $header->getFieldValue());
+        $this->assertSame(self::TEST_MD5_DIGEST_1, $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
 
-        $this->assertEquals('Content-MD5: ' . self::TEST_MD5_DIGEST_1, (string) $header);
+        $this->assertSame('Content-MD5: ' . self::TEST_MD5_DIGEST_1, (string) $header);
     }
 }

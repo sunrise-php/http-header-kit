@@ -46,7 +46,7 @@ class HeaderLinkTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setUri($uri2));
 
-        $this->assertEquals($uri2, $header->getUri());
+        $this->assertSame($uri2, $header->getUri());
     }
 
     public function testSetParameter()
@@ -60,7 +60,7 @@ class HeaderLinkTest extends TestCase
             $header->setParameter('parameter-name', 'overwritten-parameter-value')
         );
 
-        $this->assertEquals(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
+        $this->assertSame(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
     }
 
     public function testSetSeveralParameters()
@@ -75,7 +75,7 @@ class HeaderLinkTest extends TestCase
         $header->setParameter('parameter-name-1', 'overwritten-parameter-value-1');
         $header->setParameter('parameter-name-2', 'overwritten-parameter-value-2');
 
-        $this->assertEquals([
+        $this->assertSame([
             'parameter-name-1' => 'overwritten-parameter-value-1',
             'parameter-name-2' => 'overwritten-parameter-value-2',
         ], $header->getParameters());
@@ -117,7 +117,7 @@ class HeaderLinkTest extends TestCase
             'parameter-name-2' => 'overwritten-parameter-value-2',
         ]));
 
-        $this->assertEquals([
+        $this->assertSame([
             'parameter-name-1' => 'overwritten-parameter-value-1',
             'parameter-name-2' => 'overwritten-parameter-value-2',
         ], $header->getParameters());
@@ -151,7 +151,7 @@ class HeaderLinkTest extends TestCase
 
         $header = new HeaderLink($uri);
 
-        $this->assertEquals($uri, $header->getUri());
+        $this->assertSame($uri, $header->getUri());
     }
 
     public function testGetParameters()
@@ -160,7 +160,7 @@ class HeaderLinkTest extends TestCase
 
         $header = new HeaderLink($uri, ['parameter-name' => 'parameter-value']);
 
-        $this->assertEquals(['parameter-name' => 'parameter-value'], $header->getParameters());
+        $this->assertSame(['parameter-name' => 'parameter-value'], $header->getParameters());
     }
 
     public function testClearParameters()
@@ -179,7 +179,7 @@ class HeaderLinkTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
 
-        $this->assertEquals([], $header->getParameters());
+        $this->assertSame([], $header->getParameters());
     }
 
     public function testGetFieldName()
@@ -188,7 +188,7 @@ class HeaderLinkTest extends TestCase
 
         $header = new HeaderLink($uri);
 
-        $this->assertEquals('Link', $header->getFieldName());
+        $this->assertSame('Link', $header->getFieldName());
     }
 
     public function testGetFieldValue()
@@ -197,7 +197,7 @@ class HeaderLinkTest extends TestCase
 
         $header = new HeaderLink($uri, ['parameter-name' => 'parameter-value']);
 
-        $this->assertEquals('</>; parameter-name="parameter-value"', $header->getFieldValue());
+        $this->assertSame('</>; parameter-name="parameter-value"', $header->getFieldValue());
     }
 
     public function testToStringWithoutParameters()
@@ -206,7 +206,7 @@ class HeaderLinkTest extends TestCase
 
         $header = new HeaderLink($uri);
 
-        $this->assertEquals('Link: </>', (string) $header);
+        $this->assertSame('Link: </>', (string) $header);
     }
 
     public function testToStringWithParameterWithoutValue()
@@ -215,7 +215,7 @@ class HeaderLinkTest extends TestCase
 
         $header = new HeaderLink($uri, ['parameter-name' => '']);
 
-        $this->assertEquals('Link: </>; parameter-name=""', (string) $header);
+        $this->assertSame('Link: </>; parameter-name=""', (string) $header);
     }
 
     public function testToStringWithOneParameter()
@@ -224,7 +224,7 @@ class HeaderLinkTest extends TestCase
 
         $header = new HeaderLink($uri, ['parameter-name' => 'parameter-value']);
 
-        $this->assertEquals('Link: </>; parameter-name="parameter-value"', (string) $header);
+        $this->assertSame('Link: </>; parameter-name="parameter-value"', (string) $header);
     }
 
     public function testToStringWithSeveralParameters()
@@ -240,6 +240,6 @@ class HeaderLinkTest extends TestCase
         $expected = 'Link: </>; parameter-name-1="parameter-value-1"; '.
                     'parameter-name-2="parameter-value-2"; parameter-name-3="parameter-value-3"';
 
-        $this->assertEquals($expected, (string) $header);
+        $this->assertSame($expected, (string) $header);
     }
 }

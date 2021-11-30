@@ -49,7 +49,7 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setUri($uri2));
 
-        $this->assertEquals($uri2, $header->getUri());
+        $this->assertSame($uri2, $header->getUri());
     }
 
     public function testSetEmptyUri()
@@ -60,7 +60,7 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setUri(null));
 
-        $this->assertEquals(null, $header->getUri());
+        $this->assertNull($header->getUri());
     }
 
     public function testSetInvalidUriThatWithoutScheme()
@@ -87,28 +87,28 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $header = new HeaderAccessControlAllowOrigin($uri);
 
-        $this->assertEquals($uri, $header->getUri());
+        $this->assertSame($uri, $header->getUri());
     }
 
     public function testGetEmptyUri()
     {
         $header = new HeaderAccessControlAllowOrigin(null);
 
-        $this->assertEquals(null, $header->getUri());
+        $this->assertNull($header->getUri());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderAccessControlAllowOrigin(null);
 
-        $this->assertEquals('Access-Control-Allow-Origin', $header->getFieldName());
+        $this->assertSame('Access-Control-Allow-Origin', $header->getFieldName());
     }
 
     public function testGetFieldValueWithoutUri()
     {
         $header = new HeaderAccessControlAllowOrigin(null);
 
-        $this->assertEquals('*', $header->getFieldValue());
+        $this->assertSame('*', $header->getFieldValue());
     }
 
     public function testGetFieldValueWithSchemeAndHost()
@@ -117,7 +117,7 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $header = new HeaderAccessControlAllowOrigin($uri);
 
-        $this->assertEquals('http://localhost', $header->getFieldValue());
+        $this->assertSame('http://localhost', $header->getFieldValue());
     }
 
     public function testGetFieldValueWithSchemeAndHostAndPort()
@@ -126,7 +126,7 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $header = new HeaderAccessControlAllowOrigin($uri);
 
-        $this->assertEquals('http://localhost:3000', $header->getFieldValue());
+        $this->assertSame('http://localhost:3000', $header->getFieldValue());
     }
 
     public function testGetFieldValueWithValidOrigin()
@@ -135,14 +135,14 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $header = new HeaderAccessControlAllowOrigin($uri);
 
-        $this->assertEquals('http://localhost:3000', $header->getFieldValue());
+        $this->assertSame('http://localhost:3000', $header->getFieldValue());
     }
 
     public function testToStringWithoutUri()
     {
         $header = new HeaderAccessControlAllowOrigin(null);
 
-        $this->assertEquals('Access-Control-Allow-Origin: *', (string) $header);
+        $this->assertSame('Access-Control-Allow-Origin: *', (string) $header);
     }
 
     public function testToStringWithSchemeAndHost()
@@ -151,7 +151,7 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $header = new HeaderAccessControlAllowOrigin($uri);
 
-        $this->assertEquals('Access-Control-Allow-Origin: http://localhost', (string) $header);
+        $this->assertSame('Access-Control-Allow-Origin: http://localhost', (string) $header);
     }
 
     public function testToStringWithSchemeAndHostAndPort()
@@ -160,7 +160,7 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $header = new HeaderAccessControlAllowOrigin($uri);
 
-        $this->assertEquals('Access-Control-Allow-Origin: http://localhost:3000', (string) $header);
+        $this->assertSame('Access-Control-Allow-Origin: http://localhost:3000', (string) $header);
     }
 
     public function testToStringWithValidOrigin()
@@ -169,6 +169,6 @@ class HeaderAccessControlAllowOriginTest extends TestCase
 
         $header = new HeaderAccessControlAllowOrigin($uri);
 
-        $this->assertEquals('Access-Control-Allow-Origin: http://localhost:3000', (string) $header);
+        $this->assertSame('Access-Control-Allow-Origin: http://localhost:3000', (string) $header);
     }
 }

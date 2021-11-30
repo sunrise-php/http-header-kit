@@ -35,7 +35,7 @@ class HeaderAccessControlAllowMethodsTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('get'));
 
-        $this->assertEquals([
+        $this->assertSame([
             'HEAD',
             'GET',
         ], $header->getValue());
@@ -47,7 +47,7 @@ class HeaderAccessControlAllowMethodsTest extends TestCase
 
         $header->setValue('post', 'patch');
 
-        $this->assertEquals([
+        $this->assertSame([
             'HEAD',
             'GET',
             'POST',
@@ -77,7 +77,7 @@ class HeaderAccessControlAllowMethodsTest extends TestCase
     {
         $header = new HeaderAccessControlAllowMethods('head');
 
-        $this->assertEquals(['HEAD'], $header->getValue());
+        $this->assertSame(['HEAD'], $header->getValue());
     }
 
     public function testResetValue()
@@ -86,34 +86,34 @@ class HeaderAccessControlAllowMethodsTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
 
-        $this->assertEquals([], $header->getValue());
+        $this->assertSame([], $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderAccessControlAllowMethods('head');
 
-        $this->assertEquals('Access-Control-Allow-Methods', $header->getFieldName());
+        $this->assertSame('Access-Control-Allow-Methods', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderAccessControlAllowMethods('head');
 
-        $this->assertEquals('HEAD', $header->getFieldValue());
+        $this->assertSame('HEAD', $header->getFieldValue());
     }
 
     public function testToStringWithOneValue()
     {
         $header = new HeaderAccessControlAllowMethods('head');
 
-        $this->assertEquals('Access-Control-Allow-Methods: HEAD', (string) $header);
+        $this->assertSame('Access-Control-Allow-Methods: HEAD', (string) $header);
     }
 
     public function testToStringWithSeveralValues()
     {
         $header = new HeaderAccessControlAllowMethods('head', 'get', 'post');
 
-        $this->assertEquals('Access-Control-Allow-Methods: HEAD, GET, POST', (string) $header);
+        $this->assertSame('Access-Control-Allow-Methods: HEAD, GET, POST', (string) $header);
     }
 }

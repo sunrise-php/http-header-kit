@@ -10,13 +10,13 @@ class HeaderWarningTest extends TestCase
 {
     public function testConstants()
     {
-        $this->assertEquals(110, HeaderWarning::HTTP_WARNING_CODE_RESPONSE_IS_STALE);
-        $this->assertEquals(111, HeaderWarning::HTTP_WARNING_CODE_REVALIDATION_FAILED);
-        $this->assertEquals(112, HeaderWarning::HTTP_WARNING_CODE_DISCONNECTED_OPERATION);
-        $this->assertEquals(113, HeaderWarning::HTTP_WARNING_CODE_HEURISTIC_EXPIRATION);
-        $this->assertEquals(199, HeaderWarning::HTTP_WARNING_CODE_MISCELLANEOUS_WARNING);
-        $this->assertEquals(214, HeaderWarning::HTTP_WARNING_CODE_TRANSFORMATION_APPLIED);
-        $this->assertEquals(299, HeaderWarning::HTTP_WARNING_CODE_MISCELLANEOUS_PERSISTENT_WARNING);
+        $this->assertSame(110, HeaderWarning::HTTP_WARNING_CODE_RESPONSE_IS_STALE);
+        $this->assertSame(111, HeaderWarning::HTTP_WARNING_CODE_REVALIDATION_FAILED);
+        $this->assertSame(112, HeaderWarning::HTTP_WARNING_CODE_DISCONNECTED_OPERATION);
+        $this->assertSame(113, HeaderWarning::HTTP_WARNING_CODE_HEURISTIC_EXPIRATION);
+        $this->assertSame(199, HeaderWarning::HTTP_WARNING_CODE_MISCELLANEOUS_WARNING);
+        $this->assertSame(214, HeaderWarning::HTTP_WARNING_CODE_TRANSFORMATION_APPLIED);
+        $this->assertSame(299, HeaderWarning::HTTP_WARNING_CODE_MISCELLANEOUS_PERSISTENT_WARNING);
     }
 
     public function testConstructorWithoutDate()
@@ -65,7 +65,7 @@ class HeaderWarningTest extends TestCase
     {
         $header = new HeaderWarning(199, 'agent', 'text', null);
 
-        $this->assertEquals(null, $header->getDate());
+        $this->assertNull($header->getDate());
     }
 
     public function testSetCode()
@@ -74,7 +74,7 @@ class HeaderWarningTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setCode(299));
 
-        $this->assertEquals(299, $header->getCode());
+        $this->assertSame(299, $header->getCode());
     }
 
     public function testSetSmallCode()
@@ -101,7 +101,7 @@ class HeaderWarningTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setAgent('new-agent'));
 
-        $this->assertEquals('new-agent', $header->getAgent());
+        $this->assertSame('new-agent', $header->getAgent());
     }
 
     public function testSetInvalidAgent()
@@ -119,7 +119,7 @@ class HeaderWarningTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setText('new-text'));
 
-        $this->assertEquals('new-text', $header->getText());
+        $this->assertSame('new-text', $header->getText());
     }
 
     public function testSetInvalidText()
@@ -141,7 +141,7 @@ class HeaderWarningTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setDate($later));
 
-        $this->assertEquals($later, $header->getDate());
+        $this->assertSame($later, $header->getDate());
     }
 
     public function testSetEmptyDate()
@@ -152,28 +152,28 @@ class HeaderWarningTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setDate(null));
 
-        $this->assertEquals(null, $header->getDate());
+        $this->assertNull($header->getDate());
     }
 
     public function testGetCode()
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
-        $this->assertEquals(199, $header->getCode());
+        $this->assertSame(199, $header->getCode());
     }
 
     public function testGetAgent()
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
-        $this->assertEquals('agent', $header->getAgent());
+        $this->assertSame('agent', $header->getAgent());
     }
 
     public function testGetText()
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
-        $this->assertEquals('text', $header->getText());
+        $this->assertSame('text', $header->getText());
     }
 
     public function testGetDate()
@@ -182,21 +182,21 @@ class HeaderWarningTest extends TestCase
 
         $header = new HeaderWarning(199, 'agent', 'text', $now);
 
-        $this->assertEquals($now, $header->getDate());
+        $this->assertSame($now, $header->getDate());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
-        $this->assertEquals('Warning', $header->getFieldName());
+        $this->assertSame('Warning', $header->getFieldName());
     }
 
     public function testGetFieldValueWithoutDate()
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
-        $this->assertEquals('199 agent "text"', $header->getFieldValue());
+        $this->assertSame('199 agent "text"', $header->getFieldValue());
     }
 
     public function testGetFieldValueWithDate()
@@ -205,7 +205,7 @@ class HeaderWarningTest extends TestCase
 
         $header = new HeaderWarning(199, 'agent', 'text', new \DateTime('now', new \DateTimeZone('Europe/Moscow')));
 
-        $this->assertEquals(
+        $this->assertSame(
             \sprintf('199 agent "text" "%s"', $utc->format(\DateTime::RFC822)),
             $header->getFieldValue()
         );
@@ -215,7 +215,7 @@ class HeaderWarningTest extends TestCase
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
-        $this->assertEquals('Warning: 199 agent "text"', (string) $header);
+        $this->assertSame('Warning: 199 agent "text"', (string) $header);
     }
 
     public function testToStringWithDate()
@@ -224,7 +224,7 @@ class HeaderWarningTest extends TestCase
 
         $header = new HeaderWarning(199, 'agent', 'text', new \DateTime('now', new \DateTimeZone('Europe/Moscow')));
 
-        $this->assertEquals(
+        $this->assertSame(
             \sprintf('Warning: 199 agent "text" "%s"', $utc->format(\DateTime::RFC822)),
             (string) $header
         );

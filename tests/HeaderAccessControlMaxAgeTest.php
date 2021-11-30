@@ -28,7 +28,7 @@ class HeaderAccessControlMaxAgeTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue(-1));
 
-        $this->assertEquals(-1, $header->getValue());
+        $this->assertSame(-1, $header->getValue());
     }
 
     public function testSetInvalidValue()
@@ -44,27 +44,27 @@ class HeaderAccessControlMaxAgeTest extends TestCase
     {
         $header = new HeaderAccessControlMaxAge(86400);
 
-        $this->assertEquals(86400, $header->getValue());
+        $this->assertSame(86400, $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderAccessControlMaxAge(86400);
 
-        $this->assertEquals('Access-Control-Max-Age', $header->getFieldName());
+        $this->assertSame('Access-Control-Max-Age', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderAccessControlMaxAge(86400);
 
-        $this->assertEquals('86400', $header->getFieldValue());
+        $this->assertSame('86400', $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderAccessControlMaxAge(86400);
 
-        $this->assertEquals('Access-Control-Max-Age: 86400', (string) $header);
+        $this->assertSame('Access-Control-Max-Age: 86400', (string) $header);
     }
 }
