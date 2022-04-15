@@ -78,7 +78,7 @@ class HeaderAccessControlAllowHeaders extends AbstractHeader implements HeaderIn
     /**
      * Gets the header value
      *
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getValue() : array
     {

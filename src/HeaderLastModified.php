@@ -15,6 +15,7 @@ namespace Sunrise\Http\Header;
  * Import classes
  */
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 
@@ -81,8 +82,14 @@ class HeaderLastModified extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        $this->getTimestamp()->setTimezone(new DateTimeZone('GMT'));
+        $timestamp = $this->getTimestamp();
 
-        return $this->getTimestamp()->format(DateTime::RFC822);
+        /** @psalm-suppress RedundantCondition */
+        if ($timestamp instanceof DateTime ||
+            $timestamp instanceof DateTimeImmutable) {
+            $timestamp->setTimezone(new DateTimeZone('GMT'));
+        }
+
+        return $timestamp->format(DateTime::RFC822);
     }
 }

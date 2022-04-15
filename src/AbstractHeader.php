@@ -25,6 +25,8 @@ use function sprintf;
 
 /**
  * AbstractHeader
+ *
+ * @template-implements IteratorAggregate<int, string>
  */
 abstract class AbstractHeader implements HeaderInterface, IteratorAggregate
 {

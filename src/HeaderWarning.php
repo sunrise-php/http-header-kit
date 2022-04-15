@@ -15,6 +15,7 @@ namespace Sunrise\Http\Header;
  * Import classes
  */
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
@@ -224,10 +225,16 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
             $this->getText()
         );
 
-        if ($this->getDate() instanceof DateTimeInterface) {
-            $this->getDate()->setTimezone(new DateTimeZone('GMT'));
+        $date = $this->getDate();
+        if (isset($date)) {
 
-            $result .= ' "' . $this->getDate()->format(DateTime::RFC822) . '"';
+            /** @psalm-suppress RedundantCondition */
+            if ($date instanceof DateTime ||
+                $date instanceof DateTimeImmutable) {
+                $date->setTimezone(new DateTimeZone('GMT'));
+            }
+
+            $result .= ' "' . $date->format(DateTime::RFC822) . '"';
         }
 
         return $result;
