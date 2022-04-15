@@ -12,7 +12,7 @@
 ## Installation
 
 ```bash
-composer require 'sunrise/http-header-kit:^2.0'
+composer require 'sunrise/http-header-kit:^2.1'
 ```
 
 ## How to use?
@@ -38,6 +38,20 @@ $response->header(...$header);
 ### HTTP Headers
 
 > ⚠️ Note that in the examples below will use PSR-7.
+
+#### Custom header
+
+> Use this header if you can't find a suitable one below.
+
+```php
+use Sunrise\Http\Header\HeaderCustom;
+use Sunrise\Http\Message\ResponseFactory;
+
+$header = new HeaderCustom('X-Fiend-Name', 'field-value');
+
+(new ResponseFactory) ->createResponse()
+    ->withHeader(...$header);
+```
 
 #### Access-Control-Allow-Credentials
 
