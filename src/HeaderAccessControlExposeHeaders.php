@@ -78,7 +78,7 @@ class HeaderAccessControlExposeHeaders extends AbstractHeader implements HeaderI
     /**
      * Gets the header value
      *
-     * @return array<string>
+     * @return list<string>
      */
     public function getValue() : array
     {

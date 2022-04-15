@@ -78,7 +78,7 @@ class HeaderClearSiteData extends AbstractHeader implements HeaderInterface
     /**
      * Gets the header value
      *
-     * @return array<int, string>
+     * @return list<string>
      */
     public function getValue() : array
     {

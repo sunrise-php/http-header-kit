@@ -99,9 +99,12 @@ class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInt
             return '*';
         }
 
-        $value = $uri->getScheme() . '://' . $uri->getHost();
-        if (null !== $uri->getPort()) {
-            $value .= ':' . $uri->getPort();
+        $value = $uri->getScheme() . ':';
+        $value .= '//' . $uri->getHost();
+
+        $port = $uri->getPort();
+        if (null !== $port) {
+            $value .= ':' . $port;
         }
 
         return $value;

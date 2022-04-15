@@ -15,6 +15,7 @@ namespace Sunrise\Http\Header;
  * Import classes
  */
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 use InvalidArgumentException;
@@ -373,31 +374,42 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
         $value = rawurlencode($this->getValue());
         $result = sprintf('%s=%s', $name, $value);
 
-        if ($this->getExpires() instanceof DateTimeInterface) {
-            $this->getExpires()->setTimezone(new DateTimeZone('GMT'));
+        $expires = $this->getExpires();
+        if ($expires instanceof DateTimeInterface) {
 
-            $result .= '; Expires=' . $this->getExpires()->format(DateTime::RFC822);
-            $result .= '; Max-Age=' . ($this->getExpires()->getTimestamp() - time());
+            /** @psalm-suppress RedundantCondition */
+            if ($expires instanceof DateTime ||
+                $expires instanceof DateTimeImmutable) {
+                $expires->setTimezone(new DateTimeZone('GMT'));
+            }
+
+            $result .= '; Expires=' . $expires->format(DateTime::RFC822);
+            $result .= '; Max-Age=' . ($expires->getTimestamp() - time());
         }
 
-        if ($this->getDomain()) {
-            $result .= '; Domain=' . $this->getDomain();
+        $domain = $this->getDomain();
+        if (isset($domain)) {
+            $result .= '; Domain=' . $domain;
         }
 
-        if ($this->getPath()) {
-            $result .= '; Path=' . $this->getPath();
+        $path = $this->getPath();
+        if (isset($path)) {
+            $result .= '; Path=' . $path;
         }
 
-        if ($this->getSecure()) {
+        $secure = $this->getSecure();
+        if (true === $secure) {
             $result .= '; Secure';
         }
 
-        if ($this->getHttpOnly()) {
+        $httpOnly = $this->getHttpOnly();
+        if (true === $httpOnly) {
             $result .= '; HttpOnly';
         }
 
-        if ($this->getSameSite()) {
-            $result .= '; SameSite=' . $this->getSameSite();
+        $sameSite = $this->getSameSite();
+        if (isset($sameSite)) {
+            $result .= '; SameSite=' . $sameSite;
         }
 
         return $result;
