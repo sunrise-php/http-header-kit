@@ -56,7 +56,7 @@ class HeaderSetCookieTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setName('newName'));
 
-        $this->assertEquals('newName', $header->getName());
+        $this->assertSame('newName', $header->getName());
     }
 
     public function testSetEmptyName()
@@ -83,7 +83,7 @@ class HeaderSetCookieTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('newValue'));
 
-        $this->assertEquals('newValue', $header->getValue());
+        $this->assertSame('newValue', $header->getValue());
     }
 
     public function testSetExpires()
@@ -96,7 +96,7 @@ class HeaderSetCookieTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setExpires($tomorrow));
 
-        $this->assertEquals($tomorrow, $header->getExpires());
+        $this->assertSame($tomorrow, $header->getExpires());
     }
 
     public function testResetExpires()
@@ -107,7 +107,7 @@ class HeaderSetCookieTest extends TestCase
 
         $header->setExpires(null);
 
-        $this->assertEquals(null, $header->getExpires());
+        $this->assertNull($header->getExpires());
     }
 
     public function testSetDomain()
@@ -116,7 +116,7 @@ class HeaderSetCookieTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setDomain('new.domain.net'));
 
-        $this->assertEquals('new.domain.net', $header->getDomain());
+        $this->assertSame('new.domain.net', $header->getDomain());
     }
 
     public function testSetInvalidDomain()
@@ -134,7 +134,7 @@ class HeaderSetCookieTest extends TestCase
 
         $header->setDomain(null);
 
-        $this->assertEquals(null, $header->getDomain());
+        $this->assertNull($header->getDomain());
     }
 
     public function testSetPath()
@@ -143,7 +143,7 @@ class HeaderSetCookieTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setPath('/new/path/'));
 
-        $this->assertEquals('/new/path/', $header->getPath());
+        $this->assertSame('/new/path/', $header->getPath());
     }
 
     public function testSetInvalidPath()
@@ -161,7 +161,7 @@ class HeaderSetCookieTest extends TestCase
 
         $header->setPath(null);
 
-        $this->assertEquals(null, $header->getPath());
+        $this->assertNull($header->getPath());
     }
 
     public function testSetSecure()
@@ -170,7 +170,7 @@ class HeaderSetCookieTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setSecure(false));
 
-        $this->assertEquals(false, $header->getSecure());
+        $this->assertFalse($header->getSecure());
     }
 
     public function testResetSecure()
@@ -179,7 +179,7 @@ class HeaderSetCookieTest extends TestCase
 
         $header->setSecure(null);
 
-        $this->assertEquals(null, $header->getSecure());
+        $this->assertNull($header->getSecure());
     }
 
     public function testSetHttpOnly()
@@ -188,7 +188,7 @@ class HeaderSetCookieTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setHttpOnly(false));
 
-        $this->assertEquals(false, $header->getHttpOnly());
+        $this->assertFalse($header->getHttpOnly());
     }
 
     public function testResetHttpOnly()
@@ -197,7 +197,7 @@ class HeaderSetCookieTest extends TestCase
 
         $header->setHttpOnly(null);
 
-        $this->assertEquals(null, $header->getHttpOnly());
+        $this->assertNull($header->getHttpOnly());
     }
 
     public function testSetSameSite()
@@ -206,7 +206,7 @@ class HeaderSetCookieTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setSameSite('strict'));
 
-        $this->assertEquals('strict', $header->getSameSite());
+        $this->assertSame('strict', $header->getSameSite());
     }
 
     public function testSetInvalidSameSite()
@@ -224,21 +224,21 @@ class HeaderSetCookieTest extends TestCase
 
         $header->setSameSite(null);
 
-        $this->assertEquals(null, $header->getSameSite());
+        $this->assertNull($header->getSameSite());
     }
 
     public function testGetName()
     {
         $header = new HeaderSetCookie('name', 'value');
 
-        $this->assertEquals('name', $header->getName());
+        $this->assertSame('name', $header->getName());
     }
 
     public function testGetValue()
     {
         $header = new HeaderSetCookie('name', 'value');
 
-        $this->assertEquals('value', $header->getValue());
+        $this->assertSame('value', $header->getValue());
     }
 
     public function testGetExpires()
@@ -247,49 +247,49 @@ class HeaderSetCookieTest extends TestCase
 
         $header = new HeaderSetCookie('name', 'value', $now);
 
-        $this->assertEquals($now, $header->getExpires());
+        $this->assertSame($now, $header->getExpires());
     }
 
     public function testGetDomain()
     {
         $header = new HeaderSetCookie('name', 'value', null, ['domain' => 'domain.net']);
 
-        $this->assertEquals('domain.net', $header->getDomain());
+        $this->assertSame('domain.net', $header->getDomain());
     }
 
     public function testGetPath()
     {
         $header = new HeaderSetCookie('name', 'value', null, ['path' => '/path/']);
 
-        $this->assertEquals('/path/', $header->getPath());
+        $this->assertSame('/path/', $header->getPath());
     }
 
     public function testGetSecure()
     {
         $header = new HeaderSetCookie('name', 'value', null, ['secure' => true]);
 
-        $this->assertEquals(true, $header->getSecure());
+        $this->assertTrue($header->getSecure());
     }
 
     public function testGetHttpOnly()
     {
         $header = new HeaderSetCookie('name', 'value', null, ['httponly' => true]);
 
-        $this->assertEquals(true, $header->getHttpOnly());
+        $this->assertTrue($header->getHttpOnly());
     }
 
     public function testGetSameSite()
     {
         $header = new HeaderSetCookie('name', 'value', null, ['samesite' => 'lax']);
 
-        $this->assertEquals('lax', $header->getSameSite());
+        $this->assertSame('lax', $header->getSameSite());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderSetCookie('name', 'value');
 
-        $this->assertEquals('Set-Cookie', $header->getFieldName());
+        $this->assertSame('Set-Cookie', $header->getFieldName());
     }
 
     public function testGetFieldValue()
@@ -307,7 +307,7 @@ class HeaderSetCookieTest extends TestCase
         $expected = 'name=value; Expires=' . $now->format(\DateTime::RFC822) .
                     '; Max-Age=0; Domain=domain.net; Path=/path/; SameSite=strict';
 
-        $this->assertEquals($expected, $header->getFieldValue());
+        $this->assertSame($expected, $header->getFieldValue());
     }
 
     public function testToString()
@@ -327,6 +327,6 @@ class HeaderSetCookieTest extends TestCase
         $expected = 'Set-Cookie: name=value; Expires=' . $utc->format(\DateTime::RFC822) .
                     '; Max-Age=30; Domain=domain.net; Path=/path/; Secure; HttpOnly; SameSite=strict';
 
-        $this->assertEquals($expected, (string) $header);
+        $this->assertSame($expected, (string) $header);
     }
 }

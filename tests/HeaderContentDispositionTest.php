@@ -42,7 +42,7 @@ class HeaderContentDispositionTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setType('overwritten-type'));
 
-        $this->assertEquals('overwritten-type', $header->getType());
+        $this->assertSame('overwritten-type', $header->getType());
     }
 
     public function testSetInvalidType()
@@ -63,7 +63,7 @@ class HeaderContentDispositionTest extends TestCase
             $header->setParameter('parameter-name', 'overwritten-parameter-value')
         );
 
-        $this->assertEquals(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
+        $this->assertSame(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
     }
 
     public function testSetSeveralParameters()
@@ -76,7 +76,7 @@ class HeaderContentDispositionTest extends TestCase
         $header->setParameter('parameter-name-1', 'overwritten-parameter-value-1');
         $header->setParameter('parameter-name-2', 'overwritten-parameter-value-2');
 
-        $this->assertEquals([
+        $this->assertSame([
             'parameter-name-1' => 'overwritten-parameter-value-1',
             'parameter-name-2' => 'overwritten-parameter-value-2',
         ], $header->getParameters());
@@ -112,7 +112,7 @@ class HeaderContentDispositionTest extends TestCase
             'parameter-name-2' => 'overwritten-parameter-value-2',
         ]));
 
-        $this->assertEquals([
+        $this->assertSame([
             'parameter-name-1' => 'overwritten-parameter-value-1',
             'parameter-name-2' => 'overwritten-parameter-value-2',
         ], $header->getParameters());
@@ -140,14 +140,14 @@ class HeaderContentDispositionTest extends TestCase
     {
         $header = new HeaderContentDisposition('type');
 
-        $this->assertEquals('type', $header->getType());
+        $this->assertSame('type', $header->getType());
     }
 
     public function testGetParameters()
     {
         $header = new HeaderContentDisposition('type', ['parameter-name' => 'parameter-value']);
 
-        $this->assertEquals(['parameter-name' => 'parameter-value'], $header->getParameters());
+        $this->assertSame(['parameter-name' => 'parameter-value'], $header->getParameters());
     }
 
     public function testClearParameters()
@@ -164,42 +164,42 @@ class HeaderContentDispositionTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
 
-        $this->assertEquals([], $header->getParameters());
+        $this->assertSame([], $header->getParameters());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderContentDisposition('type');
 
-        $this->assertEquals('Content-Disposition', $header->getFieldName());
+        $this->assertSame('Content-Disposition', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderContentDisposition('type', ['parameter-name' => 'parameter-value']);
 
-        $this->assertEquals('type; parameter-name="parameter-value"', $header->getFieldValue());
+        $this->assertSame('type; parameter-name="parameter-value"', $header->getFieldValue());
     }
 
     public function testToStringWithoutParameters()
     {
         $header = new HeaderContentDisposition('type');
 
-        $this->assertEquals('Content-Disposition: type', (string) $header);
+        $this->assertSame('Content-Disposition: type', (string) $header);
     }
 
     public function testToStringWithParameterWithoutValue()
     {
         $header = new HeaderContentDisposition('type', ['parameter-name' => '']);
 
-        $this->assertEquals('Content-Disposition: type; parameter-name=""', (string) $header);
+        $this->assertSame('Content-Disposition: type; parameter-name=""', (string) $header);
     }
 
     public function testToStringWithOneParameter()
     {
         $header = new HeaderContentDisposition('type', ['parameter-name' => 'parameter-value']);
 
-        $this->assertEquals('Content-Disposition: type; parameter-name="parameter-value"', (string) $header);
+        $this->assertSame('Content-Disposition: type; parameter-name="parameter-value"', (string) $header);
     }
 
     public function testToStringWithSeveralParameters()
@@ -213,6 +213,6 @@ class HeaderContentDispositionTest extends TestCase
         $expected = 'Content-Disposition: type; parameter-name-1="parameter-value-1"; ' .
                     'parameter-name-2="parameter-value-2"; parameter-name-3="parameter-value-3"';
 
-        $this->assertEquals($expected, (string) $header);
+        $this->assertSame($expected, (string) $header);
     }
 }

@@ -28,7 +28,7 @@ class HeaderTrailerTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('new-value'));
 
-        $this->assertEquals('new-value', $header->getValue());
+        $this->assertSame('new-value', $header->getValue());
     }
 
     public function testSetInvalidValue()
@@ -44,27 +44,27 @@ class HeaderTrailerTest extends TestCase
     {
         $header = new HeaderTrailer('value');
 
-        $this->assertEquals('value', $header->getValue());
+        $this->assertSame('value', $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderTrailer('value');
 
-        $this->assertEquals('Trailer', $header->getFieldName());
+        $this->assertSame('Trailer', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderTrailer('value');
 
-        $this->assertEquals('value', $header->getFieldValue());
+        $this->assertSame('value', $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderTrailer('value');
 
-        $this->assertEquals('Trailer: value', (string) $header);
+        $this->assertSame('Trailer: value', (string) $header);
     }
 }

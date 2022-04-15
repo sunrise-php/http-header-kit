@@ -19,21 +19,21 @@ class HeaderAccessControlAllowCredentialsTest extends TestCase
     {
         $header = new HeaderAccessControlAllowCredentials();
 
-        $this->assertEquals('Access-Control-Allow-Credentials', $header->getFieldName());
+        $this->assertSame('Access-Control-Allow-Credentials', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderAccessControlAllowCredentials();
 
-        $this->assertEquals('true', $header->getFieldValue());
+        $this->assertSame('true', $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderAccessControlAllowCredentials();
 
-        $this->assertEquals('Access-Control-Allow-Credentials: true', (string) $header);
+        $this->assertSame('Access-Control-Allow-Credentials: true', (string) $header);
     }
 
     public function testIteration()

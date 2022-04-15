@@ -42,7 +42,7 @@ class HeaderContentLanguageTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('value-second'));
 
-        $this->assertEquals([
+        $this->assertSame([
             'value-first',
             'value-second',
         ], $header->getValue());
@@ -54,7 +54,7 @@ class HeaderContentLanguageTest extends TestCase
 
         $header->setValue('value-third', 'value-fourth');
 
-        $this->assertEquals([
+        $this->assertSame([
             'value-first',
             'value-second',
             'value-third',
@@ -93,7 +93,7 @@ class HeaderContentLanguageTest extends TestCase
     {
         $header = new HeaderContentLanguage('value');
 
-        $this->assertEquals(['value'], $header->getValue());
+        $this->assertSame(['value'], $header->getValue());
     }
 
     public function testResetValue()
@@ -102,34 +102,34 @@ class HeaderContentLanguageTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
 
-        $this->assertEquals([], $header->getValue());
+        $this->assertSame([], $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderContentLanguage('value');
 
-        $this->assertEquals('Content-Language', $header->getFieldName());
+        $this->assertSame('Content-Language', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderContentLanguage('value');
 
-        $this->assertEquals('value', $header->getFieldValue());
+        $this->assertSame('value', $header->getFieldValue());
     }
 
     public function testToStringWithOneValue()
     {
         $header = new HeaderContentLanguage('value');
 
-        $this->assertEquals('Content-Language: value', (string) $header);
+        $this->assertSame('Content-Language: value', (string) $header);
     }
 
     public function testToStringWithSeveralValues()
     {
         $header = new HeaderContentLanguage('value-first', 'value-second', 'value-third');
 
-        $this->assertEquals('Content-Language: value-first, value-second, value-third', (string) $header);
+        $this->assertSame('Content-Language: value-first, value-second, value-third', (string) $header);
     }
 }

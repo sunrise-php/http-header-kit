@@ -28,7 +28,7 @@ class HeaderContentEncodingTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('new-value'));
 
-        $this->assertEquals('new-value', $header->getValue());
+        $this->assertSame('new-value', $header->getValue());
     }
 
     public function testSetInvalidValue()
@@ -44,27 +44,27 @@ class HeaderContentEncodingTest extends TestCase
     {
         $header = new HeaderContentEncoding('value');
 
-        $this->assertEquals('value', $header->getValue());
+        $this->assertSame('value', $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderContentEncoding('value');
 
-        $this->assertEquals('Content-Encoding', $header->getFieldName());
+        $this->assertSame('Content-Encoding', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderContentEncoding('value');
 
-        $this->assertEquals('value', $header->getFieldValue());
+        $this->assertSame('value', $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderContentEncoding('value');
 
-        $this->assertEquals('Content-Encoding: value', (string) $header);
+        $this->assertSame('Content-Encoding: value', (string) $header);
     }
 }

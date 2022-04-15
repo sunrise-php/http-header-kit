@@ -35,7 +35,7 @@ class HeaderTransferEncodingTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('value-second'));
 
-        $this->assertEquals([
+        $this->assertSame([
             'value-first',
             'value-second',
         ], $header->getValue());
@@ -47,7 +47,7 @@ class HeaderTransferEncodingTest extends TestCase
 
         $header->setValue('value-third', 'value-fourth');
 
-        $this->assertEquals([
+        $this->assertSame([
             'value-first',
             'value-second',
             'value-third',
@@ -77,7 +77,7 @@ class HeaderTransferEncodingTest extends TestCase
     {
         $header = new HeaderTransferEncoding('value');
 
-        $this->assertEquals(['value'], $header->getValue());
+        $this->assertSame(['value'], $header->getValue());
     }
 
     public function testResetValue()
@@ -86,34 +86,34 @@ class HeaderTransferEncodingTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
 
-        $this->assertEquals([], $header->getValue());
+        $this->assertSame([], $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderTransferEncoding('value');
 
-        $this->assertEquals('Transfer-Encoding', $header->getFieldName());
+        $this->assertSame('Transfer-Encoding', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderTransferEncoding('value');
 
-        $this->assertEquals('value', $header->getFieldValue());
+        $this->assertSame('value', $header->getFieldValue());
     }
 
     public function testToStringWithOneValue()
     {
         $header = new HeaderTransferEncoding('value');
 
-        $this->assertEquals('Transfer-Encoding: value', (string) $header);
+        $this->assertSame('Transfer-Encoding: value', (string) $header);
     }
 
     public function testToStringWithSeveralValues()
     {
         $header = new HeaderTransferEncoding('value-first', 'value-second', 'value-third');
 
-        $this->assertEquals('Transfer-Encoding: value-first, value-second, value-third', (string) $header);
+        $this->assertSame('Transfer-Encoding: value-first, value-second, value-third', (string) $header);
     }
 }

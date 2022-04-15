@@ -42,52 +42,52 @@ class HeaderContentRangeTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setRange(3, 4, 5));
 
-        $this->assertEquals(3, $header->getFirstBytePosition());
+        $this->assertSame(3, $header->getFirstBytePosition());
 
-        $this->assertEquals(4, $header->getLastBytePosition());
+        $this->assertSame(4, $header->getLastBytePosition());
 
-        $this->assertEquals(5, $header->getInstanceLength());
+        $this->assertSame(5, $header->getInstanceLength());
     }
 
     public function testGetFirstBytePosition()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
-        $this->assertEquals(0, $header->getFirstBytePosition());
+        $this->assertSame(0, $header->getFirstBytePosition());
     }
 
     public function testGetLastBytePosition()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
-        $this->assertEquals(1, $header->getLastBytePosition());
+        $this->assertSame(1, $header->getLastBytePosition());
     }
 
     public function testGetInstanceLength()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
-        $this->assertEquals(2, $header->getInstanceLength());
+        $this->assertSame(2, $header->getInstanceLength());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
-        $this->assertEquals('Content-Range', $header->getFieldName());
+        $this->assertSame('Content-Range', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
-        $this->assertEquals('bytes 0-1/2', $header->getFieldValue());
+        $this->assertSame('bytes 0-1/2', $header->getFieldValue());
     }
 
     public function testToString()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
-        $this->assertEquals('Content-Range: bytes 0-1/2', (string) $header);
+        $this->assertSame('Content-Range: bytes 0-1/2', (string) $header);
     }
 }

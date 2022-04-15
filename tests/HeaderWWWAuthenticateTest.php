@@ -10,16 +10,16 @@ class HeaderWWWAuthenticateTest extends TestCase
 {
     public function testConstants()
     {
-        $this->assertEquals('Basic', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_BASIC);
-        $this->assertEquals('Bearer', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_BEARER);
-        $this->assertEquals('Digest', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_DIGEST);
-        $this->assertEquals('HOBA', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_HOBA);
-        $this->assertEquals('Mutual', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_MUTUAL);
-        $this->assertEquals('Negotiate', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_NEGOTIATE);
-        $this->assertEquals('OAuth', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_OAUTH);
-        $this->assertEquals('SCRAM-SHA-1', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_SCRAM_SHA_1);
-        $this->assertEquals('SCRAM-SHA-256', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_SCRAM_SHA_256);
-        $this->assertEquals('vapid', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_VAPID);
+        $this->assertSame('Basic', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_BASIC);
+        $this->assertSame('Bearer', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_BEARER);
+        $this->assertSame('Digest', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_DIGEST);
+        $this->assertSame('HOBA', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_HOBA);
+        $this->assertSame('Mutual', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_MUTUAL);
+        $this->assertSame('Negotiate', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_NEGOTIATE);
+        $this->assertSame('OAuth', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_OAUTH);
+        $this->assertSame('SCRAM-SHA-1', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_SCRAM_SHA_1);
+        $this->assertSame('SCRAM-SHA-256', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_SCRAM_SHA_256);
+        $this->assertSame('vapid', HeaderWWWAuthenticate::HTTP_AUTHENTICATE_SCHEME_VAPID);
     }
 
     public function testConstructor()
@@ -56,7 +56,7 @@ class HeaderWWWAuthenticateTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setScheme('overwritten-scheme'));
 
-        $this->assertEquals('overwritten-scheme', $header->getScheme());
+        $this->assertSame('overwritten-scheme', $header->getScheme());
     }
 
     public function testSetInvalidScheme()
@@ -77,7 +77,7 @@ class HeaderWWWAuthenticateTest extends TestCase
             $header->setParameter('parameter-name', 'overwritten-parameter-value')
         );
 
-        $this->assertEquals(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
+        $this->assertSame(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
     }
 
     public function testSetSeveralParameters()
@@ -90,7 +90,7 @@ class HeaderWWWAuthenticateTest extends TestCase
         $header->setParameter('parameter-name-1', 'overwritten-parameter-value-1');
         $header->setParameter('parameter-name-2', 'overwritten-parameter-value-2');
 
-        $this->assertEquals([
+        $this->assertSame([
             'parameter-name-1' => 'overwritten-parameter-value-1',
             'parameter-name-2' => 'overwritten-parameter-value-2',
         ], $header->getParameters());
@@ -126,7 +126,7 @@ class HeaderWWWAuthenticateTest extends TestCase
             'parameter-name-2' => 'overwritten-parameter-value-2',
         ]));
 
-        $this->assertEquals([
+        $this->assertSame([
             'parameter-name-1' => 'overwritten-parameter-value-1',
             'parameter-name-2' => 'overwritten-parameter-value-2',
         ], $header->getParameters());
@@ -154,14 +154,14 @@ class HeaderWWWAuthenticateTest extends TestCase
     {
         $header = new HeaderWWWAuthenticate('scheme');
 
-        $this->assertEquals('scheme', $header->getScheme());
+        $this->assertSame('scheme', $header->getScheme());
     }
 
     public function testGetParameters()
     {
         $header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
 
-        $this->assertEquals(['parameter-name' => 'parameter-value'], $header->getParameters());
+        $this->assertSame(['parameter-name' => 'parameter-value'], $header->getParameters());
     }
 
     public function testClearParameters()
@@ -178,42 +178,42 @@ class HeaderWWWAuthenticateTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
 
-        $this->assertEquals([], $header->getParameters());
+        $this->assertSame([], $header->getParameters());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderWWWAuthenticate('scheme');
 
-        $this->assertEquals('WWW-Authenticate', $header->getFieldName());
+        $this->assertSame('WWW-Authenticate', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
 
-        $this->assertEquals('scheme parameter-name="parameter-value"', $header->getFieldValue());
+        $this->assertSame('scheme parameter-name="parameter-value"', $header->getFieldValue());
     }
 
     public function testToStringWithoutParameters()
     {
         $header = new HeaderWWWAuthenticate('scheme');
 
-        $this->assertEquals('WWW-Authenticate: scheme', (string) $header);
+        $this->assertSame('WWW-Authenticate: scheme', (string) $header);
     }
 
     public function testToStringWithParameterWithoutValue()
     {
         $header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => '']);
 
-        $this->assertEquals('WWW-Authenticate: scheme parameter-name=""', (string) $header);
+        $this->assertSame('WWW-Authenticate: scheme parameter-name=""', (string) $header);
     }
 
     public function testToStringWithOneParameter()
     {
         $header = new HeaderWWWAuthenticate('scheme', ['parameter-name' => 'parameter-value']);
 
-        $this->assertEquals('WWW-Authenticate: scheme parameter-name="parameter-value"', (string) $header);
+        $this->assertSame('WWW-Authenticate: scheme parameter-name="parameter-value"', (string) $header);
     }
 
     public function testToStringWithSeveralParameters()
@@ -227,6 +227,6 @@ class HeaderWWWAuthenticateTest extends TestCase
         $expected = 'WWW-Authenticate: scheme parameter-name-1="parameter-value-1", ' .
                     'parameter-name-2="parameter-value-2", parameter-name-3="parameter-value-3"';
 
-        $this->assertEquals($expected, (string) $header);
+        $this->assertSame($expected, (string) $header);
     }
 }

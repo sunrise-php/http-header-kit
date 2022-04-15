@@ -28,7 +28,7 @@ class HeaderClearSiteDataTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setValue('value-second'));
 
-        $this->assertEquals([
+        $this->assertSame([
             'value-first',
             'value-second',
         ], $header->getValue());
@@ -40,7 +40,7 @@ class HeaderClearSiteDataTest extends TestCase
 
         $header->setValue('value-third', 'value-fourth');
 
-        $this->assertEquals([
+        $this->assertSame([
             'value-first',
             'value-second',
             'value-third',
@@ -61,7 +61,7 @@ class HeaderClearSiteDataTest extends TestCase
     {
         $header = new HeaderClearSiteData('value');
 
-        $this->assertEquals(['value'], $header->getValue());
+        $this->assertSame(['value'], $header->getValue());
     }
 
     public function testResetValue()
@@ -70,34 +70,34 @@ class HeaderClearSiteDataTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
 
-        $this->assertEquals([], $header->getValue());
+        $this->assertSame([], $header->getValue());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderClearSiteData('value');
 
-        $this->assertEquals('Clear-Site-Data', $header->getFieldName());
+        $this->assertSame('Clear-Site-Data', $header->getFieldName());
     }
 
     public function testGetFieldValue()
     {
         $header = new HeaderClearSiteData('value');
 
-        $this->assertEquals('"value"', $header->getFieldValue());
+        $this->assertSame('"value"', $header->getFieldValue());
     }
 
     public function testToStringWithOneValue()
     {
         $header = new HeaderClearSiteData('value');
 
-        $this->assertEquals('Clear-Site-Data: "value"', (string) $header);
+        $this->assertSame('Clear-Site-Data: "value"', (string) $header);
     }
 
     public function testToStringWithSeveralValues()
     {
         $header = new HeaderClearSiteData('value-first', 'value-second', 'value-third');
 
-        $this->assertEquals('Clear-Site-Data: "value-first", "value-second", "value-third"', (string) $header);
+        $this->assertSame('Clear-Site-Data: "value-first", "value-second", "value-third"', (string) $header);
     }
 }

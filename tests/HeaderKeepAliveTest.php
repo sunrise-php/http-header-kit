@@ -35,7 +35,7 @@ class HeaderKeepAliveTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->setParameter('name', 'overwritten-value'));
 
-        $this->assertEquals(['name' => 'overwritten-value'], $header->getParameters());
+        $this->assertSame(['name' => 'overwritten-value'], $header->getParameters());
     }
 
     public function testSetSeveralParameters()
@@ -45,7 +45,7 @@ class HeaderKeepAliveTest extends TestCase
         $header->setParameter('name-1', 'value-1');
         $header->setParameter('name-2', 'value-2');
 
-        $this->assertEquals([
+        $this->assertSame([
             'name-1' => 'value-1',
             'name-2' => 'value-2',
         ], $header->getParameters());
@@ -81,7 +81,7 @@ class HeaderKeepAliveTest extends TestCase
             'name-2' => 'overwritten-value-2',
         ]));
 
-        $this->assertEquals([
+        $this->assertSame([
             'name-1' => 'overwritten-value-1',
             'name-2' => 'overwritten-value-2',
         ], $header->getParameters());
@@ -109,7 +109,7 @@ class HeaderKeepAliveTest extends TestCase
     {
         $header = new HeaderKeepAlive(['name' => 'value']);
 
-        $this->assertEquals(['name' => 'value'], $header->getParameters());
+        $this->assertSame(['name' => 'value'], $header->getParameters());
     }
 
     public function testClearParameters()
@@ -121,56 +121,56 @@ class HeaderKeepAliveTest extends TestCase
 
         $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
 
-        $this->assertEquals([], $header->getParameters());
+        $this->assertSame([], $header->getParameters());
     }
 
     public function testGetFieldName()
     {
         $header = new HeaderKeepAlive([]);
 
-        $this->assertEquals('Keep-Alive', $header->getFieldName());
+        $this->assertSame('Keep-Alive', $header->getFieldName());
     }
 
     public function testGetFieldValueWithoutParameterValue()
     {
         $header = new HeaderKeepAlive(['name' => '']);
 
-        $this->assertEquals('name', $header->getFieldValue());
+        $this->assertSame('name', $header->getFieldValue());
     }
 
     public function testGetFieldValueWithParameterValueAsToken()
     {
         $header = new HeaderKeepAlive(['name' => 'token']);
 
-        $this->assertEquals('name=token', $header->getFieldValue());
+        $this->assertSame('name=token', $header->getFieldValue());
     }
 
     public function testGetFieldValueWithParameterValueAsQuotedString()
     {
         $header = new HeaderKeepAlive(['name' => 'quoted string']);
 
-        $this->assertEquals('name="quoted string"', $header->getFieldValue());
+        $this->assertSame('name="quoted string"', $header->getFieldValue());
     }
 
     public function testToStringWithoutParameterValue()
     {
         $header = new HeaderKeepAlive(['name' => '']);
 
-        $this->assertEquals('Keep-Alive: name', (string) $header);
+        $this->assertSame('Keep-Alive: name', (string) $header);
     }
 
     public function testToStringWithParameterValueAsToken()
     {
         $header = new HeaderKeepAlive(['name' => 'token']);
 
-        $this->assertEquals('Keep-Alive: name=token', (string) $header);
+        $this->assertSame('Keep-Alive: name=token', (string) $header);
     }
 
     public function testToStringWithParameterValueAsQuotedString()
     {
         $header = new HeaderKeepAlive(['name' => 'quoted string']);
 
-        $this->assertEquals('Keep-Alive: name="quoted string"', (string) $header);
+        $this->assertSame('Keep-Alive: name="quoted string"', (string) $header);
     }
 
     public function testToStringWithSeveralParameters()
@@ -181,6 +181,6 @@ class HeaderKeepAliveTest extends TestCase
             'name-3' => 'quoted string',
         ]);
 
-        $this->assertEquals('Keep-Alive: name-1, name-2=token, name-3="quoted string"', (string) $header);
+        $this->assertSame('Keep-Alive: name-1, name-2=token, name-3="quoted string"', (string) $header);
     }
 }
