@@ -1,7 +1,7 @@
 {
     "name": "sunrise/http-header-kit",
     "homepage": "https://github.com/sunrise-php/http-header-kit",
-    "description": "Sunrise // HTTP header kit for PHP 7.1+ compatible with PSR-7",
+    "description": "HTTP header kit for PHP 7.1+ compatible with PSR-7 and not only",
     "license": "MIT",
     "keywords": [
         "fenric",
@@ -9,7 +9,6 @@
         "http",
         "header",
         "kit",
-        "http-header-kit",
         "psr-7",
         "php7",
         "php8"
@@ -17,8 +16,8 @@
     "authors": [
         {
             "name": "Anatoly Fenric",
-            "email": "anatoly@fenric.ru",
-            "homepage": "https://anatoly.fenric.ru/"
+            "email": "afenric@gmail.com",
+            "homepage": "https://github.com/fenric"
         }
     ],
     "require": {
@@ -40,6 +39,7 @@
     "scripts": {
         "test": [
             "phpcs",
+            "psalm",
             "XDEBUG_MODE=coverage phpunit --coverage-text --colors=always"
         ],
         "build": [

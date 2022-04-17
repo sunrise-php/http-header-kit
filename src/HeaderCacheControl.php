@@ -41,7 +41,7 @@ class HeaderCacheControl extends AbstractHeader implements HeaderInterface
     /**
      * Constructor of the class
      *
-     * @param array $parameters
+     * @param array<string, string> $parameters
      */
     public function __construct(array $parameters = [])
     {
