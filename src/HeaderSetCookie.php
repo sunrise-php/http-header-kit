@@ -100,9 +100,11 @@ class HeaderSetCookie extends AbstractHeader implements HeaderInterface
      * @param string $name
      * @param string $value
      * @param DateTimeInterface|null $expires
-     * @param array $options
+     * @param T_Options $options
+     *
+     * @template T_Options as array{domain?: ?string, path?: ?string, secure?: ?bool, httponly?: ?bool, samesite?: ?string}
      */
-    public function __construct(string $name, string $value, DateTimeInterface $expires = null, array $options = [])
+    public function __construct(string $name, string $value, ?DateTimeInterface $expires = null, array $options = [])
     {
         $this->setName($name);
         $this->setValue($value);
