@@ -22,8 +22,7 @@
     ],
     "require": {
         "php": "^7.1|^8.0",
-        "sunrise/http-header": "^2.0",
-        "sunrise/http-header-collection": "^2.0"
+        "sunrise/http-header": "^2.1"
     },
     "require-dev": {
         "phpunit/phpunit": "7.5.20|9.5.0",
