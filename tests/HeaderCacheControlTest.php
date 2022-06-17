@@ -3,184 +3,145 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderCacheControl;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderCacheControl;
 
 class HeaderCacheControlTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
         $header = new HeaderCacheControl([]);
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidParameterName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderCacheControl(['invalid name' => 'value']);
-    }
-
-    public function testConstructorWithInvalidParameterValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderCacheControl(['name' => '"invalid value"']);
-    }
-
-    public function testSetParameter()
-    {
-        $header = new HeaderCacheControl(['name' => 'value']);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setParameter('name', 'overwritten-value'));
-
-        $this->assertSame(['name' => 'overwritten-value'], $header->getParameters());
-    }
-
-    public function testSetSeveralParameters()
-    {
-        $header = new HeaderCacheControl([]);
-
-        $header->setParameter('name-1', 'value-1');
-        $header->setParameter('name-2', 'value-2');
-
-        $this->assertSame([
-            'name-1' => 'value-1',
-            'name-2' => 'value-2',
-        ], $header->getParameters());
-    }
-
-    public function testSetParameterWithInvalidName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderCacheControl([]);
-
-        $header->setParameter('invalid name', 'value');
-    }
-
-    public function testSetParameterWithInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderCacheControl([]);
-
-        $header->setParameter('name', '"invalid value"');
-    }
-
-    public function testSetParameters()
-    {
-        $header = new HeaderCacheControl([
-            'name-1' => 'value-1',
-            'name-2' => 'value-2',
-        ]);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
-            'name-1' => 'overwritten-value-1',
-            'name-2' => 'overwritten-value-2',
-        ]));
-
-        $this->assertSame([
-            'name-1' => 'overwritten-value-1',
-            'name-2' => 'overwritten-value-2',
-        ], $header->getParameters());
-    }
-
-    public function testSetParametersWithParameterThatContainsInvalidName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderCacheControl([]);
-
-        $header->setParameters(['invalid name' => 'value']);
-    }
-
-    public function testSetParametersWithParameterThatContainsInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderCacheControl([]);
-
-        $header->setParameters(['name' => '"invalid value"']);
-    }
-
-    public function testGetParameters()
-    {
-        $header = new HeaderCacheControl(['name' => 'value']);
-
-        $this->assertSame(['name' => 'value'], $header->getParameters());
-    }
-
-    public function testClearParameters()
-    {
-        $header = new HeaderCacheControl(['name-1' => 'value-1']);
-
-        $header->setParameter('name-2', 'value-2');
-        $header->setParameter('name-3', 'value-3');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
-
-        $this->assertSame([], $header->getParameters());
-    }
-
-    public function testGetFieldName()
+    public function testFieldName()
     {
         $header = new HeaderCacheControl([]);
 
         $this->assertSame('Cache-Control', $header->getFieldName());
     }
 
-    public function testGetFieldValueWithoutParameterValue()
+    public function testFieldValue()
     {
-        $header = new HeaderCacheControl(['name' => '']);
+        $header = new HeaderCacheControl([]);
 
-        $this->assertSame('name', $header->getFieldValue());
+        $this->assertSame('', $header->getFieldValue());
     }
 
-    public function testGetFieldValueWithParameterValueAsToken()
-    {
-        $header = new HeaderCacheControl(['name' => 'token']);
-
-        $this->assertSame('name=token', $header->getFieldValue());
-    }
-
-    public function testGetFieldValueWithParameterValueAsQuotedString()
-    {
-        $header = new HeaderCacheControl(['name' => 'quoted string']);
-
-        $this->assertSame('name="quoted string"', $header->getFieldValue());
-    }
-
-    public function testToStringWithoutParameterValue()
-    {
-        $header = new HeaderCacheControl(['name' => '']);
-
-        $this->assertSame('Cache-Control: name', (string) $header);
-    }
-
-    public function testToStringWithParameterValueAsToken()
-    {
-        $header = new HeaderCacheControl(['name' => 'token']);
-
-        $this->assertSame('Cache-Control: name=token', (string) $header);
-    }
-
-    public function testToStringWithParameterValueAsQuotedString()
-    {
-        $header = new HeaderCacheControl(['name' => 'quoted string']);
-
-        $this->assertSame('Cache-Control: name="quoted string"', (string) $header);
-    }
-
-    public function testToStringWithSeveralParameters()
+    public function testParameterWithEmptyValue()
     {
         $header = new HeaderCacheControl([
-            'name-1' => '',
-            'name-2' => 'token',
-            'name-3' => 'quoted string',
+            'foo' => '',
         ]);
 
-        $this->assertSame('Cache-Control: name-1, name-2=token, name-3="quoted string"', (string) $header);
+        $this->assertSame('foo', $header->getFieldValue());
+    }
+
+    public function testParameterWithToken()
+    {
+        $header = new HeaderCacheControl([
+            'foo' => 'token',
+        ]);
+
+        $this->assertSame('foo=token', $header->getFieldValue());
+    }
+
+    public function testParameterWithQuotedString()
+    {
+        $header = new HeaderCacheControl([
+            'foo' => 'quoted string',
+        ]);
+
+        $this->assertSame('foo="quoted string"', $header->getFieldValue());
+    }
+
+    public function testParameterWithInteger()
+    {
+        $header = new HeaderCacheControl([
+            'foo' => 1,
+        ]);
+
+        $this->assertSame('foo=1', $header->getFieldValue());
+    }
+
+    public function testSeveralParameters()
+    {
+        $header = new HeaderCacheControl([
+            'foo' => '',
+            'bar' => 'token',
+            'baz' => 'quoted string',
+            'qux' => 1,
+        ]);
+
+        $this->assertSame('foo, bar=token, baz="quoted string", qux=1', $header->getFieldValue());
+    }
+
+    public function testInvalidParameterName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-name "invalid name" for the header "Cache-Control" is not valid'
+        );
+
+        new HeaderCacheControl(['invalid name' => 'value']);
+    }
+
+    public function testInvalidParameterValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-value ""invalid value"" for the header "Cache-Control" is not valid'
+        );
+
+        new HeaderCacheControl(['name' => '"invalid value"']);
+    }
+
+    public function testInvalidParameterNameType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-name "<integer>" for the header "Cache-Control" is not valid'
+        );
+
+        new HeaderCacheControl([0 => 'value']);
+    }
+
+    public function testInvalidParameterValueType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-value "<array>" for the header "Cache-Control" is not valid'
+        );
+
+        new HeaderCacheControl(['name' => []]);
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderCacheControl(['foo' => 'bar']);
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderCacheControl(['foo' => 'bar']);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

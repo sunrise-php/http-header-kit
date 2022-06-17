@@ -3,117 +3,94 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderVary;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderVary;
 
 class HeaderVaryTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderVary('value');
+        $header = new HeaderVary('foo');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithEmptyValue()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderVary('');
-    }
-
-    public function testConstructorWithInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderVary('invalid value');
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderVary('value-first');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setValue('value-second'));
-
-        $this->assertSame([
-            'value-first',
-            'value-second',
-        ], $header->getValue());
-    }
-
-    public function testSetSeveralValues()
-    {
-        $header = new HeaderVary('value-first', 'value-second');
-
-        $header->setValue('value-third', 'value-fourth');
-
-        $this->assertSame([
-            'value-first',
-            'value-second',
-            'value-third',
-            'value-fourth',
-        ], $header->getValue());
-    }
-
-    public function testSetEmptyValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderVary('value');
-
-        $header->setValue('');
-    }
-
-    public function testSetInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderVary('value');
-
-        $header->setValue('invalid value');
-    }
-
-    public function testGetValue()
-    {
-        $header = new HeaderVary('value');
-
-        $this->assertSame(['value'], $header->getValue());
-    }
-
-    public function testResetValue()
-    {
-        $header = new HeaderVary('value');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
-
-        $this->assertSame([], $header->getValue());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderVary('value');
+        $header = new HeaderVary('foo');
 
         $this->assertSame('Vary', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderVary('value');
+        $header = new HeaderVary('foo');
 
-        $this->assertSame('value', $header->getFieldValue());
+        $this->assertSame('foo', $header->getFieldValue());
     }
 
-    public function testToStringWithOneValue()
+    public function testSeveralValues()
     {
-        $header = new HeaderVary('value');
+        $header = new HeaderVary('foo', 'bar', 'baz');
 
-        $this->assertSame('Vary: value', (string) $header);
+        $this->assertSame('foo, bar, baz', $header->getFieldValue());
     }
 
-    public function testToStringWithSeveralValues()
+    public function testEmptyValue()
     {
-        $header = new HeaderVary('value-first', 'value-second', 'value-third');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Vary" is not valid');
 
-        $this->assertSame('Vary: value-first, value-second, value-third', (string) $header);
+        new HeaderVary('');
+    }
+
+    public function testEmptyValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Vary" is not valid');
+
+        new HeaderVary('foo', '', 'baz');
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Vary" is not valid');
+
+        // isn't a token...
+        new HeaderVary('@');
+    }
+
+    public function testInvalidValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Vary" is not valid');
+
+        // isn't a token...
+        new HeaderVary('foo', '@', 'baz');
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderVary('foo');
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderVary('foo');
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

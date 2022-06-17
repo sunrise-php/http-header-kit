@@ -3,117 +3,101 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderAllow;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderAllow;
 
 class HeaderAllowTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderAllow('head');
+        $header = new HeaderAllow('GET');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithEmptyValue()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderAllow('');
-    }
-
-    public function testConstructorWithInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderAllow('invalid method');
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderAllow('head');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setValue('get'));
-
-        $this->assertSame([
-            'HEAD',
-            'GET',
-        ], $header->getValue());
-    }
-
-    public function testSetSeveralValues()
-    {
-        $header = new HeaderAllow('head', 'get');
-
-        $header->setValue('post', 'patch');
-
-        $this->assertSame([
-            'HEAD',
-            'GET',
-            'POST',
-            'PATCH',
-        ], $header->getValue());
-    }
-
-    public function testSetEmptyValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderAllow('head');
-
-        $header->setValue('');
-    }
-
-    public function testSetInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderAllow('head');
-
-        $header->setValue('invalid method');
-    }
-
-    public function testGetValue()
-    {
-        $header = new HeaderAllow('head');
-
-        $this->assertSame(['HEAD'], $header->getValue());
-    }
-
-    public function testResetValue()
-    {
-        $header = new HeaderAllow('head');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
-
-        $this->assertSame([], $header->getValue());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderAllow('head');
+        $header = new HeaderAllow('GET');
 
         $this->assertSame('Allow', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderAllow('head');
+        $header = new HeaderAllow('GET');
 
-        $this->assertSame('HEAD', $header->getFieldValue());
+        $this->assertSame('GET', $header->getFieldValue());
     }
 
-    public function testToStringWithOneValue()
+    public function testSeveralValues()
     {
-        $header = new HeaderAllow('head');
+        $header = new HeaderAllow('HEAD', 'GET', 'POST');
 
-        $this->assertSame('Allow: HEAD', (string) $header);
+        $this->assertSame('HEAD, GET, POST', $header->getFieldValue());
     }
 
-    public function testToStringWithSeveralValues()
+    public function testValueCapitalizing()
     {
         $header = new HeaderAllow('head', 'get', 'post');
 
-        $this->assertSame('Allow: HEAD, GET, POST', (string) $header);
+        $this->assertSame('HEAD, GET, POST', $header->getFieldValue());
+    }
+
+    public function testEmptyValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Allow" is not valid');
+
+        new HeaderAllow('');
+    }
+
+    public function testEmptyValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Allow" is not valid');
+
+        new HeaderAllow('head', '', 'post');
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Allow" is not valid');
+
+        // isn't a token...
+        new HeaderAllow('@');
+    }
+
+    public function testInvalidValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Allow" is not valid');
+
+        // isn't a token...
+        new HeaderAllow('head', '@', 'post');
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderAllow('GET');
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderAllow('GET');
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

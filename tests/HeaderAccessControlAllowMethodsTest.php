@@ -3,117 +3,101 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderAccessControlAllowMethods;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderAccessControlAllowMethods;
 
 class HeaderAccessControlAllowMethodsTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderAccessControlAllowMethods('head');
+        $header = new HeaderAccessControlAllowMethods('GET');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithEmptyValue()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderAccessControlAllowMethods('');
-    }
-
-    public function testConstructorWithInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderAccessControlAllowMethods('invalid method');
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderAccessControlAllowMethods('head');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setValue('get'));
-
-        $this->assertSame([
-            'HEAD',
-            'GET',
-        ], $header->getValue());
-    }
-
-    public function testSetSeveralValues()
-    {
-        $header = new HeaderAccessControlAllowMethods('head', 'get');
-
-        $header->setValue('post', 'patch');
-
-        $this->assertSame([
-            'HEAD',
-            'GET',
-            'POST',
-            'PATCH',
-        ], $header->getValue());
-    }
-
-    public function testSetEmptyValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderAccessControlAllowMethods('head');
-
-        $header->setValue('');
-    }
-
-    public function testSetInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderAccessControlAllowMethods('head');
-
-        $header->setValue('invalid method');
-    }
-
-    public function testGetValue()
-    {
-        $header = new HeaderAccessControlAllowMethods('head');
-
-        $this->assertSame(['HEAD'], $header->getValue());
-    }
-
-    public function testResetValue()
-    {
-        $header = new HeaderAccessControlAllowMethods('head');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
-
-        $this->assertSame([], $header->getValue());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderAccessControlAllowMethods('head');
+        $header = new HeaderAccessControlAllowMethods('GET');
 
         $this->assertSame('Access-Control-Allow-Methods', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderAccessControlAllowMethods('head');
+        $header = new HeaderAccessControlAllowMethods('GET');
 
-        $this->assertSame('HEAD', $header->getFieldValue());
+        $this->assertSame('GET', $header->getFieldValue());
     }
 
-    public function testToStringWithOneValue()
+    public function testSeveralValues()
     {
-        $header = new HeaderAccessControlAllowMethods('head');
+        $header = new HeaderAccessControlAllowMethods('HEAD', 'GET', 'POST');
 
-        $this->assertSame('Access-Control-Allow-Methods: HEAD', (string) $header);
+        $this->assertSame('HEAD, GET, POST', $header->getFieldValue());
     }
 
-    public function testToStringWithSeveralValues()
+    public function testValueCapitalizing()
     {
         $header = new HeaderAccessControlAllowMethods('head', 'get', 'post');
 
-        $this->assertSame('Access-Control-Allow-Methods: HEAD, GET, POST', (string) $header);
+        $this->assertSame('HEAD, GET, POST', $header->getFieldValue());
+    }
+
+    public function testEmptyValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Access-Control-Allow-Methods" is not valid');
+
+        new HeaderAccessControlAllowMethods('');
+    }
+
+    public function testEmptyValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Access-Control-Allow-Methods" is not valid');
+
+        new HeaderAccessControlAllowMethods('head', '', 'post');
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Access-Control-Allow-Methods" is not valid');
+
+        // isn't a token...
+        new HeaderAccessControlAllowMethods('@');
+    }
+
+    public function testInvalidValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Access-Control-Allow-Methods" is not valid');
+
+        // isn't a token...
+        new HeaderAccessControlAllowMethods('head', '@', 'post');
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderAccessControlAllowMethods('GET');
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderAccessControlAllowMethods('GET');
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

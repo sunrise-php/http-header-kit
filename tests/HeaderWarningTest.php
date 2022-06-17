@@ -3,8 +3,8 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderWarning;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderWarning;
 
 class HeaderWarningTest extends TestCase
 {
@@ -19,214 +19,116 @@ class HeaderWarningTest extends TestCase
         $this->assertSame(299, HeaderWarning::HTTP_WARNING_CODE_MISCELLANEOUS_PERSISTENT_WARNING);
     }
 
-    public function testConstructorWithoutDate()
+    public function testContracts()
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithDate()
-    {
-        $header = new HeaderWarning(199, 'agent', 'text', new \DateTime('now'));
-
-        $this->assertInstanceOf(HeaderInterface::class, $header);
-    }
-
-    public function testConstructorWithSmallCode()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderWarning(99, 'agent', 'text');
-    }
-
-    public function testConstructorWithBigCode()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderWarning(1000, 'agent', 'text');
-    }
-
-    public function testConstructorWithInvalidAgent()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderWarning(199, 'invalid agent', 'text');
-    }
-
-    public function testConstructorWithInvalidText()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderWarning(199, 'agent', '"invalid text"');
-    }
-
-    public function testConstructorWithEmptyDate()
-    {
-        $header = new HeaderWarning(199, 'agent', 'text', null);
-
-        $this->assertNull($header->getDate());
-    }
-
-    public function testSetCode()
-    {
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setCode(299));
-
-        $this->assertSame(299, $header->getCode());
-    }
-
-    public function testSetSmallCode()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $header->setCode(99);
-    }
-
-    public function testSetBigCode()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $header->setCode(1000);
-    }
-
-    public function testSetAgent()
-    {
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setAgent('new-agent'));
-
-        $this->assertSame('new-agent', $header->getAgent());
-    }
-
-    public function testSetInvalidAgent()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $header->setAgent('invalid agent');
-    }
-
-    public function testSetText()
-    {
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setText('new-text'));
-
-        $this->assertSame('new-text', $header->getText());
-    }
-
-    public function testSetInvalidText()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $header->setText('"invalid text"');
-    }
-
-    public function testSetDate()
-    {
-        $now = new \DateTime('now');
-
-        $later = new \DateTime('+1 hour');
-
-        $header = new HeaderWarning(199, 'agent', 'text', $now);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setDate($later));
-
-        $this->assertSame($later, $header->getDate());
-    }
-
-    public function testSetEmptyDate()
-    {
-        $now = new \DateTime('now');
-
-        $header = new HeaderWarning(199, 'agent', 'text', $now);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setDate(null));
-
-        $this->assertNull($header->getDate());
-    }
-
-    public function testGetCode()
-    {
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $this->assertSame(199, $header->getCode());
-    }
-
-    public function testGetAgent()
-    {
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $this->assertSame('agent', $header->getAgent());
-    }
-
-    public function testGetText()
-    {
-        $header = new HeaderWarning(199, 'agent', 'text');
-
-        $this->assertSame('text', $header->getText());
-    }
-
-    public function testGetDate()
-    {
-        $now = new \DateTime('now');
-
-        $header = new HeaderWarning(199, 'agent', 'text', $now);
-
-        $this->assertSame($now, $header->getDate());
-    }
-
-    public function testGetFieldName()
+    public function testFieldName()
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
         $this->assertSame('Warning', $header->getFieldName());
     }
 
-    public function testGetFieldValueWithoutDate()
+    public function testFieldValue()
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
         $this->assertSame('199 agent "text"', $header->getFieldValue());
     }
 
-    public function testGetFieldValueWithDate()
+    public function testFieldValueWithDate()
     {
+        $now = new \DateTime('now', new \DateTimeZone('Europe/Moscow'));
         $utc = new \DateTime('now', new \DateTimeZone('UTC'));
 
-        $header = new HeaderWarning(199, 'agent', 'text', new \DateTime('now', new \DateTimeZone('Europe/Moscow')));
+        $header = new HeaderWarning(199, 'agent', 'text', $now);
 
         $this->assertSame(
-            \sprintf('199 agent "text" "%s"', $utc->format(\DateTime::RFC822)),
+            \sprintf(
+                '199 agent "text" "%s"',
+                $utc->format(\DateTime::RFC822)
+            ),
             $header->getFieldValue()
         );
+
+        // cannot be modified...
+        $this->assertSame('Europe/Moscow', $now->getTimezone()->getName());
     }
 
-    public function testToStringWithoutDate()
+    public function testCodeLessThat100()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The code "99" for the header "Warning" is not valid');
+
+        new HeaderWarning(99, 'agent', 'text');
+    }
+
+    public function testCodeGreaterThat999()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The code "1000" for the header "Warning" is not valid');
+
+        new HeaderWarning(1000, 'agent', 'text');
+    }
+
+    public function testEmptyAgent()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Warning" is not valid');
+
+        new HeaderWarning(199, '', 'text');
+    }
+
+    public function testInvalidAgent()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Warning" is not valid');
+
+        // isn't a token...
+        new HeaderWarning(199, '@', 'text');
+    }
+
+    public function testEmptyText()
+    {
+        $header = new HeaderWarning(199, 'agent', '');
+
+        $this->assertSame('199 agent ""', $header->getFieldValue());
+    }
+
+    public function testInvalidText()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value ""text"" for the header "Warning" is not valid');
+
+        // cannot contain quotes...
+        new HeaderWarning(199, 'agent', '"text"');
+    }
+
+    public function testBuild()
     {
         $header = new HeaderWarning(199, 'agent', 'text');
 
-        $this->assertSame('Warning: 199 agent "text"', (string) $header);
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
     }
 
-    public function testToStringWithDate()
+    public function testIterator()
     {
-        $utc = new \DateTime('now', new \DateTimeZone('UTC'));
+        $header = new HeaderWarning(199, 'agent', 'text');
+        $iterator = $header->getIterator();
 
-        $header = new HeaderWarning(199, 'agent', 'text', new \DateTime('now', new \DateTimeZone('Europe/Moscow')));
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
 
-        $this->assertSame(
-            \sprintf('Warning: 199 agent "text" "%s"', $utc->format(\DateTime::RFC822)),
-            (string) $header
-        );
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

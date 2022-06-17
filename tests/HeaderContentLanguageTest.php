@@ -3,133 +3,112 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderContentLanguage;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderContentLanguage;
 
 class HeaderContentLanguageTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderContentLanguage('value');
+        $header = new HeaderContentLanguage('foo');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithEmptyValue()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderContentLanguage('');
-    }
-
-    public function testConstructorWithInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderContentLanguage('invalid value');
-    }
-
-    public function testConstructorWithVeryLongValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderContentLanguage('VERYLONGVALUE');
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderContentLanguage('value-first');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setValue('value-second'));
-
-        $this->assertSame([
-            'value-first',
-            'value-second',
-        ], $header->getValue());
-    }
-
-    public function testSetSeveralValues()
-    {
-        $header = new HeaderContentLanguage('value-first', 'value-second');
-
-        $header->setValue('value-third', 'value-fourth');
-
-        $this->assertSame([
-            'value-first',
-            'value-second',
-            'value-third',
-            'value-fourth',
-        ], $header->getValue());
-    }
-
-    public function testSetEmptyValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentLanguage('value');
-
-        $header->setValue('');
-    }
-
-    public function testSetInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentLanguage('value');
-
-        $header->setValue('invalid value');
-    }
-
-    public function testSetVeryLongValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentLanguage('value');
-
-        $header->setValue('VERYLONGVALUE');
-    }
-
-    public function testGetValue()
-    {
-        $header = new HeaderContentLanguage('value');
-
-        $this->assertSame(['value'], $header->getValue());
-    }
-
-    public function testResetValue()
-    {
-        $header = new HeaderContentLanguage('value');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
-
-        $this->assertSame([], $header->getValue());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderContentLanguage('value');
+        $header = new HeaderContentLanguage('foo');
 
         $this->assertSame('Content-Language', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderContentLanguage('value');
+        $header = new HeaderContentLanguage('foo');
 
-        $this->assertSame('value', $header->getFieldValue());
+        $this->assertSame('foo', $header->getFieldValue());
     }
 
-    public function testToStringWithOneValue()
+    public function testSeveralValues()
     {
-        $header = new HeaderContentLanguage('value');
+        $header = new HeaderContentLanguage('foo', 'bar', 'baz');
 
-        $this->assertSame('Content-Language: value', (string) $header);
+        $this->assertSame('foo, bar, baz', $header->getFieldValue());
     }
 
-    public function testToStringWithSeveralValues()
+    public function testEmptyValue()
     {
-        $header = new HeaderContentLanguage('value-first', 'value-second', 'value-third');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Content-Language" is not valid');
 
-        $this->assertSame('Content-Language: value-first, value-second, value-third', (string) $header);
+        new HeaderContentLanguage('');
+    }
+
+    public function testEmptyValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Content-Language" is not valid');
+
+        new HeaderContentLanguage('foo', '', 'baz');
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Content-Language" is not valid');
+
+        // isn't a token...
+        new HeaderContentLanguage('@');
+    }
+
+    public function testInvalidValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Content-Language" is not valid');
+
+        // isn't a token...
+        new HeaderContentLanguage('foo', '@', 'baz');
+    }
+
+    public function testInvalidValueLength()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "VERYLONGWORD" for the header "Content-Language" is not valid');
+
+        // isn't a token...
+        new HeaderContentLanguage('VERYLONGWORD');
+    }
+
+    public function testInvalidValueLengthAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "VERYLONGWORD" for the header "Content-Language" is not valid');
+
+        // isn't a token...
+        new HeaderContentLanguage('foo', 'VERYLONGWORD', 'baz');
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderContentLanguage('foo');
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderContentLanguage('foo');
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

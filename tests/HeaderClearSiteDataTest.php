@@ -3,101 +3,92 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderClearSiteData;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderClearSiteData;
 
 class HeaderClearSiteDataTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderClearSiteData('value');
+        $header = new HeaderClearSiteData('foo');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidValue()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderClearSiteData('"invalid value"');
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderClearSiteData('value-first');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setValue('value-second'));
-
-        $this->assertSame([
-            'value-first',
-            'value-second',
-        ], $header->getValue());
-    }
-
-    public function testSetSeveralValues()
-    {
-        $header = new HeaderClearSiteData('value-first', 'value-second');
-
-        $header->setValue('value-third', 'value-fourth');
-
-        $this->assertSame([
-            'value-first',
-            'value-second',
-            'value-third',
-            'value-fourth',
-        ], $header->getValue());
-    }
-
-    public function testSetInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderClearSiteData('value');
-
-        $header->setValue('"invalid value"');
-    }
-
-    public function testGetValue()
-    {
-        $header = new HeaderClearSiteData('value');
-
-        $this->assertSame(['value'], $header->getValue());
-    }
-
-    public function testResetValue()
-    {
-        $header = new HeaderClearSiteData('value');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
-
-        $this->assertSame([], $header->getValue());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderClearSiteData('value');
+        $header = new HeaderClearSiteData('foo');
 
         $this->assertSame('Clear-Site-Data', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderClearSiteData('value');
+        $header = new HeaderClearSiteData('foo');
 
-        $this->assertSame('"value"', $header->getFieldValue());
+        $this->assertSame('"foo"', $header->getFieldValue());
     }
 
-    public function testToStringWithOneValue()
+    public function testSeveralValues()
     {
-        $header = new HeaderClearSiteData('value');
+        $header = new HeaderClearSiteData('foo', 'bar', 'baz');
 
-        $this->assertSame('Clear-Site-Data: "value"', (string) $header);
+        $this->assertSame('"foo", "bar", "baz"', $header->getFieldValue());
     }
 
-    public function testToStringWithSeveralValues()
+    public function testEmptyValue()
     {
-        $header = new HeaderClearSiteData('value-first', 'value-second', 'value-third');
+        $header = new HeaderClearSiteData('');
 
-        $this->assertSame('Clear-Site-Data: "value-first", "value-second", "value-third"', (string) $header);
+        $this->assertSame('""', $header->getFieldValue());
+    }
+
+    public function testEmptyValueAmongOthers()
+    {
+        $header = new HeaderClearSiteData('foo', '', 'baz');
+
+        $this->assertSame('"foo", "", "baz"', $header->getFieldValue());
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value ""invalid value"" for the header "Clear-Site-Data" is not valid');
+
+        // cannot contain quotes...
+        new HeaderClearSiteData('"invalid value"');
+    }
+
+    public function testInvalidValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value ""bar"" for the header "Clear-Site-Data" is not valid');
+
+        // cannot contain quotes...
+        new HeaderClearSiteData('foo', '"bar"', 'baz');
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderClearSiteData('foo');
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderClearSiteData('foo');
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

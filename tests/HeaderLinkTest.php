@@ -3,243 +3,172 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderLink;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderLink;
 use Sunrise\Uri\Uri;
 
 class HeaderLinkTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
         $uri = new Uri('/');
-
         $header = new HeaderLink($uri);
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidParameterName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $uri = new Uri('/');
-
-        new HeaderLink($uri, ['parameter-name=' => 'parameter-value']);
-    }
-
-    public function testConstructorWithInvalidParameterValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $uri = new Uri('/');
-
-        new HeaderLink($uri, ['parameter-name' => '"parameter-value"']);
-    }
-
-    public function testSetUri()
-    {
-        $uri1 = new Uri('/1');
-
-        $uri2 = new Uri('/2');
-
-        $header = new HeaderLink($uri1);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setUri($uri2));
-
-        $this->assertSame($uri2, $header->getUri());
-    }
-
-    public function testSetParameter()
+    public function testFieldName()
     {
         $uri = new Uri('/');
-
-        $header = new HeaderLink($uri, ['parameter-name' => 'parameter-value']);
-
-        $this->assertInstanceOf(
-            HeaderInterface::class,
-            $header->setParameter('parameter-name', 'overwritten-parameter-value')
-        );
-
-        $this->assertSame(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
-    }
-
-    public function testSetSeveralParameters()
-    {
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri, [
-            'parameter-name-1' => 'parameter-value-1',
-            'parameter-name-2' => 'parameter-value-2',
-        ]);
-
-        $header->setParameter('parameter-name-1', 'overwritten-parameter-value-1');
-        $header->setParameter('parameter-name-2', 'overwritten-parameter-value-2');
-
-        $this->assertSame([
-            'parameter-name-1' => 'overwritten-parameter-value-1',
-            'parameter-name-2' => 'overwritten-parameter-value-2',
-        ], $header->getParameters());
-    }
-
-    public function testSetParameterWithInvalidName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri);
-
-        $header->setParameter('parameter-name=', 'parameter-value');
-    }
-
-    public function testSetParameterWithInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri);
-
-        $header->setParameter('parameter-name', '"parameter-value"');
-    }
-
-    public function testSetParameters()
-    {
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri, [
-            'parameter-name-1' => 'parameter-value-1',
-            'parameter-name-2' => 'parameter-value-2',
-        ]);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
-            'parameter-name-1' => 'overwritten-parameter-value-1',
-            'parameter-name-2' => 'overwritten-parameter-value-2',
-        ]));
-
-        $this->assertSame([
-            'parameter-name-1' => 'overwritten-parameter-value-1',
-            'parameter-name-2' => 'overwritten-parameter-value-2',
-        ], $header->getParameters());
-    }
-
-    public function testSetParametersWithParameterThatContainsInvalidName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri);
-
-        $header->setParameters(['invalid name' => 'value']);
-    }
-
-    public function testSetParametersWithParameterThatContainsInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri);
-
-        $header->setParameters(['name' => '"invalid value"']);
-    }
-
-    public function testGetUri()
-    {
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri);
-
-        $this->assertSame($uri, $header->getUri());
-    }
-
-    public function testGetParameters()
-    {
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri, ['parameter-name' => 'parameter-value']);
-
-        $this->assertSame(['parameter-name' => 'parameter-value'], $header->getParameters());
-    }
-
-    public function testClearParameters()
-    {
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri, [
-            'parameter-name-1' => 'parameter-value-1',
-        ]);
-
-        $header->setParameters([
-            'parameter-name-2' => 'parameter-value-2',
-        ]);
-
-        $header->setParameter('parameter-name-3', 'parameter-value-3');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
-
-        $this->assertSame([], $header->getParameters());
-    }
-
-    public function testGetFieldName()
-    {
-        $uri = new Uri('/');
-
         $header = new HeaderLink($uri);
 
         $this->assertSame('Link', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
         $uri = new Uri('/');
-
-        $header = new HeaderLink($uri, ['parameter-name' => 'parameter-value']);
-
-        $this->assertSame('</>; parameter-name="parameter-value"', $header->getFieldValue());
-    }
-
-    public function testToStringWithoutParameters()
-    {
-        $uri = new Uri('/');
-
         $header = new HeaderLink($uri);
 
-        $this->assertSame('Link: </>', (string) $header);
+        $this->assertSame('</>', $header->getFieldValue());
     }
 
-    public function testToStringWithParameterWithoutValue()
-    {
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri, ['parameter-name' => '']);
-
-        $this->assertSame('Link: </>; parameter-name=""', (string) $header);
-    }
-
-    public function testToStringWithOneParameter()
-    {
-        $uri = new Uri('/');
-
-        $header = new HeaderLink($uri, ['parameter-name' => 'parameter-value']);
-
-        $this->assertSame('Link: </>; parameter-name="parameter-value"', (string) $header);
-    }
-
-    public function testToStringWithSeveralParameters()
+    public function testParameterWithEmptyValue()
     {
         $uri = new Uri('/');
 
         $header = new HeaderLink($uri, [
-            'parameter-name-1' => 'parameter-value-1',
-            'parameter-name-2' => 'parameter-value-2',
-            'parameter-name-3' => 'parameter-value-3',
+            'foo' => '',
         ]);
 
-        $expected = 'Link: </>; parameter-name-1="parameter-value-1"; '.
-                    'parameter-name-2="parameter-value-2"; parameter-name-3="parameter-value-3"';
+        $this->assertSame('</>; foo=""', $header->getFieldValue());
+    }
 
-        $this->assertSame($expected, (string) $header);
+    public function testParameterWithToken()
+    {
+        $uri = new Uri('/');
+
+        $header = new HeaderLink($uri, [
+            'foo' => 'token',
+        ]);
+
+        $this->assertSame('</>; foo="token"', $header->getFieldValue());
+    }
+
+    public function testParameterWithQuotedString()
+    {
+        $uri = new Uri('/');
+
+        $header = new HeaderLink($uri, [
+            'foo' => 'quoted string',
+        ]);
+
+        $this->assertSame('</>; foo="quoted string"', $header->getFieldValue());
+    }
+
+    public function testParameterWithInteger()
+    {
+        $uri = new Uri('/');
+
+        $header = new HeaderLink($uri, [
+            'foo' => 1,
+        ]);
+
+        $this->assertSame('</>; foo="1"', $header->getFieldValue());
+    }
+
+    public function testSeveralParameters()
+    {
+        $uri = new Uri('/');
+
+        $header = new HeaderLink($uri, [
+            'foo' => '',
+            'bar' => 'token',
+            'baz' => 'quoted string',
+            'qux' => 1,
+        ]);
+
+        $this->assertSame('</>; foo=""; bar="token"; baz="quoted string"; qux="1"', $header->getFieldValue());
+    }
+
+    public function testInvalidParameterName()
+    {
+        $uri = new Uri('/');
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-name "invalid name" for the header "Link" is not valid'
+        );
+
+        // cannot contain spaces...
+        new HeaderLink($uri, ['invalid name' => 'value']);
+    }
+
+    public function testInvalidParameterNameType()
+    {
+        $uri = new Uri('/');
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-name "<integer>" for the header "Link" is not valid'
+        );
+
+        new HeaderLink($uri, [0 => 'value']);
+    }
+
+    public function testInvalidParameterValue()
+    {
+        $uri = new Uri('/');
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-value ""invalid value"" for the header "Link" is not valid'
+        );
+
+        // cannot contain quotes...
+        new HeaderLink($uri, ['name' => '"invalid value"']);
+    }
+
+    public function testInvalidParameterValueType()
+    {
+        $uri = new Uri('/');
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-value "<array>" for the header "Link" is not valid'
+        );
+
+        // cannot contain quotes...
+        new HeaderLink($uri, ['name' => []]);
+    }
+
+    public function testBuild()
+    {
+        $uri = new Uri('/');
+        $header = new HeaderLink($uri, ['foo' => 'bar']);
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $uri = new Uri('/');
+        $header = new HeaderLink($uri, ['foo' => 'bar']);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

@@ -3,68 +3,80 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderExpires;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderExpires;
 
 class HeaderExpiresTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $now = new \DateTime('now');
-
-        $header = new HeaderExpires($now);
+        $utc = new \DateTime('utc');
+        $header = new HeaderExpires($utc);
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testSetTimestamp()
+    public function testFieldName()
     {
-        $now = new \DateTime('now');
-
-        $header = new HeaderExpires($now);
-
-        $tomorrow = new \DateTime('+1 day');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setTimestamp($tomorrow));
-
-        $this->assertSame($tomorrow, $header->getTimestamp());
-    }
-
-    public function testGetTimestamp()
-    {
-        $now = new \DateTime('now');
-
-        $header = new HeaderExpires($now);
-
-        $this->assertSame($now, $header->getTimestamp());
-    }
-
-    public function testGetFieldName()
-    {
-        $now = new \DateTime('now');
-
-        $header = new HeaderExpires($now);
+        $utc = new \DateTime('utc');
+        $header = new HeaderExpires($utc);
 
         $this->assertSame('Expires', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $now = new \DateTime('now', new \DateTimeZone('Europe/Moscow'));
+        $utc = new \DateTime('utc');
+        $header = new HeaderExpires($utc);
 
-        $header = new HeaderExpires($now);
-
-        $expected = new \DateTime('now', new \DateTimeZone('UTC'));
-
-        $this->assertSame($expected->format(\DateTime::RFC822), $header->getFieldValue());
+        $this->assertSame($utc->format(\DateTime::RFC822), $header->getFieldValue());
     }
 
-    public function testToString()
+    public function testFieldValueWithMutableDateTime()
     {
-        $now = new \DateTime('now', new \DateTimeZone('UTC'));
+        $now = new \DateTime('now', new \DateTimeZone('Europe/Moscow'));
+        $utc = new \DateTime('now', new \DateTimeZone('UTC'));
 
         $header = new HeaderExpires($now);
 
-        $this->assertSame(\sprintf('Expires: %s', $now->format(\DateTime::RFC822)), (string) $header);
+        $this->assertSame($utc->format(\DateTime::RFC822), $header->getFieldValue());
+        $this->assertSame('Europe/Moscow', $now->getTimezone()->getName());
+    }
+
+    public function testFieldValueWithImmutableDateTime()
+    {
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('Europe/Moscow'));
+        $utc = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+
+        $header = new HeaderExpires($now);
+
+        $this->assertSame($utc->format(\DateTimeImmutable::RFC822), $header->getFieldValue());
+        $this->assertSame('Europe/Moscow', $now->getTimezone()->getName());
+    }
+
+    public function testBuild()
+    {
+        $now = new \DateTime('now');
+        $header = new HeaderExpires($now);
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $now = new \DateTime('now');
+        $header = new HeaderExpires($now);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }
