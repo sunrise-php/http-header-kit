@@ -12,27 +12,12 @@
 namespace Sunrise\Http\Header;
 
 /**
- * Import classes
- */
-use InvalidArgumentException;
-
-/**
- * Import functions
- */
-use function preg_match;
-use function sprintf;
-
-/**
- * HeaderContentEncoding
- *
  * @link https://tools.ietf.org/html/rfc2616#section-14.11
  */
-class HeaderContentEncoding extends AbstractHeader implements HeaderInterface
+class HeaderContentEncoding extends AbstractHeader
 {
 
     /**
-     * The header value
-     *
      * @var string
      */
     protected $value;
@@ -44,41 +29,9 @@ class HeaderContentEncoding extends AbstractHeader implements HeaderInterface
      */
     public function __construct(string $value)
     {
-        $this->setValue($value);
-    }
-
-    /**
-     * Sets the given value as the header value
-     *
-     * @param string $value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setValue(string $value) : self
-    {
-        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $value)) {
-            throw new InvalidArgumentException(sprintf(
-                'The header field "%s: %s" is not valid',
-                $this->getFieldName(),
-                $value
-            ));
-        }
+        $this->validateToken($value);
 
         $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return string
-     */
-    public function getValue() : string
-    {
-        return $this->value;
     }
 
     /**
@@ -94,6 +47,6 @@ class HeaderContentEncoding extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        return $this->getValue();
+        return $this->value;
     }
 }

@@ -12,89 +12,33 @@
 namespace Sunrise\Http\Header;
 
 /**
- * Import classes
- */
-use InvalidArgumentException;
-
-/**
  * Import functions
  */
-use function array_keys;
 use function implode;
-use function preg_match;
-use function sprintf;
 
 /**
- * HeaderAccessControlAllowHeaders
- *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
  */
-class HeaderAccessControlAllowHeaders extends AbstractHeader implements HeaderInterface
+class HeaderAccessControlAllowHeaders extends AbstractHeader
 {
 
     /**
-     * The header value
-     *
-     * @var array<string, bool>
+     * @var list<string>
      */
-    protected $value = [];
+    protected $headers;
 
     /**
      * Constructor of the class
      *
-     * @param string ...$value
+     * @param string ...$headers
      */
-    public function __construct(string ...$value)
+    public function __construct(string ...$headers)
     {
-        $this->setValue(...$value);
-    }
+        /** @var list<string> $headers */
 
-    /**
-     * Sets the header value
-     *
-     * @param string ...$value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setValue(string ...$value) : self
-    {
-        foreach ($value as $oneOf) {
-            if (!preg_match(HeaderInterface::RFC7230_TOKEN, $oneOf)) {
-                throw new InvalidArgumentException(sprintf(
-                    'The value "%s" for the header "%s" is not valid',
-                    $oneOf,
-                    $this->getFieldName()
-                ));
-            }
+        $this->validateToken(...$headers);
 
-            $this->value[$oneOf] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return list<string>
-     */
-    public function getValue() : array
-    {
-        return array_keys($this->value);
-    }
-
-    /**
-     * Resets the header value
-     *
-     * @return self
-     */
-    public function resetValue() : self
-    {
-        $this->value = [];
-
-        return $this;
+        $this->headers = $headers;
     }
 
     /**
@@ -110,6 +54,6 @@ class HeaderAccessControlAllowHeaders extends AbstractHeader implements HeaderIn
      */
     public function getFieldValue() : string
     {
-        return implode(', ', $this->getValue());
+        return implode(', ', $this->headers);
     }
 }

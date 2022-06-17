@@ -14,23 +14,16 @@ namespace Sunrise\Http\Header;
 /**
  * Import classes
  */
-use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
-use DateTimeZone;
 
 /**
- * HeaderSunset
- *
  * @link https://tools.ietf.org/id/draft-wilde-sunset-header-03.html
  * @link https://github.com/sunrise-php/http-header-kit/issues/1#issuecomment-457043527
  */
-class HeaderSunset extends AbstractHeader implements HeaderInterface
+class HeaderSunset extends AbstractHeader
 {
 
     /**
-     * Timestamp for the header field-value
-     *
      * @var DateTimeInterface
      */
     protected $timestamp;
@@ -42,31 +35,7 @@ class HeaderSunset extends AbstractHeader implements HeaderInterface
      */
     public function __construct(DateTimeInterface $timestamp)
     {
-        $this->setTimestamp($timestamp);
-    }
-
-    /**
-     * Sets timestamp for the header field-value
-     *
-     * @param DateTimeInterface $timestamp
-     *
-     * @return self
-     */
-    public function setTimestamp(DateTimeInterface $timestamp) : self
-    {
         $this->timestamp = $timestamp;
-
-        return $this;
-    }
-
-    /**
-     * Gets timestamp for the header field-value
-     *
-     * @return DateTimeInterface
-     */
-    public function getTimestamp() : DateTimeInterface
-    {
-        return $this->timestamp;
     }
 
     /**
@@ -82,14 +51,6 @@ class HeaderSunset extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        $timestamp = $this->getTimestamp();
-
-        /** @psalm-suppress RedundantCondition */
-        if ($timestamp instanceof DateTime ||
-            $timestamp instanceof DateTimeImmutable) {
-            $timestamp->setTimezone(new DateTimeZone('GMT'));
-        }
-
-        return $timestamp->format(DateTime::RFC822);
+        return $this->formatDateTime($this->timestamp);
     }
 }

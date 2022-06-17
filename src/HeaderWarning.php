@@ -14,24 +14,18 @@ namespace Sunrise\Http\Header;
 /**
  * Import classes
  */
-use DateTime;
-use DateTimeImmutable;
 use DateTimeInterface;
-use DateTimeZone;
 use InvalidArgumentException;
 
 /**
  * Import functions
  */
-use function preg_match;
 use function sprintf;
 
 /**
- * HeaderWarning
- *
  * @link https://tools.ietf.org/html/rfc2616#section-14.46
  */
-class HeaderWarning extends AbstractHeader implements HeaderInterface
+class HeaderWarning extends AbstractHeader
 {
 
     /**
@@ -48,29 +42,21 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
     public const HTTP_WARNING_CODE_MISCELLANEOUS_PERSISTENT_WARNING = 299;
 
     /**
-     * The warning code
-     *
      * @var int
      */
     protected $code;
 
     /**
-     * The warning agent
-     *
      * @var string
      */
     protected $agent;
 
     /**
-     * The warning text
-     *
      * @var string
      */
     protected $text;
 
     /**
-     * The warning date
-     *
      * @var DateTimeInterface|null
      */
     protected $date;
@@ -83,126 +69,16 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
      * @param string $text
      * @param DateTimeInterface|null $date
      */
-    public function __construct(int $code, string $agent, string $text, DateTimeInterface $date = null)
+    public function __construct(int $code, string $agent, string $text, ?DateTimeInterface $date = null)
     {
-        $this->setCode($code);
-        $this->setAgent($agent);
-        $this->setText($text);
-        $this->setDate($date);
-    }
-
-    /**
-     * Sets the warning code
-     *
-     * @param int $code
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setCode(int $code) : self
-    {
-        if (! ($code >= 100 && $code <= 999)) {
-            throw new InvalidArgumentException('The warning code is not valid');
-        }
+        $this->validateCode($code);
+        $this->validateToken($agent);
+        $this->validateQuotedString($text);
 
         $this->code = $code;
-
-        return $this;
-    }
-
-    /**
-     * Sets the warning agent
-     *
-     * @param string $agent
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setAgent(string $agent) : self
-    {
-        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $agent)) {
-            throw new InvalidArgumentException('The warning agent is not valid');
-        }
-
         $this->agent = $agent;
-
-        return $this;
-    }
-
-    /**
-     * Sets the warning text
-     *
-     * @param string $text
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setText(string $text) : self
-    {
-        if (!preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $text)) {
-            throw new InvalidArgumentException('The warning text is not valid');
-        }
-
         $this->text = $text;
-
-        return $this;
-    }
-
-    /**
-     * Sets the warning date
-     *
-     * @param DateTimeInterface|null $date
-     *
-     * @return self
-     */
-    public function setDate(?DateTimeInterface $date) : self
-    {
         $this->date = $date;
-
-        return $this;
-    }
-
-    /**
-     * Gets the warning code
-     *
-     * @return int
-     */
-    public function getCode() : int
-    {
-        return $this->code;
-    }
-
-    /**
-     * Gets the warning agent
-     *
-     * @return string
-     */
-    public function getAgent() : string
-    {
-        return $this->agent;
-    }
-
-    /**
-     * Gets the warning text
-     *
-     * @return string
-     */
-    public function getText() : string
-    {
-        return $this->text;
-    }
-
-    /**
-     * Gets the warning date
-     *
-     * @return DateTimeInterface|null
-     */
-    public function getDate() : ?DateTimeInterface
-    {
-        return $this->date;
     }
 
     /**
@@ -218,25 +94,33 @@ class HeaderWarning extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        $result = sprintf(
-            '%s %s "%s"',
-            $this->getCode(),
-            $this->getAgent(),
-            $this->getText()
-        );
+        $value = sprintf('%s %s "%s"', $this->code, $this->agent, $this->text);
 
-        $date = $this->getDate();
-        if (isset($date)) {
-
-            /** @psalm-suppress RedundantCondition */
-            if ($date instanceof DateTime ||
-                $date instanceof DateTimeImmutable) {
-                $date->setTimezone(new DateTimeZone('GMT'));
-            }
-
-            $result .= ' "' . $date->format(DateTime::RFC822) . '"';
+        if (isset($this->date)) {
+            $value .= sprintf(' "%s"', $this->formatDateTime($this->date));
         }
 
-        return $result;
+        return $value;
+    }
+
+    /**
+     * Validates the given code
+     *
+     * @param int $code
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     *         If the code isn't valid.
+     */
+    private function validateCode(int $code) : void
+    {
+        if (! ($code >= 100 && $code <= 999)) {
+            throw new InvalidArgumentException(sprintf(
+                'The code "%2$d" for the header "%1$s" is not valid',
+                $this->getFieldName(),
+                $code
+            ));
+        }
     }
 }

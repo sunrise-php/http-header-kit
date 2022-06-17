@@ -23,16 +23,12 @@ use Psr\Http\Message\UriInterface;
 use function sprintf;
 
 /**
- * HeaderAccessControlAllowOrigin
- *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
  */
-class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInterface
+class HeaderAccessControlAllowOrigin extends AbstractHeader
 {
 
     /**
-     * URI for the header field-value
-     *
      * @var UriInterface|null
      */
     protected $uri;
@@ -44,41 +40,11 @@ class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInt
      */
     public function __construct(?UriInterface $uri)
     {
-        $this->setUri($uri);
-    }
-
-    /**
-     * Sets URI for the header field-value
-     *
-     * @param UriInterface|null $uri
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setUri(?UriInterface $uri) : self
-    {
-        if (isset($uri) && ('' === $uri->getScheme() || '' === $uri->getHost())) {
-            throw new InvalidArgumentException(sprintf(
-                'The header field "%s: %d" is not valid',
-                $this->getFieldName(),
-                (string) $uri
-            ));
+        if (isset($uri)) {
+            $this->validateUri($uri);
         }
 
         $this->uri = $uri;
-
-        return $this;
-    }
-
-    /**
-     * Gets URI for the header field-value
-     *
-     * @return UriInterface|null
-     */
-    public function getUri() : ?UriInterface
-    {
-        return $this->uri;
     }
 
     /**
@@ -94,19 +60,39 @@ class HeaderAccessControlAllowOrigin extends AbstractHeader implements HeaderInt
      */
     public function getFieldValue() : string
     {
-        $uri = $this->getUri();
-        if (null === $uri) {
+        if ($this->uri === null) {
             return '*';
         }
 
-        $value = $uri->getScheme() . ':';
-        $value .= '//' . $uri->getHost();
+        $value = $this->uri->getScheme() . ':';
+        $value .= '//' . $this->uri->getHost();
 
-        $port = $uri->getPort();
-        if (null !== $port) {
+        $port = $this->uri->getPort();
+        if (isset($port)) {
             $value .= ':' . $port;
         }
 
         return $value;
+    }
+
+    /**
+     * Validates the given URI
+     *
+     * @param UriInterface $uri
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     *         If the URI isn't valid.
+     */
+    private function validateUri(UriInterface $uri) : void
+    {
+        if ($uri->getScheme() === '' || $uri->getHost() === '') {
+            throw new InvalidArgumentException(sprintf(
+                'The URI "%2$s" for the header "%1$s" is not valid',
+                $this->getFieldName(),
+                $uri->__toString()
+            ));
+        }
     }
 }

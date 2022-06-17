@@ -12,89 +12,34 @@
 namespace Sunrise\Http\Header;
 
 /**
- * Import classes
- */
-use InvalidArgumentException;
-
-/**
  * Import functions
  */
-use function array_keys;
 use function implode;
-use function preg_match;
 use function sprintf;
 
 /**
- * HeaderClearSiteData
- *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Clear-Site-Data
  */
-class HeaderClearSiteData extends AbstractHeader implements HeaderInterface
+class HeaderClearSiteData extends AbstractHeader
 {
 
     /**
-     * The header value
-     *
-     * @var array<string, bool>
+     * @var list<string>
      */
-    protected $value = [];
+    protected $directives;
 
     /**
      * Constructor of the class
      *
-     * @param string ...$value
+     * @param string ...$directives
      */
-    public function __construct(string ...$value)
+    public function __construct(string ...$directives)
     {
-        $this->setValue(...$value);
-    }
+        /** @var list<string> $directives */
 
-    /**
-     * Sets the header value
-     *
-     * @param string ...$value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setValue(string ...$value) : self
-    {
-        foreach ($value as $oneOf) {
-            if (!preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $oneOf)) {
-                throw new InvalidArgumentException(sprintf(
-                    'The value "%s" for the header "%s" is not valid',
-                    $oneOf,
-                    $this->getFieldName()
-                ));
-            }
+        $this->validateQuotedString(...$directives);
 
-            $this->value[$oneOf] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return list<string>
-     */
-    public function getValue() : array
-    {
-        return array_keys($this->value);
-    }
-
-    /**
-     * Resets the header value
-     *
-     * @return self
-     */
-    public function resetValue() : self
-    {
-        $this->value = [];
-
-        return $this;
+        $this->directives = $directives;
     }
 
     /**
@@ -110,11 +55,11 @@ class HeaderClearSiteData extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        $directives = [];
-        foreach ($this->getValue() as $directive) {
-            $directives[] = sprintf('"%s"', $directive);
+        $segments = [];
+        foreach ($this->directives as $directive) {
+            $segments[] = sprintf('"%s"', $directive);
         }
 
-        return implode(', ', $directives);
+        return implode(', ', $segments);
     }
 }

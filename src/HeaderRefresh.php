@@ -23,23 +23,17 @@ use Psr\Http\Message\UriInterface;
 use function sprintf;
 
 /**
- * HeaderRefresh
- *
  * @link https://en.wikipedia.org/wiki/Meta_refresh
  */
-class HeaderRefresh extends AbstractHeader implements HeaderInterface
+class HeaderRefresh extends AbstractHeader
 {
 
     /**
-     * Delay for the redirection
-     *
      * @var int
      */
     protected $delay;
 
     /**
-     * URI for the redirection
-     *
      * @var UriInterface
      */
     protected $uri;
@@ -52,65 +46,10 @@ class HeaderRefresh extends AbstractHeader implements HeaderInterface
      */
     public function __construct(int $delay, UriInterface $uri)
     {
-        $this->setDelay($delay);
-        $this->setUri($uri);
-    }
-
-    /**
-     * Sets the redirection delay
-     *
-     * @param int $delay
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setDelay(int $delay) : self
-    {
-        if (! ($delay >= 0)) {
-            throw new InvalidArgumentException(sprintf(
-                'The given delay "%d" for the "Refresh" header is not valid',
-                $delay
-            ));
-        }
+        $this->validateDelay($delay);
 
         $this->delay = $delay;
-
-        return $this;
-    }
-
-    /**
-     * Sets the redirection URI
-     *
-     * @param UriInterface $uri
-     *
-     * @return self
-     */
-    public function setUri(UriInterface $uri) : self
-    {
         $this->uri = $uri;
-
-        return $this;
-    }
-
-    /**
-     * Gets the redirection delay
-     *
-     * @return int
-     */
-    public function getDelay() : int
-    {
-        return $this->delay;
-    }
-
-    /**
-     * Gets the redirection URI
-     *
-     * @return UriInterface
-     */
-    public function getUri() : UriInterface
-    {
-        return $this->uri;
     }
 
     /**
@@ -126,6 +65,27 @@ class HeaderRefresh extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        return sprintf('%d; url=%s', $this->getDelay(), (string) $this->getUri());
+        return sprintf('%d; url=%s', $this->delay, $this->uri->__toString());
+    }
+
+    /**
+     * Validates the redirection delay
+     *
+     * @param int $delay
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     *         If the delay isn't valid.
+     */
+    private function validateDelay(int $delay) : void
+    {
+        if (! ($delay >= 0)) {
+            throw new InvalidArgumentException(sprintf(
+                'The delay "%2$d" for the header "%1$s" is not valid',
+                $this->getFieldName(),
+                $delay
+            ));
+        }
     }
 }

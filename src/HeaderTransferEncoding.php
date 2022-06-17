@@ -12,32 +12,20 @@
 namespace Sunrise\Http\Header;
 
 /**
- * Import classes
- */
-use InvalidArgumentException;
-
-/**
  * Import functions
  */
-use function array_keys;
 use function implode;
-use function preg_match;
-use function sprintf;
 
 /**
- * HeaderTransferEncoding
- *
  * @link https://tools.ietf.org/html/rfc2616#section-14.41
  */
-class HeaderTransferEncoding extends AbstractHeader implements HeaderInterface
+class HeaderTransferEncoding extends AbstractHeader
 {
 
     /**
-     * The header value
-     *
-     * @var array<string, bool>
+     * @var list<string>
      */
-    protected $value = [];
+    protected $value;
 
     /**
      * Constructor of the class
@@ -46,55 +34,11 @@ class HeaderTransferEncoding extends AbstractHeader implements HeaderInterface
      */
     public function __construct(string ...$value)
     {
-        $this->setValue(...$value);
-    }
+        /** @var list<string> $value */
 
-    /**
-     * Sets the header value
-     *
-     * @param string ...$value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setValue(string ...$value) : self
-    {
-        foreach ($value as $oneOf) {
-            if (!preg_match(HeaderInterface::RFC7230_TOKEN, $oneOf)) {
-                throw new InvalidArgumentException(sprintf(
-                    'The value "%s" for the header "%s" is not valid',
-                    $oneOf,
-                    $this->getFieldName()
-                ));
-            }
+        $this->validateToken(...$value);
 
-            $this->value[$oneOf] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return list<string>
-     */
-    public function getValue() : array
-    {
-        return array_keys($this->value);
-    }
-
-    /**
-     * Resets the header value
-     *
-     * @return self
-     */
-    public function resetValue() : self
-    {
-        $this->value = [];
-
-        return $this;
+        $this->value = $value;
     }
 
     /**
@@ -110,6 +54,6 @@ class HeaderTransferEncoding extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        return implode(', ', $this->getValue());
+        return implode(', ', $this->value);
     }
 }

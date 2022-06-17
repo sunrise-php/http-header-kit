@@ -12,98 +12,33 @@
 namespace Sunrise\Http\Header;
 
 /**
- * Import classes
- */
-use InvalidArgumentException;
-
-/**
  * Import functions
  */
-use function array_keys;
 use function implode;
-use function preg_match;
-use function sprintf;
 
 /**
- * HeaderContentLanguage
- *
  * @link https://tools.ietf.org/html/rfc2616#section-14.12
  */
-class HeaderContentLanguage extends AbstractHeader implements HeaderInterface
+class HeaderContentLanguage extends AbstractHeader
 {
 
     /**
-     * Regular Expression for a language-tag validation
-     *
-     * @var string
-     *
-     * @link https://tools.ietf.org/html/rfc2616#section-3.10
+     * @var list<string>
      */
-    public const VALID_LANGUAGE_TAG = '/^[a-zA-Z]{1,8}(?:\-[a-zA-Z]{1,8})?$/';
-
-    /**
-     * The header value
-     *
-     * @var array<string, bool>
-     */
-    protected $value = [];
+    protected $languages;
 
     /**
      * Constructor of the class
      *
-     * @param string ...$value
+     * @param string ...$languages
      */
-    public function __construct(string ...$value)
+    public function __construct(string ...$languages)
     {
-        $this->setValue(...$value);
-    }
+        /** @var list<string> $languages */
 
-    /**
-     * Sets the header value
-     *
-     * @param string ...$value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setValue(string ...$value) : self
-    {
-        foreach ($value as $oneOf) {
-            if (!preg_match(self::VALID_LANGUAGE_TAG, $oneOf)) {
-                throw new InvalidArgumentException(sprintf(
-                    'The value "%s" for the header "%s" is not valid',
-                    $oneOf,
-                    $this->getFieldName()
-                ));
-            }
+        $this->validateToken(...$languages);
 
-            $this->value[$oneOf] = true;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return list<string>
-     */
-    public function getValue() : array
-    {
-        return array_keys($this->value);
-    }
-
-    /**
-     * Resets the header value
-     *
-     * @return self
-     */
-    public function resetValue() : self
-    {
-        $this->value = [];
-
-        return $this;
+        $this->languages = $languages;
     }
 
     /**
@@ -119,6 +54,16 @@ class HeaderContentLanguage extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        return implode(', ', $this->getValue());
+        return implode(', ', $this->languages);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @link https://tools.ietf.org/html/rfc2616#section-3.10
+     */
+    protected function getTokenValidationRegularExpression() : string
+    {
+        return '/^[a-zA-Z]{1,8}(?:\-[a-zA-Z]{1,8})?$/';
     }
 }

@@ -17,24 +17,28 @@ namespace Sunrise\Http\Header;
 use InvalidArgumentException;
 
 /**
- * HeaderCustom
+ * Custom header
  */
-class HeaderCustom extends AbstractHeader implements HeaderInterface
+class HeaderCustom extends AbstractHeader
 {
 
     /**
-     * The header name
+     * The header field-name
      *
      * @var string
+     *
+     * @readonly
      */
-    protected $fieldName;
+    private $fieldName;
 
     /**
-     * The header value
+     * The header field-value
      *
      * @var string
+     *
+     * @readonly
      */
-    protected $fieldValue;
+    private $fieldValue;
 
     /**
      * Constructor of the class
@@ -43,17 +47,12 @@ class HeaderCustom extends AbstractHeader implements HeaderInterface
      * @param string $fieldValue
      *
      * @throws InvalidArgumentException
-     *         If the name or value isn't valid.
+     *         If the header field name of value isn't valid.
      */
-    public function __construct(string $fieldName, string $fieldValue)
+    public function __construct($fieldName, $fieldValue)
     {
-        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $fieldName)) {
-            throw new InvalidArgumentException(sprintf('Name of the header "%s" is not valid', $fieldName));
-        }
-
-        if (!preg_match(HeaderInterface::RFC7230_FIELD_VALUE, $fieldValue)) {
-            throw new InvalidArgumentException(sprintf('Value of the header "%s" is not valid', $fieldName));
-        }
+        $this->validateFieldName($fieldName);
+        $this->validateFieldValue($fieldValue);
 
         $this->fieldName = $fieldName;
         $this->fieldValue = $fieldValue;

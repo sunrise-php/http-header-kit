@@ -12,23 +12,15 @@
 namespace Sunrise\Http\Header;
 
 /**
- * Import classes
- */
-use InvalidArgumentException;
-
-/**
  * Import functions
  */
 use function implode;
-use function preg_match;
 use function sprintf;
 
 /**
- * HeaderWWWAuthenticate
- *
  * @link https://tools.ietf.org/html/rfc7235#section-4.1
  */
-class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
+class HeaderWWWAuthenticate extends AbstractHeader
 {
 
     /**
@@ -48,134 +40,30 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
     public const HTTP_AUTHENTICATE_SCHEME_VAPID         = 'vapid';
 
     /**
-     * The authentication scheme
-     *
      * @var string
      */
     protected $scheme;
 
     /**
-     * The authentication parameters
-     *
      * @var array<string, string>
      */
-    protected $parameters = [];
+    protected $parameters;
 
     /**
      * Constructor of the class
      *
      * @param string $scheme
-     * @param array<string, string> $parameters
+     * @param array<array-key, mixed> $parameters
      */
     public function __construct(string $scheme, array $parameters = [])
     {
-        $this->setScheme($scheme);
-        $this->setParameters($parameters);
-    }
+        $this->validateToken($scheme);
 
-    /**
-     * Sets the authentication scheme
-     *
-     * @param string $scheme
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setScheme(string $scheme) : self
-    {
-        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $scheme)) {
-            throw new InvalidArgumentException(sprintf(
-                'The header field "%s: %s" is not valid',
-                $this->getFieldName(),
-                $scheme
-            ));
-        }
+        /** @var array<string, string> */
+        $parameters = $this->validateParameters($parameters);
 
         $this->scheme = $scheme;
-
-        return $this;
-    }
-
-    /**
-     * Sets the authentication parameter
-     *
-     * @param string $name
-     * @param string $value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setParameter(string $name, string $value) : self
-    {
-        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $name)) {
-            throw new InvalidArgumentException(sprintf(
-                'The parameter-name "%s" for the header "%s" is not valid',
-                $name,
-                $this->getFieldName()
-            ));
-        }
-
-        if (!preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
-            throw new InvalidArgumentException(sprintf(
-                'The parameter-value "%s" for the header "%s" is not valid',
-                $value,
-                $this->getFieldName()
-            ));
-        }
-
-        $this->parameters[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Sets the authentication parameters
-     *
-     * @param array<string, string> $parameters
-     *
-     * @return self
-     */
-    public function setParameters(array $parameters) : self
-    {
-        foreach ($parameters as $name => $value) {
-            $this->setParameter($name, $value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets the authentication scheme
-     *
-     * @return string
-     */
-    public function getScheme() : string
-    {
-        return $this->scheme;
-    }
-
-    /**
-     * Gets the authentication parameters
-     *
-     * @return array<string, string>
-     */
-    public function getParameters() : array
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * Clears the authentication parameters
-     *
-     * @return self
-     */
-    public function clearParameters() : self
-    {
-        $this->parameters = [];
-
-        return $this;
+        $this->parameters = $parameters;
     }
 
     /**
@@ -191,17 +79,17 @@ class HeaderWWWAuthenticate extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        $r = $this->getScheme();
+        $v = $this->scheme;
 
         $challenge = [];
-        foreach ($this->getParameters() as $name => $value) {
+        foreach ($this->parameters as $name => $value) {
             $challenge[] = sprintf(' %s="%s"', $name, $value);
         }
 
         if (!empty($challenge)) {
-            $r .= implode(',', $challenge);
+            $v .= implode(',', $challenge);
         }
 
-        return $r;
+        return $v;
     }
 }
