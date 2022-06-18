@@ -54,18 +54,19 @@ class HeaderContentSecurityPolicy extends AbstractHeader
      */
     public function getFieldValue() : string
     {
-        $segments = [];
-        foreach ($this->parameters as $name => $value) {
-            // the construction <foo=> isn't valid...
+        $directives = [];
+        foreach ($this->parameters as $directive => $value) {
+            // the directive can be without value...
+            // e.g. sandbox, upgrade-insecure-requests, etc.
             if ($value === '') {
-                $segments[] = $name;
+                $directives[] = $directive;
                 continue;
             }
 
-            $segments[] = sprintf('%s %s', $name, $value);
+            $directives[] = sprintf('%s %s', $directive, $value);
         }
 
-        return implode('; ', $segments);
+        return implode('; ', $directives);
     }
 
     /**

@@ -70,19 +70,19 @@ class HeaderSetCookie extends AbstractHeader
     protected $expires;
 
     /**
-     * @var array{path?: ?string, domain?: ?string, secure?: ?bool, httponly?: ?bool, samesite?: ?string}
+     * @var array{path?: ?string, domain?: ?string, secure?: ?bool, httpOnly?: ?bool, sameSite?: ?string}
      */
     protected $options;
 
     /**
-     * @var array{path?: ?string, domain?: ?string, secure?: ?bool, httponly?: ?bool, samesite?: ?string}
+     * @var array{path?: ?string, domain?: ?string, secure?: ?bool, httpOnly?: ?bool, sameSite?: ?string}
      */
     protected static $defaultOptions = [
         'path' => '/',
         'domain' => null,
         'secure' => null,
-        'httponly' => true,
-        'samesite' => self::SAME_SITE_LAX,
+        'httpOnly' => true,
+        'sameSite' => self::SAME_SITE_LAX,
     ];
 
     /**
@@ -91,7 +91,7 @@ class HeaderSetCookie extends AbstractHeader
      * @param string $name
      * @param string $value
      * @param DateTimeInterface|null $expires
-     * @param array{path?: ?string, domain?: ?string, secure?: ?bool, httponly?: ?bool, samesite?: ?string} $options
+     * @param array{path?: ?string, domain?: ?string, secure?: ?bool, httpOnly?: ?bool, sameSite?: ?string} $options
      */
     public function __construct(string $name, string $value, ?DateTimeInterface $expires = null, array $options = [])
     {
@@ -107,8 +107,8 @@ class HeaderSetCookie extends AbstractHeader
             $this->validateCookieStringOption('domain', $options['domain']);
         }
 
-        if (isset($options['samesite'])) {
-            $this->validateCookieStringOption('samesite', $options['samesite']);
+        if (isset($options['sameSite'])) {
+            $this->validateCookieStringOption('sameSite', $options['sameSite']);
         }
 
         if ($value === '') {
@@ -165,12 +165,12 @@ class HeaderSetCookie extends AbstractHeader
             $result .= '; Secure';
         }
 
-        if (isset($this->options['httponly']) && $this->options['httponly']) {
+        if (isset($this->options['httpOnly']) && $this->options['httpOnly']) {
             $result .= '; HttpOnly';
         }
 
-        if (isset($this->options['samesite'])) {
-            $result .= '; SameSite=' . $this->options['samesite'];
+        if (isset($this->options['sameSite'])) {
+            $result .= '; SameSite=' . $this->options['sameSite'];
         }
 
         return $result;

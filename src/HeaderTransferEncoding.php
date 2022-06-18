@@ -23,22 +23,32 @@ class HeaderTransferEncoding extends AbstractHeader
 {
 
     /**
+     * Directives
+     *
+     * @var string
+     */
+    public const CHUNKED = 'chunked';
+    public const COMPRESS = 'compress';
+    public const DEFLATE = 'deflate';
+    public const GZIP = 'gzip';
+
+    /**
      * @var list<string>
      */
-    protected $value;
+    protected $directives;
 
     /**
      * Constructor of the class
      *
-     * @param string ...$value
+     * @param string ...$directives
      */
-    public function __construct(string ...$value)
+    public function __construct(string ...$directives)
     {
-        /** @var list<string> $value */
+        /** @var list<string> $directives */
 
-        $this->validateToken(...$value);
+        $this->validateToken(...$directives);
 
-        $this->value = $value;
+        $this->directives = $directives;
     }
 
     /**
@@ -54,6 +64,6 @@ class HeaderTransferEncoding extends AbstractHeader
      */
     public function getFieldValue() : string
     {
-        return implode(', ', $this->value);
+        return implode(', ', $this->directives);
     }
 }

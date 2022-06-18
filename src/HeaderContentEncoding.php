@@ -12,26 +12,43 @@
 namespace Sunrise\Http\Header;
 
 /**
+ * Import functions
+ */
+use function implode;
+
+/**
  * @link https://tools.ietf.org/html/rfc2616#section-14.11
  */
 class HeaderContentEncoding extends AbstractHeader
 {
 
     /**
+     * Directives
+     *
      * @var string
      */
-    protected $value;
+    public const GZIP = 'gzip';
+    public const COMPRESS = 'compress';
+    public const DEFLATE = 'deflate';
+    public const BR = 'br';
+
+    /**
+     * @var list<string>
+     */
+    protected $directives;
 
     /**
      * Constructor of the class
      *
-     * @param string $value
+     * @param string ...$directives
      */
-    public function __construct(string $value)
+    public function __construct(string ...$directives)
     {
-        $this->validateToken($value);
+        /** @var list<string> $directives */
 
-        $this->value = $value;
+        $this->validateToken(...$directives);
+
+        $this->directives = $directives;
     }
 
     /**
@@ -47,6 +64,6 @@ class HeaderContentEncoding extends AbstractHeader
      */
     public function getFieldValue() : string
     {
-        return $this->value;
+        return implode(', ', $this->directives);
     }
 }
