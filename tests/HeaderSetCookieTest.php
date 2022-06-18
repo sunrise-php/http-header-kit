@@ -152,7 +152,7 @@ class HeaderSetCookieTest extends TestCase
     public function testHttpOnly()
     {
         $header = new HeaderSetCookie('name', 'value', null, [
-            'httponly' => false,
+            'httpOnly' => false,
         ]);
 
         $this->assertSame('name=value; Path=/; SameSite=Lax', $header->getFieldValue());
@@ -161,7 +161,7 @@ class HeaderSetCookieTest extends TestCase
     public function testSameSite()
     {
         $header = new HeaderSetCookie('name', 'value', null, [
-            'samesite' => 'Strict',
+            'sameSite' => 'Strict',
         ]);
 
         $this->assertSame('name=value; Path=/; HttpOnly; SameSite=Strict', $header->getFieldValue());
@@ -218,17 +218,17 @@ class HeaderSetCookieTest extends TestCase
     public function testInvalidSamesite()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The cookie option "samesite" contains prohibited characters');
+        $this->expectExceptionMessage('The cookie option "sameSite" contains prohibited characters');
 
-        new HeaderSetCookie('name', 'value', null, ['samesite' => ';']);
+        new HeaderSetCookie('name', 'value', null, ['sameSite' => ';']);
     }
 
     public function testInvalidSamesiteDataType()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The cookie option "samesite" must be a string');
+        $this->expectExceptionMessage('The cookie option "sameSite" must be a string');
 
-        new HeaderSetCookie('name', 'value', null, ['samesite' => []]);
+        new HeaderSetCookie('name', 'value', null, ['sameSite' => []]);
     }
 
     public function testBuild()

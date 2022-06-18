@@ -8,6 +8,14 @@ use Sunrise\Http\Header\HeaderTransferEncoding;
 
 class HeaderTransferEncodingTest extends TestCase
 {
+    public function testConstants()
+    {
+        $this->assertSame('chunked', HeaderTransferEncoding::CHUNKED);
+        $this->assertSame('compress', HeaderTransferEncoding::COMPRESS);
+        $this->assertSame('deflate', HeaderTransferEncoding::DEFLATE);
+        $this->assertSame('gzip', HeaderTransferEncoding::GZIP);
+    }
+
     public function testContracts()
     {
         $header = new HeaderTransferEncoding('foo');

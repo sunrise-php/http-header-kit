@@ -8,6 +8,14 @@ use Sunrise\Http\Header\HeaderContentEncoding;
 
 class HeaderContentEncodingTest extends TestCase
 {
+    public function testConstants()
+    {
+        $this->assertSame('gzip', HeaderContentEncoding::GZIP);
+        $this->assertSame('compress', HeaderContentEncoding::COMPRESS);
+        $this->assertSame('deflate', HeaderContentEncoding::DEFLATE);
+        $this->assertSame('br', HeaderContentEncoding::BR);
+    }
+
     public function testContracts()
     {
         $header = new HeaderContentEncoding('foo');
@@ -29,6 +37,13 @@ class HeaderContentEncodingTest extends TestCase
         $this->assertSame('foo', $header->getFieldValue());
     }
 
+    public function testSeveralValues()
+    {
+        $header = new HeaderContentEncoding('foo', 'bar', 'baz');
+
+        $this->assertSame('foo, bar, baz', $header->getFieldValue());
+    }
+
     public function testEmptyValue()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -37,13 +52,30 @@ class HeaderContentEncodingTest extends TestCase
         new HeaderContentEncoding('');
     }
 
+    public function testEmptyValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Content-Encoding" is not valid');
+
+        new HeaderContentEncoding('foo', '', 'bar');
+    }
+
     public function testInvalidValue()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The value "@" for the header "Content-Encoding" is not valid');
+        $this->expectExceptionMessage('The value "foo=" for the header "Content-Encoding" is not valid');
 
-        // isn't a token...
-        new HeaderContentEncoding('@');
+        // a token cannot contain the "=" character...
+        new HeaderContentEncoding('foo=');
+    }
+
+    public function testInvalidValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "bar=" for the header "Content-Encoding" is not valid');
+
+        // a token cannot contain the "=" character...
+        new HeaderContentEncoding('foo', 'bar=', 'bar');
     }
 
     public function testBuild()
