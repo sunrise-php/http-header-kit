@@ -28,21 +28,3 @@ build:
       tests:
         override:
           - command: php vendor/bin/phpunit
-    php73:
-      environment:
-        php: 7.3
-      tests:
-        override:
-          - command: php vendor/bin/phpunit
-    php72:
-      environment:
-        php: 7.2
-      tests:
-        override:
-          - command: php vendor/bin/phpunit
-    php71:
-      environment:
-        php: 7.1
-      tests:
-        override:
-          - command: php vendor/bin/phpunit
