@@ -50,7 +50,6 @@ class HeaderLink extends AbstractHeader
 
         $this->uri = $uri;
         $this->parameters = $parameters;
-
     }
 
     /**
