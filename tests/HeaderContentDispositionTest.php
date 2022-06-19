@@ -3,216 +3,164 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderContentDisposition;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderContentDisposition;
 
 class HeaderContentDispositionTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderContentDisposition('type');
+        $header = new HeaderContentDisposition('foo');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidType()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderContentDisposition('invalid type');
-    }
-
-    public function testConstructorWithInvalidParameterName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderContentDisposition('type', ['parameter-name=' => 'parameter-value']);
-    }
-
-    public function testConstructorWithInvalidParameterValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderContentDisposition('type', ['parameter-name' => '"parameter-value"']);
-    }
-
-    public function testSetType()
-    {
-        $header = new HeaderContentDisposition('type');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setType('overwritten-type'));
-
-        $this->assertSame('overwritten-type', $header->getType());
-    }
-
-    public function testSetInvalidType()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentDisposition('type');
-
-        $header->setType('invalid type');
-    }
-
-    public function testSetParameter()
-    {
-        $header = new HeaderContentDisposition('type', ['parameter-name' => 'parameter-value']);
-
-        $this->assertInstanceOf(
-            HeaderInterface::class,
-            $header->setParameter('parameter-name', 'overwritten-parameter-value')
-        );
-
-        $this->assertSame(['parameter-name' => 'overwritten-parameter-value'], $header->getParameters());
-    }
-
-    public function testSetSeveralParameters()
-    {
-        $header = new HeaderContentDisposition('type', [
-            'parameter-name-1' => 'parameter-value-1',
-            'parameter-name-2' => 'parameter-value-2',
-        ]);
-
-        $header->setParameter('parameter-name-1', 'overwritten-parameter-value-1');
-        $header->setParameter('parameter-name-2', 'overwritten-parameter-value-2');
-
-        $this->assertSame([
-            'parameter-name-1' => 'overwritten-parameter-value-1',
-            'parameter-name-2' => 'overwritten-parameter-value-2',
-        ], $header->getParameters());
-    }
-
-    public function testSetParameterWithInvalidName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentDisposition('type');
-
-        $header->setParameter('parameter-name=', 'parameter-value');
-    }
-
-    public function testSetParameterWithInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentDisposition('type');
-
-        $header->setParameter('parameter-name', '"parameter-value"');
-    }
-
-    public function testSetParameters()
-    {
-        $header = new HeaderContentDisposition('type', [
-            'parameter-name-1' => 'parameter-value-1',
-            'parameter-name-2' => 'parameter-value-2',
-        ]);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
-            'parameter-name-1' => 'overwritten-parameter-value-1',
-            'parameter-name-2' => 'overwritten-parameter-value-2',
-        ]));
-
-        $this->assertSame([
-            'parameter-name-1' => 'overwritten-parameter-value-1',
-            'parameter-name-2' => 'overwritten-parameter-value-2',
-        ], $header->getParameters());
-    }
-
-    public function testSetParametersWithParameterThatContainsInvalidName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentDisposition('type');
-
-        $header->setParameters(['invalid name' => 'value']);
-    }
-
-    public function testSetParametersWithParameterThatContainsInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentDisposition('type');
-
-        $header->setParameters(['name' => '"invalid value"']);
-    }
-
-    public function testGetType()
-    {
-        $header = new HeaderContentDisposition('type');
-
-        $this->assertSame('type', $header->getType());
-    }
-
-    public function testGetParameters()
-    {
-        $header = new HeaderContentDisposition('type', ['parameter-name' => 'parameter-value']);
-
-        $this->assertSame(['parameter-name' => 'parameter-value'], $header->getParameters());
-    }
-
-    public function testClearParameters()
-    {
-        $header = new HeaderContentDisposition('type', [
-            'parameter-name-1' => 'parameter-value-1',
-        ]);
-
-        $header->setParameters([
-            'parameter-name-2' => 'parameter-value-2',
-        ]);
-
-        $header->setParameter('parameter-name-3', 'parameter-value-3');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
-
-        $this->assertSame([], $header->getParameters());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderContentDisposition('type');
+        $header = new HeaderContentDisposition('foo');
 
         $this->assertSame('Content-Disposition', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderContentDisposition('type', ['parameter-name' => 'parameter-value']);
+        $header = new HeaderContentDisposition('foo');
 
-        $this->assertSame('type; parameter-name="parameter-value"', $header->getFieldValue());
+        $this->assertSame('foo', $header->getFieldValue());
     }
 
-    public function testToStringWithoutParameters()
+    public function testParameterWithEmptyValue()
     {
-        $header = new HeaderContentDisposition('type');
-
-        $this->assertSame('Content-Disposition: type', (string) $header);
-    }
-
-    public function testToStringWithParameterWithoutValue()
-    {
-        $header = new HeaderContentDisposition('type', ['parameter-name' => '']);
-
-        $this->assertSame('Content-Disposition: type; parameter-name=""', (string) $header);
-    }
-
-    public function testToStringWithOneParameter()
-    {
-        $header = new HeaderContentDisposition('type', ['parameter-name' => 'parameter-value']);
-
-        $this->assertSame('Content-Disposition: type; parameter-name="parameter-value"', (string) $header);
-    }
-
-    public function testToStringWithSeveralParameters()
-    {
-        $header = new HeaderContentDisposition('type', [
-            'parameter-name-1' => 'parameter-value-1',
-            'parameter-name-2' => 'parameter-value-2',
-            'parameter-name-3' => 'parameter-value-3',
+        $header = new HeaderContentDisposition('foo', [
+            'bar' => '',
         ]);
 
-        $expected = 'Content-Disposition: type; parameter-name-1="parameter-value-1"; ' .
-                    'parameter-name-2="parameter-value-2"; parameter-name-3="parameter-value-3"';
+        $this->assertSame('foo; bar=""', $header->getFieldValue());
+    }
 
-        $this->assertSame($expected, (string) $header);
+    public function testParameterWithToken()
+    {
+        $header = new HeaderContentDisposition('foo', [
+            'bar' => 'token',
+        ]);
+
+        $this->assertSame('foo; bar="token"', $header->getFieldValue());
+    }
+
+    public function testParameterWithQuotedString()
+    {
+        $header = new HeaderContentDisposition('foo', [
+            'bar' => 'quoted string',
+        ]);
+
+        $this->assertSame('foo; bar="quoted string"', $header->getFieldValue());
+    }
+
+    public function testParameterWithInteger()
+    {
+        $header = new HeaderContentDisposition('foo', [
+            'bar' => 1,
+        ]);
+
+        $this->assertSame('foo; bar="1"', $header->getFieldValue());
+    }
+
+    public function testSeveralParameters()
+    {
+        $header = new HeaderContentDisposition('foo', [
+            'bar' => '',
+            'baz' => 'token',
+            'bat' => 'quoted string',
+            'qux' => 1,
+        ]);
+
+        $this->assertSame('foo; bar=""; baz="token"; bat="quoted string"; qux="1"', $header->getFieldValue());
+    }
+
+    public function testEmptyValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Content-Disposition" is not valid');
+
+        new HeaderContentDisposition('');
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Content-Disposition" is not valid');
+
+        // isn't a token...
+        new HeaderContentDisposition('@');
+    }
+
+    public function testInvalidParameterName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-name "invalid name" for the header "Content-Disposition" is not valid'
+        );
+
+        // cannot contain spaces...
+        new HeaderContentDisposition('foo', ['invalid name' => 'value']);
+    }
+
+    public function testInvalidParameterNameType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-name "<integer>" for the header "Content-Disposition" is not valid'
+        );
+
+        new HeaderContentDisposition('foo', [0 => 'value']);
+    }
+
+    public function testInvalidParameterValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-value ""invalid value"" for the header "Content-Disposition" is not valid'
+        );
+
+        // cannot contain quotes...
+        new HeaderContentDisposition('foo', ['name' => '"invalid value"']);
+    }
+
+    public function testInvalidParameterValueType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-value "<array>" for the header "Content-Disposition" is not valid'
+        );
+
+        new HeaderContentDisposition('foo', ['name' => []]);
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderContentDisposition('foo', ['bar' => 'baz']);
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderContentDisposition('foo', ['bar' => 'baz']);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

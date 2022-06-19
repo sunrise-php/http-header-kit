@@ -3,8 +3,8 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderCookie;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderCookie;
 
 class HeaderCookieTest extends TestCase
 {
@@ -15,48 +15,47 @@ class HeaderCookieTest extends TestCase
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructor()
-    {
-        $header = new HeaderCookie(['foo', 'bar']);
-
-        $this->assertSame(['foo', 'bar'], $header->getValue());
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderCookie();
-
-        $this->assertInstanceOf(HeaderCookie::class, $header->setValue(['foo', 'bar']));
-
-        $this->assertSame(['foo', 'bar'], $header->getValue());
-    }
-
-    public function testGetFieldName()
+    public function testFieldName()
     {
         $header = new HeaderCookie();
 
         $this->assertSame('Cookie', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
         $header = new HeaderCookie([
             'foo' => 'bar',
             'bar' => 'baz',
-            'baz' => ['qux'],
+            'baz' => [
+                'qux',
+            ],
         ]);
 
         $this->assertSame('foo=bar; bar=baz; baz%5B0%5D=qux', $header->getFieldValue());
     }
 
-    public function testToString()
+    public function testBuild()
     {
-        $header = new HeaderCookie([
-            'foo' => 'bar',
-            'bar' => 'baz',
-            'baz' => ['qux'],
-        ]);
+        $header = new HeaderCookie(['foo' => 'bar']);
 
-        $this->assertSame('Cookie: foo=bar; bar=baz; baz%5B0%5D=qux', (string) $header);
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderCookie(['foo' => 'bar']);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

@@ -3,91 +3,89 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderContentRange;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderContentRange;
 
 class HeaderContentRangeTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidFirstBytePosition()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentRange(2, 1, 2);
-    }
-
-    public function testConstructorWithInvalidLastBytePosition()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentRange(0, 2, 2);
-    }
-
-    public function testConstructorWithInvalidInstanceLength()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentRange(0, 1, 1);
-    }
-
-    public function testSetRange()
-    {
-        $header = new HeaderContentRange(0, 1, 2);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setRange(3, 4, 5));
-
-        $this->assertSame(3, $header->getFirstBytePosition());
-
-        $this->assertSame(4, $header->getLastBytePosition());
-
-        $this->assertSame(5, $header->getInstanceLength());
-    }
-
-    public function testGetFirstBytePosition()
-    {
-        $header = new HeaderContentRange(0, 1, 2);
-
-        $this->assertSame(0, $header->getFirstBytePosition());
-    }
-
-    public function testGetLastBytePosition()
-    {
-        $header = new HeaderContentRange(0, 1, 2);
-
-        $this->assertSame(1, $header->getLastBytePosition());
-    }
-
-    public function testGetInstanceLength()
-    {
-        $header = new HeaderContentRange(0, 1, 2);
-
-        $this->assertSame(2, $header->getInstanceLength());
-    }
-
-    public function testGetFieldName()
+    public function testFieldName()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
         $this->assertSame('Content-Range', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
         $this->assertSame('bytes 0-1/2', $header->getFieldValue());
     }
 
-    public function testToString()
+    public function testInvalidFirstBytePosition()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The "first-byte-pos" value of the content range ' .
+            'must be less than or equal to the "last-byte-pos" value'
+        );
+
+        new HeaderContentRange(2, 1, 2);
+    }
+
+    public function testInvalidLastBytePosition()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The "last-byte-pos" value of the content range ' .
+            'must be less than the "instance-length" value'
+        );
+
+        new HeaderContentRange(0, 2, 2);
+    }
+
+    public function testInvalidInstanceLength()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The "last-byte-pos" value of the content range ' .
+            'must be less than the "instance-length" value'
+        );
+
+        new HeaderContentRange(0, 1, 1);
+    }
+
+    public function testBuild()
     {
         $header = new HeaderContentRange(0, 1, 2);
 
-        $this->assertSame('Content-Range: bytes 0-1/2', (string) $header);
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderContentRange(0, 1, 2);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

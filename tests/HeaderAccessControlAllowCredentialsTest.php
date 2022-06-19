@@ -3,48 +3,53 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderAccessControlAllowCredentials;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderAccessControlAllowCredentials;
 
 class HeaderAccessControlAllowCredentialsTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
         $header = new HeaderAccessControlAllowCredentials();
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testGetFieldName()
+    public function testFieldName()
     {
         $header = new HeaderAccessControlAllowCredentials();
 
         $this->assertSame('Access-Control-Allow-Credentials', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
         $header = new HeaderAccessControlAllowCredentials();
 
         $this->assertSame('true', $header->getFieldValue());
     }
 
-    public function testToString()
+    public function testBuild()
     {
         $header = new HeaderAccessControlAllowCredentials();
 
-        $this->assertSame('Access-Control-Allow-Credentials: true', (string) $header);
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
     }
 
-    public function testIteration()
+    public function testIterator()
     {
         $header = new HeaderAccessControlAllowCredentials();
+        $iterator = $header->getIterator();
 
-        $parameters = \iterator_to_array($header);
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
 
-        $this->assertSame([
-            $header->getFieldName(),
-            $header->getFieldValue(),
-        ], $parameters);
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

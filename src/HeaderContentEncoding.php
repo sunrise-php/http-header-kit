@@ -12,73 +12,43 @@
 namespace Sunrise\Http\Header;
 
 /**
- * Import classes
- */
-use InvalidArgumentException;
-
-/**
  * Import functions
  */
-use function preg_match;
-use function sprintf;
+use function implode;
 
 /**
- * HeaderContentEncoding
- *
  * @link https://tools.ietf.org/html/rfc2616#section-14.11
  */
-class HeaderContentEncoding extends AbstractHeader implements HeaderInterface
+class HeaderContentEncoding extends AbstractHeader
 {
 
     /**
-     * The header value
+     * Directives
      *
      * @var string
      */
-    protected $value;
+    public const GZIP = 'gzip';
+    public const COMPRESS = 'compress';
+    public const DEFLATE = 'deflate';
+    public const BR = 'br';
+
+    /**
+     * @var list<string>
+     */
+    protected $directives;
 
     /**
      * Constructor of the class
      *
-     * @param string $value
+     * @param string ...$directives
      */
-    public function __construct(string $value)
+    public function __construct(string ...$directives)
     {
-        $this->setValue($value);
-    }
+        /** @var list<string> $directives */
 
-    /**
-     * Sets the given value as the header value
-     *
-     * @param string $value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setValue(string $value) : self
-    {
-        if (!preg_match(HeaderInterface::RFC7230_TOKEN, $value)) {
-            throw new InvalidArgumentException(sprintf(
-                'The header field "%s: %s" is not valid',
-                $this->getFieldName(),
-                $value
-            ));
-        }
+        $this->validateToken(...$directives);
 
-        $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return string
-     */
-    public function getValue() : string
-    {
-        return $this->value;
+        $this->directives = $directives;
     }
 
     /**
@@ -94,6 +64,6 @@ class HeaderContentEncoding extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        return $this->getValue();
+        return implode(', ', $this->directives);
     }
 }

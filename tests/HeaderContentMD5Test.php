@@ -3,71 +3,77 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderContentMD5;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderContentMD5;
 
 class HeaderContentMD5Test extends TestCase
 {
-    public const TEST_MD5_DIGEST_1 = 'YzRjYTQyMzhhMGI5MjM4MjBkY2M1MDlhNmY3NTg0OWI=';
-    public const TEST_MD5_DIGEST_2 = 'YzgxZTcyOGQ5ZDRjMmY2MzZmMDY3Zjg5Y2MxNDg2MmM=';
+    public const TEST_MD5_DIGEST = 'YzRjYTQyMzhhMGI5MjM4MjBkY2M1MDlhNmY3NTg0OWI=';
 
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
+        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST);
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidValue()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderContentMD5('=invalid md5 digest=');
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setValue(self::TEST_MD5_DIGEST_2));
-
-        $this->assertSame(self::TEST_MD5_DIGEST_2, $header->getValue());
-    }
-
-    public function testSetInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
-
-        $header->setValue('=invalid md5 digest=');
-    }
-
-    public function testGetValue()
-    {
-        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
-
-        $this->assertSame(self::TEST_MD5_DIGEST_1, $header->getValue());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
+        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST);
 
         $this->assertSame('Content-MD5', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
+        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST);
 
-        $this->assertSame(self::TEST_MD5_DIGEST_1, $header->getFieldValue());
+        $this->assertSame(self::TEST_MD5_DIGEST, $header->getFieldValue());
     }
 
-    public function testToString()
+    public function testEmptyValue()
     {
-        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST_1);
+        $this->expectException(\InvalidArgumentException::class);
 
-        $this->assertSame('Content-MD5: ' . self::TEST_MD5_DIGEST_1, (string) $header);
+        $this->expectExceptionMessage(
+            'The value "" for the header "Content-MD5" is not valid'
+        );
+
+        new HeaderContentMD5('');
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The value "=invalid md5 digest=" for the header "Content-MD5" is not valid'
+        );
+
+        new HeaderContentMD5('=invalid md5 digest=');
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST);
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderContentMD5(self::TEST_MD5_DIGEST);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

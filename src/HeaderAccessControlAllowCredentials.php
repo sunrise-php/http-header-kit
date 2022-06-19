@@ -12,11 +12,9 @@
 namespace Sunrise\Http\Header;
 
 /**
- * HeaderAccessControlAllowCredentials
- *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials
  */
-class HeaderAccessControlAllowCredentials extends AbstractHeader implements HeaderInterface
+class HeaderAccessControlAllowCredentials extends AbstractHeader
 {
 
     /**

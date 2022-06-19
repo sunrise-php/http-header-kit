@@ -22,16 +22,12 @@ use InvalidArgumentException;
 use function sprintf;
 
 /**
- * HeaderAccessControlMaxAge
- *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age
  */
-class HeaderAccessControlMaxAge extends AbstractHeader implements HeaderInterface
+class HeaderAccessControlMaxAge extends AbstractHeader
 {
 
     /**
-     * The header value
-     *
      * @var int
      */
     protected $value;
@@ -43,41 +39,9 @@ class HeaderAccessControlMaxAge extends AbstractHeader implements HeaderInterfac
      */
     public function __construct(int $value)
     {
-        $this->setValue($value);
-    }
-
-    /**
-     * Sets the given value as the header value
-     *
-     * @param int $value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setValue(int $value) : self
-    {
-        if (! ($value >= 1 || $value === -1)) {
-            throw new InvalidArgumentException(sprintf(
-                'The header field "%s: %d" is not valid',
-                $this->getFieldName(),
-                $value
-            ));
-        }
+        $this->validateValue($value);
 
         $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return int
-     */
-    public function getValue() : int
-    {
-        return $this->value;
     }
 
     /**
@@ -93,6 +57,27 @@ class HeaderAccessControlMaxAge extends AbstractHeader implements HeaderInterfac
      */
     public function getFieldValue() : string
     {
-        return sprintf('%d', $this->getValue());
+        return sprintf('%d', $this->value);
+    }
+
+    /**
+     * Validates the given value
+     *
+     * @param int $value
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     *         If the value isn't valid.
+     */
+    private function validateValue(int $value) : void
+    {
+        if (! ($value === -1 || $value >= 1)) {
+            throw new InvalidArgumentException(sprintf(
+                'The value "%2$d" for the header "%1$s" is not valid',
+                $this->getFieldName(),
+                $value
+            ));
+        }
     }
 }

@@ -12,27 +12,17 @@
 namespace Sunrise\Http\Header;
 
 /**
- * Import classes
- */
-use InvalidArgumentException;
-
-/**
  * Import functions
  */
-use function preg_match;
 use function sprintf;
 
 /**
- * HeaderEtag
- *
  * @link https://tools.ietf.org/html/rfc2616#section-14.19
  */
-class HeaderEtag extends AbstractHeader implements HeaderInterface
+class HeaderEtag extends AbstractHeader
 {
 
     /**
-     * The header value
-     *
      * @var string
      */
     protected $value;
@@ -44,41 +34,9 @@ class HeaderEtag extends AbstractHeader implements HeaderInterface
      */
     public function __construct(string $value)
     {
-        $this->setValue($value);
-    }
-
-    /**
-     * Sets the given value as the header value
-     *
-     * @param string $value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setValue(string $value) : self
-    {
-        if (!preg_match(HeaderInterface::RFC7230_QUOTED_STRING, $value)) {
-            throw new InvalidArgumentException(sprintf(
-                'The header field "%s: %s" is not valid',
-                $this->getFieldName(),
-                $value
-            ));
-        }
+        $this->validateQuotedString($value);
 
         $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return string
-     */
-    public function getValue() : string
-    {
-        return $this->value;
     }
 
     /**
@@ -94,6 +52,6 @@ class HeaderEtag extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        return sprintf('"%s"', $this->getValue());
+        return sprintf('"%s"', $this->value);
     }
 }

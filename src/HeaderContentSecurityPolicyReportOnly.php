@@ -12,8 +12,6 @@
 namespace Sunrise\Http\Header;
 
 /**
- * HeaderContentSecurityPolicyReportOnly
- *
  * @link https://www.w3.org/TR/CSP3/#cspro-header
  */
 class HeaderContentSecurityPolicyReportOnly extends HeaderContentSecurityPolicy

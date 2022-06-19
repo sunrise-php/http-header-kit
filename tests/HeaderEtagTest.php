@@ -3,68 +3,69 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderEtag;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderEtag;
 
 class HeaderEtagTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderEtag('value');
+        $header = new HeaderEtag('foo');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidValue()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderEtag('"invalid value"');
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderEtag('value');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setValue('new-value'));
-
-        $this->assertSame('new-value', $header->getValue());
-    }
-
-    public function testSetInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderEtag('value');
-
-        $header->setValue('"invalid value"');
-    }
-
-    public function testGetValue()
-    {
-        $header = new HeaderEtag('value');
-
-        $this->assertSame('value', $header->getValue());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderEtag('value');
+        $header = new HeaderEtag('foo');
 
         $this->assertSame('ETag', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderEtag('value');
+        $header = new HeaderEtag('foo');
 
-        $this->assertSame('"value"', $header->getFieldValue());
+        $this->assertSame('"foo"', $header->getFieldValue());
     }
 
-    public function testToString()
+    public function testEmptyValue()
     {
-        $header = new HeaderEtag('value');
+        $header = new HeaderEtag('');
 
-        $this->assertSame('ETag: "value"', (string) $header);
+        $this->assertSame('""', $header->getFieldValue());
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value ""invalid value"" for the header "ETag" is not valid');
+
+        // cannot contain quotes...
+        new HeaderEtag('"invalid value"');
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderEtag('foo');
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderEtag('foo');
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

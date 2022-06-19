@@ -12,119 +12,33 @@
 namespace Sunrise\Http\Header;
 
 /**
- * Import classes
- */
-use InvalidArgumentException;
-
-/**
  * Import functions
  */
 use function implode;
-use function preg_match;
 use function sprintf;
 
 /**
- * HeaderContentSecurityPolicy
- *
  * @link https://www.w3.org/TR/CSP3/#csp-header
  */
-class HeaderContentSecurityPolicy extends AbstractHeader implements HeaderInterface
+class HeaderContentSecurityPolicy extends AbstractHeader
 {
 
     /**
-     * Regular Expressions for Content-Security-Policy directive validation
-     *
-     * @link https://www.w3.org/TR/CSP3/#framework-directives
-     */
-    public const VALID_CONTENT_SECURITY_POLICY_DIRECTIVE_NAME = '/^[0-9A-Za-z\-]+$/';
-    public const VALID_CONTENT_SECURITY_POLICY_DIRECTIVE_VALUE = '/^[\x09\x20-\x2B\x2D-\x3A\x3C-\x7E]*$/';
-
-    /**
-     * The header parameters
-     *
      * @var array<string, string>
      */
-    protected $parameters = [];
+    protected $parameters;
 
     /**
      * Constructor of the class
      *
-     * @param array<string, string> $parameters
+     * @param array<array-key, mixed> $parameters
      */
     public function __construct(array $parameters = [])
     {
-        $this->setParameters($parameters);
-    }
+        /** @var array<string, string> */
+        $parameters = $this->validateParameters($parameters);
 
-    /**
-     * Sets the header parameter
-     *
-     * @param string $name
-     * @param string $value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setParameter(string $name, string $value) : self
-    {
-        if (!preg_match(self::VALID_CONTENT_SECURITY_POLICY_DIRECTIVE_NAME, $name)) {
-            throw new InvalidArgumentException(sprintf(
-                'The parameter-name "%s" for the header "%s" is not valid',
-                $name,
-                $this->getFieldName()
-            ));
-        }
-
-        if (!preg_match(self::VALID_CONTENT_SECURITY_POLICY_DIRECTIVE_VALUE, $value)) {
-            throw new InvalidArgumentException(sprintf(
-                'The parameter-value "%s" for the header "%s" is not valid',
-                $value,
-                $this->getFieldName()
-            ));
-        }
-
-        $this->parameters[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Sets the header parameters
-     *
-     * @param array<string, string> $parameters
-     *
-     * @return self
-     */
-    public function setParameters(array $parameters) : self
-    {
-        foreach ($parameters as $name => $value) {
-            $this->setParameter($name, $value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets the header parameters
-     *
-     * @return array<string, string>
-     */
-    public function getParameters() : array
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * Clears the header parameters
-     *
-     * @return self
-     */
-    public function clearParameters() : self
-    {
-        $this->parameters = [];
-
-        return $this;
+        $this->parameters = $parameters;
     }
 
     /**
@@ -140,16 +54,38 @@ class HeaderContentSecurityPolicy extends AbstractHeader implements HeaderInterf
      */
     public function getFieldValue() : string
     {
-        $parameters = [];
-        foreach ($this->getParameters() as $name => $value) {
-            if ('' === $value) {
-                $parameters[] = $name;
+        $directives = [];
+        foreach ($this->parameters as $directive => $value) {
+            // the directive can be without value...
+            // e.g. sandbox, upgrade-insecure-requests, etc.
+            if ($value === '') {
+                $directives[] = $directive;
                 continue;
             }
 
-            $parameters[] = $name . ' ' . $value;
+            $directives[] = sprintf('%s %s', $directive, $value);
         }
 
-        return implode('; ', $parameters);
+        return implode('; ', $directives);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @link https://www.w3.org/TR/CSP3/#framework-directives
+     */
+    protected function getParameterNameValidationRegularExpression() : string
+    {
+        return '/^[0-9A-Za-z\-]+$/';
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @link https://www.w3.org/TR/CSP3/#framework-directives
+     */
+    protected function getParameterValueValidationRegularExpression() : string
+    {
+        return '/^[\x09\x20-\x2B\x2D-\x3A\x3C-\x7E]*$/';
     }
 }

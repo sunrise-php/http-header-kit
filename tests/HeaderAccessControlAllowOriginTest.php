@@ -3,172 +3,104 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderAccessControlAllowOrigin;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderAccessControlAllowOrigin;
 use Sunrise\Uri\Uri;
 
 class HeaderAccessControlAllowOriginTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
         $uri = new Uri('http://localhost');
-
         $header = new HeaderAccessControlAllowOrigin($uri);
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithoutUri()
-    {
-        $header = new HeaderAccessControlAllowOrigin(null);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header);
-    }
-
-    public function testConstructorWithInvalidUriThatWithoutScheme()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderAccessControlAllowOrigin(new Uri('//localhost'));
-    }
-
-    public function testConstructorWithInvalidUriThatWithoutHost()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderAccessControlAllowOrigin(new Uri('http:'));
-    }
-
-    public function testSetUri()
-    {
-        $uri1 = new Uri('http://localhost');
-
-        $uri2 = new Uri('http://localhost:3000');
-
-        $header = new HeaderAccessControlAllowOrigin($uri1);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setUri($uri2));
-
-        $this->assertSame($uri2, $header->getUri());
-    }
-
-    public function testSetEmptyUri()
+    public function testFieldName()
     {
         $uri = new Uri('http://localhost');
-
         $header = new HeaderAccessControlAllowOrigin($uri);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setUri(null));
-
-        $this->assertNull($header->getUri());
-    }
-
-    public function testSetInvalidUriThatWithoutScheme()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderAccessControlAllowOrigin(null);
-
-        $header->setUri(new Uri('//localhost'));
-    }
-
-    public function testSetInvalidUriThatWithoutHost()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderAccessControlAllowOrigin(null);
-
-        $header->setUri(new Uri('http:'));
-    }
-
-    public function testGetUri()
-    {
-        $uri = new Uri('http://localhost');
-
-        $header = new HeaderAccessControlAllowOrigin($uri);
-
-        $this->assertSame($uri, $header->getUri());
-    }
-
-    public function testGetEmptyUri()
-    {
-        $header = new HeaderAccessControlAllowOrigin(null);
-
-        $this->assertNull($header->getUri());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderAccessControlAllowOrigin(null);
 
         $this->assertSame('Access-Control-Allow-Origin', $header->getFieldName());
     }
 
-    public function testGetFieldValueWithoutUri()
+    public function testFieldValue()
+    {
+        $uri = new Uri('http://localhost');
+        $header = new HeaderAccessControlAllowOrigin($uri);
+
+        $this->assertSame('http://localhost', $header->getFieldValue());
+    }
+
+    public function testFieldValueWithoutUri()
     {
         $header = new HeaderAccessControlAllowOrigin(null);
 
         $this->assertSame('*', $header->getFieldValue());
     }
 
-    public function testGetFieldValueWithSchemeAndHost()
+    public function testIgnoringUnnecessaryUriComponents()
     {
-        $uri = new Uri('http://localhost');
-
-        $header = new HeaderAccessControlAllowOrigin($uri);
-
-        $this->assertSame('http://localhost', $header->getFieldValue());
-    }
-
-    public function testGetFieldValueWithSchemeAndHostAndPort()
-    {
-        $uri = new Uri('http://localhost:3000');
-
+        $uri = new Uri('http://user:pass@localhost:3000/index.php?q#h');
         $header = new HeaderAccessControlAllowOrigin($uri);
 
         $this->assertSame('http://localhost:3000', $header->getFieldValue());
     }
 
-    public function testGetFieldValueWithValidOrigin()
+    public function testUriWithPort()
     {
-        $uri = new Uri('http://user:pass@localhost:3000/index.php?q#h');
-
+        $uri = new Uri('http://localhost:3000');
         $header = new HeaderAccessControlAllowOrigin($uri);
 
         $this->assertSame('http://localhost:3000', $header->getFieldValue());
     }
 
-    public function testToStringWithoutUri()
+    public function testUriWithoutScheme()
     {
-        $header = new HeaderAccessControlAllowOrigin(null);
+        $this->expectException(\InvalidArgumentException::class);
 
-        $this->assertSame('Access-Control-Allow-Origin: *', (string) $header);
+        $this->expectExceptionMessage(
+            'The URI "//localhost" for the header "Access-Control-Allow-Origin" is not valid'
+        );
+
+        new HeaderAccessControlAllowOrigin(new Uri('//localhost'));
     }
 
-    public function testToStringWithSchemeAndHost()
+    public function testUriWithoutHost()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The URI "http:" for the header "Access-Control-Allow-Origin" is not valid'
+        );
+
+        new HeaderAccessControlAllowOrigin(new Uri('http:'));
+    }
+
+    public function testBuild()
     {
         $uri = new Uri('http://localhost');
-
         $header = new HeaderAccessControlAllowOrigin($uri);
 
-        $this->assertSame('Access-Control-Allow-Origin: http://localhost', (string) $header);
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
     }
 
-    public function testToStringWithSchemeAndHostAndPort()
+    public function testIterator()
     {
-        $uri = new Uri('http://localhost:3000');
-
+        $uri = new Uri('http://localhost');
         $header = new HeaderAccessControlAllowOrigin($uri);
+        $iterator = $header->getIterator();
 
-        $this->assertSame('Access-Control-Allow-Origin: http://localhost:3000', (string) $header);
-    }
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
 
-    public function testToStringWithValidOrigin()
-    {
-        $uri = new Uri('http://user:pass@localhost:3000/index.php?q#h');
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
 
-        $header = new HeaderAccessControlAllowOrigin($uri);
-
-        $this->assertSame('Access-Control-Allow-Origin: http://localhost:3000', (string) $header);
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

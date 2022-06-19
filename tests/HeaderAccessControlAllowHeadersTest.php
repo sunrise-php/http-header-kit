@@ -3,117 +3,94 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderAccessControlAllowHeaders;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderAccessControlAllowHeaders;
 
 class HeaderAccessControlAllowHeadersTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderAccessControlAllowHeaders('value');
+        $header = new HeaderAccessControlAllowHeaders('x-foo');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithEmptyValue()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderAccessControlAllowHeaders('');
-    }
-
-    public function testConstructorWithInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderAccessControlAllowHeaders('invalid value');
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderAccessControlAllowHeaders('value-first');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setValue('value-second'));
-
-        $this->assertSame([
-            'value-first',
-            'value-second',
-        ], $header->getValue());
-    }
-
-    public function testSetSeveralValues()
-    {
-        $header = new HeaderAccessControlAllowHeaders('value-first', 'value-second');
-
-        $header->setValue('value-third', 'value-fourth');
-
-        $this->assertSame([
-            'value-first',
-            'value-second',
-            'value-third',
-            'value-fourth',
-        ], $header->getValue());
-    }
-
-    public function testSetEmptyValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderAccessControlAllowHeaders('value');
-
-        $header->setValue('');
-    }
-
-    public function testSetInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderAccessControlAllowHeaders('value');
-
-        $header->setValue('invalid value');
-    }
-
-    public function testGetValue()
-    {
-        $header = new HeaderAccessControlAllowHeaders('value');
-
-        $this->assertSame(['value'], $header->getValue());
-    }
-
-    public function testResetValue()
-    {
-        $header = new HeaderAccessControlAllowHeaders('value');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->resetValue());
-
-        $this->assertSame([], $header->getValue());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderAccessControlAllowHeaders('value');
+        $header = new HeaderAccessControlAllowHeaders('x-foo');
 
         $this->assertSame('Access-Control-Allow-Headers', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderAccessControlAllowHeaders('value');
+        $header = new HeaderAccessControlAllowHeaders('x-foo');
 
-        $this->assertSame('value', $header->getFieldValue());
+        $this->assertSame('x-foo', $header->getFieldValue());
     }
 
-    public function testToStringWithOneValue()
+    public function testSeveralValues()
     {
-        $header = new HeaderAccessControlAllowHeaders('value');
+        $header = new HeaderAccessControlAllowHeaders('x-foo', 'x-bar', 'x-baz');
 
-        $this->assertSame('Access-Control-Allow-Headers: value', (string) $header);
+        $this->assertSame('x-foo, x-bar, x-baz', $header->getFieldValue());
     }
 
-    public function testToStringWithSeveralValues()
+    public function testEmptyValue()
     {
-        $header = new HeaderAccessControlAllowHeaders('value-first', 'value-second', 'value-third');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Access-Control-Allow-Headers" is not valid');
 
-        $this->assertSame('Access-Control-Allow-Headers: value-first, value-second, value-third', (string) $header);
+        new HeaderAccessControlAllowHeaders('');
+    }
+
+    public function testEmptyValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Access-Control-Allow-Headers" is not valid');
+
+        new HeaderAccessControlAllowHeaders('x-foo', '', 'x-bar');
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "x-foo=" for the header "Access-Control-Allow-Headers" is not valid');
+
+        // a token cannot contain the "=" character...
+        new HeaderAccessControlAllowHeaders('x-foo=');
+    }
+
+    public function testInvalidValueAmongOthers()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "x-bar=" for the header "Access-Control-Allow-Headers" is not valid');
+
+        // a token cannot contain the "=" character...
+        new HeaderAccessControlAllowHeaders('x-foo', 'x-bar=', 'x-bar');
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderAccessControlAllowHeaders('x-foo');
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderAccessControlAllowHeaders('x-foo');
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

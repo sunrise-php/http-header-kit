@@ -22,16 +22,12 @@ use InvalidArgumentException;
 use function sprintf;
 
 /**
- * HeaderContentLength
- *
  * @link https://tools.ietf.org/html/rfc2616#section-14.13
  */
-class HeaderContentLength extends AbstractHeader implements HeaderInterface
+class HeaderContentLength extends AbstractHeader
 {
 
     /**
-     * The header value
-     *
      * @var int
      */
     protected $value;
@@ -43,41 +39,9 @@ class HeaderContentLength extends AbstractHeader implements HeaderInterface
      */
     public function __construct(int $value)
     {
-        $this->setValue($value);
-    }
-
-    /**
-     * Sets the given value as the header value
-     *
-     * @param int $value
-     *
-     * @return self
-     *
-     * @throws InvalidArgumentException
-     */
-    public function setValue(int $value) : self
-    {
-        if (! ($value >= 0)) {
-            throw new InvalidArgumentException(sprintf(
-                'The header field "%s: %d" is not valid',
-                $this->getFieldName(),
-                $value
-            ));
-        }
+        $this->validateValue($value);
 
         $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return int
-     */
-    public function getValue() : int
-    {
-        return $this->value;
     }
 
     /**
@@ -93,6 +57,27 @@ class HeaderContentLength extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        return sprintf('%d', $this->getValue());
+        return sprintf('%d', $this->value);
+    }
+
+    /**
+     * Validates the given value
+     *
+     * @param int $value
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException
+     *         If the value isn't valid.
+     */
+    private function validateValue(int $value) : void
+    {
+        if (! ($value >= 0)) {
+            throw new InvalidArgumentException(sprintf(
+                'The value "%2$d" for the header "%1$s" is not valid',
+                $this->getFieldName(),
+                $value
+            ));
+        }
     }
 }

@@ -22,16 +22,12 @@ use function http_build_query;
 use const PHP_QUERY_RFC3986;
 
 /**
- * HeaderCookie
- *
  * @link https://tools.ietf.org/html/rfc6265.html#section-5.4
  */
-class HeaderCookie extends AbstractHeader implements HeaderInterface
+class HeaderCookie extends AbstractHeader
 {
 
     /**
-     * The header value
-     *
      * @var array
      */
     protected $value;
@@ -43,31 +39,7 @@ class HeaderCookie extends AbstractHeader implements HeaderInterface
      */
     public function __construct(array $value = [])
     {
-        $this->setValue($value);
-    }
-
-    /**
-     * Sets the given value as the header value
-     *
-     * @param array $value
-     *
-     * @return self
-     */
-    public function setValue(array $value) : self
-    {
         $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * Gets the header value
-     *
-     * @return array
-     */
-    public function getValue() : array
-    {
-        return $this->value;
     }
 
     /**
@@ -83,6 +55,6 @@ class HeaderCookie extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        return http_build_query($this->getValue(), '', '; ', PHP_QUERY_RFC3986);
+        return http_build_query($this->value, '', '; ', PHP_QUERY_RFC3986);
     }
 }

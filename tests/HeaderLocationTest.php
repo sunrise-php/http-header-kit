@@ -3,67 +3,59 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderLocation;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderLocation;
 use Sunrise\Uri\Uri;
 
 class HeaderLocationTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $home = new Uri('/');
-
-        $header = new HeaderLocation($home);
+        $uri = new Uri('/');
+        $header = new HeaderLocation($uri);
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testSetUri()
+    public function testFieldName()
     {
-        $home = new Uri('/');
-
-        $news = new Uri('/news');
-
-        $header = new HeaderLocation($home);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setUri($news));
-
-        $this->assertSame($news, $header->getUri());
-    }
-
-    public function testGetUri()
-    {
-        $home = new Uri('/');
-
-        $header = new HeaderLocation($home);
-
-        $this->assertSame($home, $header->getUri());
-    }
-
-    public function testGetFieldName()
-    {
-        $home = new Uri('/');
-
-        $header = new HeaderLocation($home);
+        $uri = new Uri('/');
+        $header = new HeaderLocation($uri);
 
         $this->assertSame('Location', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $home = new Uri('/');
-
-        $header = new HeaderLocation($home);
+        $uri = new Uri('/');
+        $header = new HeaderLocation($uri);
 
         $this->assertSame('/', $header->getFieldValue());
     }
 
-    public function testToString()
+    public function testBuild()
     {
-        $home = new Uri('/');
+        $uri = new Uri('/');
+        $header = new HeaderLocation($uri);
 
-        $header = new HeaderLocation($home);
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
 
-        $this->assertSame('Location: /', (string) $header);
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $uri = new Uri('/');
+        $header = new HeaderLocation($uri);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

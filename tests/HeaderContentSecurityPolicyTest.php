@@ -3,170 +3,135 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderContentSecurityPolicy;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderContentSecurityPolicy;
 
 class HeaderContentSecurityPolicyTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
         $header = new HeaderContentSecurityPolicy([]);
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidParameterName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderContentSecurityPolicy(['name=' => 'value']);
-    }
-
-    public function testConstructorWithInvalidParameterValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderContentSecurityPolicy(['name' => ';value']);
-    }
-
-    public function testSetParameter()
-    {
-        $header = new HeaderContentSecurityPolicy(['name' => 'value']);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setParameter('name', 'overwritten-value'));
-
-        $this->assertSame(['name' => 'overwritten-value'], $header->getParameters());
-    }
-
-    public function testSetSeveralParameters()
-    {
-        $header = new HeaderContentSecurityPolicy([]);
-
-        $header->setParameter('name-1', 'value-1');
-        $header->setParameter('name-2', 'value-2');
-
-        $this->assertSame([
-            'name-1' => 'value-1',
-            'name-2' => 'value-2',
-        ], $header->getParameters());
-    }
-
-    public function testSetParameterWithInvalidName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentSecurityPolicy([]);
-
-        $header->setParameter('name=', 'value');
-    }
-
-    public function testSetParameterWithInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentSecurityPolicy([]);
-
-        $header->setParameter('name', ';value');
-    }
-
-    public function testSetParameters()
-    {
-        $header = new HeaderContentSecurityPolicy([
-            'name-1' => 'value-1',
-            'name-2' => 'value-2',
-        ]);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setParameters([
-            'name-1' => 'overwritten-value-1',
-            'name-2' => 'overwritten-value-2',
-        ]));
-
-        $this->assertSame([
-            'name-1' => 'overwritten-value-1',
-            'name-2' => 'overwritten-value-2',
-        ], $header->getParameters());
-    }
-
-    public function testSetParametersWithParameterThatContainsInvalidName()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentSecurityPolicy([]);
-
-        $header->setParameters(['name=' => 'value']);
-    }
-
-    public function testSetParametersWithParameterThatContainsInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderContentSecurityPolicy([]);
-
-        $header->setParameters(['name' => ';value']);
-    }
-
-    public function testGetParameters()
-    {
-        $header = new HeaderContentSecurityPolicy(['name' => 'value']);
-
-        $this->assertSame(['name' => 'value'], $header->getParameters());
-    }
-
-    public function testClearParameters()
-    {
-        $header = new HeaderContentSecurityPolicy(['name-1' => 'value-1']);
-
-        $header->setParameter('name-2', 'value-2');
-        $header->setParameter('name-3', 'value-3');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->clearParameters());
-
-        $this->assertSame([], $header->getParameters());
-    }
-
-    public function testGetFieldName()
+    public function testFieldName()
     {
         $header = new HeaderContentSecurityPolicy([]);
 
         $this->assertSame('Content-Security-Policy', $header->getFieldName());
     }
 
-    public function testGetFieldValueWithoutParameterValue()
+    public function testFieldValue()
     {
-        $header = new HeaderContentSecurityPolicy(['name' => '']);
+        $header = new HeaderContentSecurityPolicy([]);
 
-        $this->assertSame('name', $header->getFieldValue());
+        $this->assertSame('', $header->getFieldValue());
     }
 
-    public function testGetFieldValueWithParameterValue()
-    {
-        $header = new HeaderContentSecurityPolicy(['name' => 'value']);
-
-        $this->assertSame('name value', $header->getFieldValue());
-    }
-
-    public function testToStringWithoutParameterValue()
-    {
-        $header = new HeaderContentSecurityPolicy(['name' => '']);
-
-        $this->assertSame('Content-Security-Policy: name', (string) $header);
-    }
-
-    public function testToStringWithParameterValue()
-    {
-        $header = new HeaderContentSecurityPolicy(['name' => 'value']);
-
-        $this->assertSame('Content-Security-Policy: name value', (string) $header);
-    }
-
-    public function testToStringWithSeveralParameters()
+    public function testParameterWithoutValue()
     {
         $header = new HeaderContentSecurityPolicy([
-            'name-1' => '',
-            'name-2' => 'value-2',
-            'name-3' => 'value-3',
+            'foo' => '',
         ]);
 
-        $this->assertSame('Content-Security-Policy: name-1; name-2 value-2; name-3 value-3', (string) $header);
+        $this->assertSame('foo', $header->getFieldValue());
+    }
+
+    public function testParameterWithValue()
+    {
+        $header = new HeaderContentSecurityPolicy([
+            'foo' => 'bar',
+        ]);
+
+        $this->assertSame('foo bar', $header->getFieldValue());
+    }
+
+    public function testParameterWithInteger()
+    {
+        $header = new HeaderContentSecurityPolicy([
+            'foo' => 1,
+        ]);
+
+        $this->assertSame('foo 1', $header->getFieldValue());
+    }
+
+    public function testSeveralParameters()
+    {
+        $header = new HeaderContentSecurityPolicy([
+            'foo' => '',
+            'bar' => 'bat',
+            'baz' => 1,
+        ]);
+
+        $this->assertSame('foo; bar bat; baz 1', $header->getFieldValue());
+    }
+
+    public function testInvalidParameterName()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-name "name=" for the header "Content-Security-Policy" is not valid'
+        );
+
+        new HeaderContentSecurityPolicy(['name=' => 'value']);
+    }
+
+    public function testInvalidParameterNameType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-name "<integer>" for the header "Content-Security-Policy" is not valid'
+        );
+
+        new HeaderContentSecurityPolicy([0 => 'value']);
+    }
+
+    public function testInvalidParameterValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-value ";value" for the header "Content-Security-Policy" is not valid'
+        );
+
+        new HeaderContentSecurityPolicy(['name' => ';value']);
+    }
+
+    public function testInvalidParameterValueType()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->expectExceptionMessage(
+            'The parameter-value "<array>" for the header "Content-Security-Policy" is not valid'
+        );
+
+        new HeaderContentSecurityPolicy(['name' => []]);
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderContentSecurityPolicy(['foo' => 'bar']);
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderContentSecurityPolicy(['foo' => 'bar']);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

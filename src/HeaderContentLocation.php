@@ -17,16 +17,12 @@ namespace Sunrise\Http\Header;
 use Psr\Http\Message\UriInterface;
 
 /**
- * HeaderContentLocation
- *
  * @link https://tools.ietf.org/html/rfc2616#section-14.14
  */
-class HeaderContentLocation extends AbstractHeader implements HeaderInterface
+class HeaderContentLocation extends AbstractHeader
 {
 
     /**
-     * URI for the header field-value
-     *
      * @var UriInterface
      */
     protected $uri;
@@ -38,31 +34,7 @@ class HeaderContentLocation extends AbstractHeader implements HeaderInterface
      */
     public function __construct(UriInterface $uri)
     {
-        $this->setUri($uri);
-    }
-
-    /**
-     * Sets URI for the header field-value
-     *
-     * @param UriInterface $uri
-     *
-     * @return self
-     */
-    public function setUri(UriInterface $uri) : self
-    {
         $this->uri = $uri;
-
-        return $this;
-    }
-
-    /**
-     * Gets URI for the header field-value
-     *
-     * @return UriInterface
-     */
-    public function getUri() : UriInterface
-    {
-        return $this->uri;
     }
 
     /**
@@ -78,6 +50,6 @@ class HeaderContentLocation extends AbstractHeader implements HeaderInterface
      */
     public function getFieldValue() : string
     {
-        return (string) $this->getUri();
+        return $this->uri->__toString();
     }
 }

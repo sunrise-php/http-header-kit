@@ -3,107 +3,69 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderRefresh;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderRefresh;
 use Sunrise\Uri\Uri;
 
 class HeaderRefreshTest extends TestCase
 {
-    public function testConstructor()
+    public function testContracts()
     {
-        $home = new Uri('/');
-
-        $header = new HeaderRefresh(0, $home);
+        $uri = new Uri('/');
+        $header = new HeaderRefresh(0, $uri);
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidDelay()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $home = new Uri('/');
-
-        new HeaderRefresh(-1, $home);
-    }
-
-    public function testSetDelay()
-    {
-        $home = new Uri('/');
-
-        $header = new HeaderRefresh(0, $home);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setDelay(1));
-
-        $this->assertSame(1, $header->getDelay());
-    }
-
-    public function testSetInvalidDelay()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $home = new Uri('/');
-
-        $header = new HeaderRefresh(0, $home);
-
-        $header->setDelay(-1);
-    }
-
-    public function testSetUri()
-    {
-        $home = new Uri('/');
-
-        $login = new Uri('/login');
-
-        $header = new HeaderRefresh(0, $home);
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setUri($login));
-
-        $this->assertSame($login, $header->getUri());
-    }
-
-    public function testGetDelay()
-    {
-        $home = new Uri('/');
-
-        $header = new HeaderRefresh(0, $home);
-
-        $this->assertSame(0, $header->getDelay());
-    }
-
-    public function testGetUri()
-    {
-        $home = new Uri('/');
-
-        $header = new HeaderRefresh(0, $home);
-
-        $this->assertSame($home, $header->getUri());
-    }
-
-    public function testGetFieldName()
-    {
-        $home = new Uri('/');
-
-        $header = new HeaderRefresh(0, $home);
+        $uri = new Uri('/');
+        $header = new HeaderRefresh(0, $uri);
 
         $this->assertSame('Refresh', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $home = new Uri('/');
-
-        $header = new HeaderRefresh(0, $home);
+        $uri = new Uri('/');
+        $header = new HeaderRefresh(0, $uri);
 
         $this->assertSame('0; url=/', $header->getFieldValue());
     }
 
-    public function testToString()
+    public function testInvalidDelay()
     {
-        $home = new Uri('/');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The delay "-1" for the header "Refresh" is not valid');
 
-        $header = new HeaderRefresh(0, $home);
+        $uri = new Uri('/');
 
-        $this->assertSame('Refresh: 0; url=/', (string) $header);
+        new HeaderRefresh(-1, $uri);
+    }
+
+    public function testBuild()
+    {
+        $uri = new Uri('/');
+        $header = new HeaderRefresh(0, $uri);
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $uri = new Uri('/');
+        $header = new HeaderRefresh(0, $uri);
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }

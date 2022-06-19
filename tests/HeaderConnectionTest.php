@@ -3,8 +3,8 @@
 namespace Sunrise\Http\Header\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Sunrise\Http\Header\HeaderConnection;
 use Sunrise\Http\Header\HeaderInterface;
+use Sunrise\Http\Header\HeaderConnection;
 
 class HeaderConnectionTest extends TestCase
 {
@@ -14,63 +14,65 @@ class HeaderConnectionTest extends TestCase
         $this->assertSame('keep-alive', HeaderConnection::CONNECTION_KEEP_ALIVE);
     }
 
-    public function testConstructor()
+    public function testContracts()
     {
-        $header = new HeaderConnection('value');
+        $header = new HeaderConnection('foo');
 
         $this->assertInstanceOf(HeaderInterface::class, $header);
     }
 
-    public function testConstructorWithInvalidValue()
+    public function testFieldName()
     {
-        $this->expectException(\InvalidArgumentException::class);
-
-        new HeaderConnection('invalid value');
-    }
-
-    public function testSetValue()
-    {
-        $header = new HeaderConnection('value');
-
-        $this->assertInstanceOf(HeaderInterface::class, $header->setValue('new-value'));
-
-        $this->assertSame('new-value', $header->getValue());
-    }
-
-    public function testSetInvalidValue()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $header = new HeaderConnection('value');
-
-        $header->setValue('invalid value');
-    }
-
-    public function testGetValue()
-    {
-        $header = new HeaderConnection('value');
-
-        $this->assertSame('value', $header->getValue());
-    }
-
-    public function testGetFieldName()
-    {
-        $header = new HeaderConnection('value');
+        $header = new HeaderConnection('foo');
 
         $this->assertSame('Connection', $header->getFieldName());
     }
 
-    public function testGetFieldValue()
+    public function testFieldValue()
     {
-        $header = new HeaderConnection('value');
+        $header = new HeaderConnection('foo');
 
-        $this->assertSame('value', $header->getFieldValue());
+        $this->assertSame('foo', $header->getFieldValue());
     }
 
-    public function testToString()
+    public function testEmptyValue()
     {
-        $header = new HeaderConnection('value');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "" for the header "Connection" is not valid');
 
-        $this->assertSame('Connection: value', (string) $header);
+        new HeaderConnection('');
+    }
+
+    public function testInvalidValue()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The value "@" for the header "Connection" is not valid');
+
+        // isn't a token...
+        new HeaderConnection('@');
+    }
+
+    public function testBuild()
+    {
+        $header = new HeaderConnection('foo');
+
+        $expected = \sprintf('%s: %s', $header->getFieldName(), $header->getFieldValue());
+
+        $this->assertSame($expected, $header->__toString());
+    }
+
+    public function testIterator()
+    {
+        $header = new HeaderConnection('foo');
+        $iterator = $header->getIterator();
+
+        $iterator->rewind();
+        $this->assertSame($header->getFieldName(), $iterator->current());
+
+        $iterator->next();
+        $this->assertSame($header->getFieldValue(), $iterator->current());
+
+        $iterator->next();
+        $this->assertFalse($iterator->valid());
     }
 }
