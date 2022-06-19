@@ -1,6 +1,6 @@
 ## HTTP header kit for PHP 7.1+ compatible with PSR-7, Symfony and Laravel
 
-[![Build Status](https://circleci.com/gh/sunrise-php/http-header-kit.svg?style=shield)](https://circleci.com/gh/sunrise-php/http-header-kit)
+[![Build Status](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/build.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)
 [![Total Downloads](https://poser.pugx.org/sunrise/http-header-kit/downloads)](https://packagist.org/packages/sunrise/http-header-kit)
@@ -12,7 +12,7 @@
 ## Installation
 
 ```bash
-composer require 'sunrise/http-header-kit:^2.1'
+composer require sunrise/http-header-kit
 ```
 
 ## How to use?
