@@ -22,9 +22,9 @@
         "sunrise/http-header": "^3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~9.5.0",
-        "sunrise/coding-standard": "~1.0.0",
-        "sunrise/uri": "~1.2.0"
+        "phpunit/phpunit": "9.5.25",
+        "sunrise/coding-standard": "1.0.0",
+        "sunrise/uri": "1.2.4"
     },
     "autoload": {
         "psr-4": {
