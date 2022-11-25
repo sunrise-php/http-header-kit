@@ -19,14 +19,14 @@ class HeaderCustomTest extends TestCase
     {
         $header = new HeaderCustom('foo', 'bar');
 
-        $this->assertEquals('foo', $header->getFieldName());
+        $this->assertSame('foo', $header->getFieldName());
     }
 
     public function testFieldValue()
     {
         $header = new HeaderCustom('foo', 'bar');
 
-        $this->assertEquals('bar', $header->getFieldValue());
+        $this->assertSame('bar', $header->getFieldValue());
     }
 
     public function testInvalidFieldName()
@@ -49,7 +49,7 @@ class HeaderCustomTest extends TestCase
     {
         $header = new HeaderCustom('foo', '');
 
-        $this->assertEquals('', $header->getFieldValue());
+        $this->assertSame('', $header->getFieldValue());
     }
 
     public function testInvalidFieldValue()

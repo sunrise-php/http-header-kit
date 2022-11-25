@@ -1,4 +1,4 @@
-## HTTP header kit for PHP 7.1+ compatible with PSR-7, Symfony and Laravel
+## HTTP header kit for PHP 7.4+ compatible with PSR-7, Symfony and Laravel
 
 [![Build Status](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/build.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sunrise-php/http-header-kit/?branch=master)

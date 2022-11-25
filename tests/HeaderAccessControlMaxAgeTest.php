@@ -36,7 +36,7 @@ class HeaderAccessControlMaxAgeTest extends TestCase
     {
         $header = new HeaderAccessControlMaxAge($validValue);
 
-        $this->assertEquals($validValue, $header->getFieldValue());
+        $this->assertSame((string) $validValue, $header->getFieldValue());
     }
 
     public function validValueDataProvider() : array
