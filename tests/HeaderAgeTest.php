@@ -36,7 +36,7 @@ class HeaderAgeTest extends TestCase
     {
         $header = new HeaderAge($validValue);
 
-        $this->assertEquals($validValue, $header->getFieldValue());
+        $this->assertSame((string) $validValue, $header->getFieldValue());
     }
 
     public function validValueDataProvider() : array
