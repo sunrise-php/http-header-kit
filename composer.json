@@ -41,5 +41,6 @@
             "phpdoc -d src/ -t phpdoc/",
             "XDEBUG_MODE=coverage phpunit --coverage-html coverage/"
         ]
-    }
+    },
+    "abandoned": "sunrise/http-message"
 }
